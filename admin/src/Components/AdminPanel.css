@@ -1,0 +1,16 @@
+.adminpanel input[type='file'] {
+  max-width: 215px;
+}
+
+.adminpanel input {
+  flex: 50%;
+}
+
+::placeholder {
+  color: #2323237b !important;
+  font-weight: 400 !important;
+}
+
+::-ms-input-placeholder { /* Edge 12 -18 */
+  color: red;
+}

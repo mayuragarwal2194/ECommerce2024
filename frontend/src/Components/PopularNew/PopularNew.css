@@ -1,0 +1,51 @@
+/* Css for popolar section- Start */
+.popular-funtional-image {
+	max-width: 550px;
+}
+
+.goto-item-btn {
+	background: radial-gradient(50% 50% at 50% 50%, #a38b85, #ffffff30);
+	left: 25%;
+	top: 50%;
+	transform: translate(-25%, -50%);
+}
+
+.goto-inner-circle {
+	width: 20px;
+	height: 20px;
+}
+
+.addto-item-btn {
+	right: 25%;
+	top: 50%;
+	transform: translate(25%, -50%);
+}
+
+.addto-item-inner {
+	width: 20px;
+	height: 20px;
+}
+
+.popular-card-image {
+	width: 270px;
+	/* height: 270px; */
+}
+
+.popular-card .card-body .product-title,
+.popular-card .card-body .product-price {
+	font-size: var(--small-font-size);
+	font-family: var(--small-font-family);
+	font-weight: var(--small-font-weight);
+	letter-spacing: var(--small-letter-spacing);
+	line-height: var(--small-line-height);
+}
+
+.popular-card .card-body .product-title {
+	color: var(--text-primary);
+}
+
+.popular-card .card-body .product-price {
+	color: var(--text-secondary);
+}
+
+/* Css for popolar section- End */

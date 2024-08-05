@@ -1,0 +1,10 @@
+.btn_fill_red{
+  background-color: var(--shopper-red);
+  border: 1px solid var(--shopper-red);
+  transition: all ease 0.2s;
+}
+
+.btn_fill_red:hover{
+  background-color: transparent !important;
+  color: var(--shopper-red) !important;
+}

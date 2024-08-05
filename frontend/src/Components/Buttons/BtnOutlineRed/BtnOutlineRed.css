@@ -1,0 +1,10 @@
+.btn_outline_red{
+  border: 1px solid var(--shopper-red);
+  color: var(--shopper-red);
+  transition: all ease 0.2s;
+}
+
+.btn_outline_red:hover{
+  background-color: var(--shopper-red) !important;
+  color: white;
+}

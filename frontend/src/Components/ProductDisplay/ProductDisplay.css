@@ -1,0 +1,53 @@
+.productdisplay-img-list img {
+  max-height: 90px;
+}
+
+.productdisplay-main-img {
+  height: 514px;
+}
+
+.productdisplay .product-title {
+  font-size: 34px;
+  line-height: normal;
+}
+
+.productdisplay .product-description {
+  color: #121212bf;
+}
+
+.productdisplay .current-price {
+  font-size: 30px;
+}
+
+.productdisplay .old-price {
+  font-size: 24px;
+  color: var(--black-75);
+}
+
+.productdisplay-size h1 {
+  font-size: 16px;
+}
+
+.productdisplay-size li {
+  border: 1px solid var(--black-75);
+  border-radius: 100%;
+  width: 29px;
+  height: 29px;
+  font-size: 14px;
+  padding: 18px;
+}
+
+.product-discount{
+  font-size: 24px;
+  color: var(--shopper-red);
+}
+
+.productdisplay-add-btn button{
+  border-radius: 4px !important;
+  width: 50%;
+}
+
+.product-buy-now-btn button{
+  border-radius: 4px !important;
+  width: 100%;
+}

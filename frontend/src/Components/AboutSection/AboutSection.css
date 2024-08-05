@@ -1,0 +1,54 @@
+/* Css for about section- Start */
+.about-section {
+	color: var(--text-primary);
+  padding-bottom: 100px !important;
+}
+
+.about-section .about-subhead {
+	font-size: var(--small-font-size);
+	font-family: var(--small-font-family);
+	font-weight: var(--small-font-weight);
+	letter-spacing: var(--small-letter-spacing);
+	line-height: var(--small-line-height);
+}
+
+.about-section .about-head {
+	font-size: 22px;
+}
+
+.about-section .about-description {
+	font-family: var(--paragraph-font-family);
+	font-size: var(--paragraph-font-size);
+	font-weight: var(--paragraph-font-weight);
+	letter-spacing: var(--paragraph-letter-spacing);
+	line-height: var(--paragraph-line-height);
+}
+
+.about-images {
+	justify-content: end;
+	position: relative;
+}
+
+.about-image-big {
+	max-width: 75%;
+	min-width: 420px;
+}
+
+.about-image-big img {
+	max-height: 570px;
+	object-fit: cover;
+	width: 100%;
+}
+
+.about-image-small {
+	max-width: 60%;
+	z-index: 2;
+	position: absolute;
+	bottom: -10%;
+	left: 0;
+	height: 85%;
+	width: 60%;
+	background-size: cover;
+}
+
+/* Css for about section- End */

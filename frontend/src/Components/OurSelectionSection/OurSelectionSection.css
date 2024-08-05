@@ -1,0 +1,71 @@
+/* Css for SElection Section- Start */
+.selection-product-card .card-image {
+	max-width: 380px;
+}
+
+.selection-product-detail {
+	color: var(--text-primary);
+}
+
+.selection-product-detail .variant-color-box .color-blue {
+	width: 34px;
+	height: 34px;
+	background-color: #2d477c;
+}
+
+.selection-product-detail .variant-color-box {
+	border: 2px solid #4f4a4a;
+	padding: 2px;
+}
+
+.product-outer {
+	width: fit-content;
+	border: 1px solid #000000;
+	padding: 14px 0;
+}
+
+.product-quantity button {
+	width: 45px;
+}
+
+.product-quantity input {
+	width: 48px;
+}
+
+.product-quantity input::-webkit-outer-spin-button,
+.product-quantity input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+.selection-product-detail .product-title {
+	font-size: 22px;
+	font-size: clamp(18px, 3vw, 22px);
+}
+
+.selection-product-detail .product-price {
+	font-size: 18px;
+	color: var(--text-secondary);
+}
+
+.selection-product-detail .product-description {
+	font-size: var(--paragraph-font-size);
+	font-family: var(--paragraph-font-family);
+	font-weight: var(--paragraph-font-weight);
+	line-height: var(--paragraph-line-height);
+	letter-spacing: var(--paragraph-letter-spacing);
+}
+
+.selection-product-detail .product-variant {
+	font-size: var(--small-font-size);
+	font-family: var(--small-font-family);
+	font-weight: var(--small-font-weight);
+	line-height: var(--small-line-height);
+	letter-spacing: var(--small-letter-spacing);
+}
+
+.selection-product-detail .product-detail-header {
+	gap: 12px;
+}
+
+/* Css for SElection Section- End */

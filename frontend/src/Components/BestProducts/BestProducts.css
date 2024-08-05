@@ -1,0 +1,45 @@
+/* Css for best product section- Start */
+.section-padding {
+  padding: var(--section-padding-desktop);
+}
+
+.section-head,
+.best-tabs {
+  margin-bottom: 54px;
+}
+
+.best-section .best-tabs {
+  gap: 40px;
+}
+
+.section-subhead {
+  color: var(--text-primary);
+  font-family: var(--subheading-font-family);
+  font-size: var(--subheading-font-size);
+  font-weight: var(--subheading-font-weight);
+  letter-spacing: var(--subheading-letter-spacing);
+  line-height: var(--subheading-line-height);
+  text-transform: uppercase;
+  padding-bottom: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.best-section .best-tab,
+.section-head {
+  color: var(--text-primary);
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size);
+  font-weight: var(--heading-font-weight);
+  letter-spacing: var(--heading-letter-spacing);
+  line-height: var(--heading-line-height);
+  text-transform: uppercase;
+}
+
+.best-section .best-tab.active {
+  border-bottom: 1px solid var(--text-primary);
+}
+
+#best-sliderContainer .itemnew{
+  padding: 0 16px;
+}
+/* Css for best product section- End */

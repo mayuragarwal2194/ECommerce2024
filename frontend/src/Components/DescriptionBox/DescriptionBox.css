@@ -1,0 +1,15 @@
+.descriptionbox-navs{
+  font-size: 24px;
+  color: var(--black-75);
+}
+
+.descriptionbox-navs.active{
+  color: var(--black);
+  border-width: 0 1px 0 1px;
+  border-style: solid;
+  border-color: var(--black);
+}
+
+.descriptionbox-description p{
+  color: #121212bf;
+}

@@ -1,0 +1,112 @@
+/* Css for Footer- Start */
+.text-creame {
+	color: var(--secondary);
+}
+
+.bg-creame {
+	background-color: var(--secondary);
+}
+
+.footer-collection a,
+.footer-quick-links a {
+	color: var(--secondary);
+}
+
+.footer-detail {
+	font-size: 14px;
+}
+
+.footer-section ul li,
+.footer-section ul li a {
+	font-size: var(--large-font-size);
+	font-weight: 200;
+	line-height: var(--large-line-height);
+	margin-bottom: 10px;
+	transition: all ease 0.2s;
+}
+
+.footer-section ul li a:hover {
+	color: var(--accent);
+}
+
+.footer-wrapper {
+	margin: auto;
+}
+
+.footer-head {
+	font-size: 16px;
+}
+
+.footer-email input {
+	border: 1px solid var(--white);
+	padding: 14px;
+	max-width: 288px;
+	font-size: 14px;
+	font-weight: 200;
+}
+
+::placeholder {
+	font-size: 14px;
+	color: var(--secondary);
+	font-weight: 200;
+}
+
+.footer-navs {
+	gap: 32px;
+}
+
+.footer-navs .share-link a{
+  text-decoration: none;
+  color: var(--secondary);
+  font-size: 20px;
+}
+
+.footer-navs .share-link svg path {
+	transition: all ease 0.2s;
+}
+
+.footer-navs .share-link:hover svg path {
+	fill: var(--accent);
+}
+
+.footer-section p {
+	font-size: var(--paragraph-font-size);
+	font-family: var(--paragraph-font-family);
+	font-weight: 200;
+	letter-spacing: var(--paragraph-letter-spacing);
+	line-height: var(--paragraph-line-height);
+}
+
+.copyright-footer .dropdown,
+.copyright-footer .dropdown span {
+	font-size: 12px;
+	font-weight: 200;
+}
+
+.copyright-footer .dropdown-content {
+	bottom: 100%;
+}
+
+.copyright-footer .dropdown-content a,
+.copyright-footer .dropdown-content a span {
+	font-weight: normal;
+}
+
+.copyright-footer .dropdown-hover .dropbtn {
+	padding: 0;
+}
+
+.copyright-footer a {
+	font-size: 12px;
+}
+
+.copyright-footer .footer-dropdown-wrapper,
+.copyright-footer .payment-image {
+	flex: 1;
+}
+
+.copyright-footer .copyright {
+	font-size: 12px;
+}
+
+/* Css for Footer- End */

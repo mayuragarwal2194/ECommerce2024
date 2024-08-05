@@ -1,0 +1,25 @@
+/* Css for Category Section- Start*/
+.category-card .image-overlay {
+	--black: rgba(7, 13, 16, 0.2);
+	background-color: var(--black);
+	top: 0;
+	left: 0;
+}
+
+.category-section .category-image {
+	height: 545px;
+}
+
+.category-right .category-image {
+	max-height: 260px;
+}
+
+.category-section .category-name {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	color: var(--accent);
+	font-size: clamp(22px, 4vw, 34px);
+}
+
+/* Css for Category Section- End*/

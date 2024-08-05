@@ -1,0 +1,59 @@
+/* Css for Blog Section- Start */
+.custom-blog-card .blog-image {
+	/* max-width: 380px; */
+}
+
+.blog-cards .card,
+.blog-image img,
+.custom-blog-card img {
+	transition: all ease 0.5s;
+}
+
+.blog-cards .card:hover .blog-image img,
+.custom-blog-card:hover .blog-image img {
+	scale: 1.1;
+}
+
+.custom-blog-card .blog-image {
+	overflow: hidden;
+}
+
+.blog-category {
+	color: var(--text-secondary);
+	font-size: var(--small-font-size);
+	font-family: var(--small-font-family);
+	font-weight: var(--small-font-weight);
+	letter-spacing: var(--small-letter-spacing);
+	line-height: var(--small-line-height);
+	text-transform: uppercase;
+}
+
+.blog-section .blog-title {
+	font-size: 18px;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+	color: var(--text-primary);
+}
+
+.blog-section .btn-fill-black {
+	padding: 8px 16px;
+}
+
+.blog-section .blog-btn {
+	letter-spacing: unset;
+}
+
+#discover-btn {
+	margin-top: 62px !important;
+}
+
+.blog-cards-wrapper .card {
+	max-width: 392px;
+}
+
+#blog-sliderContainer .slide{
+  padding: 0 24px;
+}
+
+/* Css for Blog Section- End */

@@ -1,0 +1,26 @@
+/* Css for value section- Start */
+.value-section {
+  padding: 48px 0;
+}
+
+.value-section .value-head {
+  /* font-size: 98px; */
+  font-size: clamp(52px, 7vw, 98px);
+  color: var(--accent);
+  margin-bottom: 32px;
+}
+
+.value-section .value-description {
+  font-size: clamp(12px, 2vw, 28px);
+  color: var(--accent-secondary);
+}
+
+/* Css for value section- End */
+
+@media (min-width:1200px) {
+  .value-section .value-description,
+  .about-section .about-head,
+  .about-section .about-description {
+    width: 90%;
+  }
+}

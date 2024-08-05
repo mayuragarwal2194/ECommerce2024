@@ -1,0 +1,12 @@
+/* Css for Video Section- Start */
+.banner-video {
+	height: 550px;
+}
+
+.banner-video .custom-play-btn {
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+/* Css for Video Section- End */

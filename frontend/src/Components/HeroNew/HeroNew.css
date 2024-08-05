@@ -1,0 +1,51 @@
+/* Css for Hero Banner- Start */
+.scroll-next-button {
+	width: 50px;
+	height: 50px;
+	left: 50%;
+	bottom: -25px;
+	transform: translateX(-50%);
+}
+
+.hero-section .slide {
+	background-image: url("../../../public/Images/Slider.webp");
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	height: 760px;
+}
+
+.hero-section .slide-overlay {
+	background: linear-gradient(to bottom, #74747410, #10101060);
+	width: 100%;
+	height: 100%;
+}
+
+.hero-section .slide-content {
+	padding: 80px 0;
+}
+
+.hero-section .slide-content h6 {
+	font-family: var(--small-font-family);
+	font-size: var(--small-font-size);
+	font-weight: var(--small-font-weight);
+	line-height: var(--small-line-height);
+	letter-spacing: var(--small-letter-spacing);
+}
+
+.hero-section .slide-content h2 {
+	font-size: 32px;
+	color: var(--accent);
+	letter-spacing: 5.76px;
+}
+
+.hero-section .slide-button {
+	color: var(--accent);
+	font-size: 13px;
+	border: 1px solid var(--accent);
+	padding: 13px 33px;
+	border-radius: 29px;
+	min-width: 118px;
+}
+
+/* Css for Hero Banner- End */

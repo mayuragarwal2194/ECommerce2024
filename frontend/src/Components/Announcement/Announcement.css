@@ -1,0 +1,22 @@
+/* Css for announcement section- Start */
+.announcement-section {
+	font-size: var(--small-font-size);
+	font-family: var(--small-font-family);
+	font-weight: var(--small-font-weight);
+	letter-spacing: var(--small-letter-spacing);
+	line-height: var(--small-line-height);
+}
+
+.announcement-section li {
+	font-size: 10px;
+}
+
+.announcement-section li span {
+	font-size: 12px;
+}
+
+.announcement-timer {
+	gap: 12px;
+}
+
+/* Css for announcement section- End */

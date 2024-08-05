@@ -1,0 +1,10 @@
+.itemnew img{
+  max-height: 330px;
+  object-fit: cover;
+  object-position: top;
+  transition: all ease 0.3s;
+}
+
+.itemnew:hover img{
+  transform: scale(1.05);
+}

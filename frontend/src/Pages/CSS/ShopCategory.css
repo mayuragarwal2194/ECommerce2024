@@ -1,0 +1,10 @@
+.shopcategory-sort{
+  border: 1px solid #888;
+}
+
+.shopcategory-loadmore button{
+  background-color: #ededed;
+  color: #787878;
+  font-size: 18px;
+  border: 1px solid #ededed;
+}

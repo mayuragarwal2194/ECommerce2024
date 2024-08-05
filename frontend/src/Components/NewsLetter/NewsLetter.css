@@ -1,0 +1,18 @@
+.newsletter{
+  width: 65%;
+  background: linear-gradient(180deg, #fde1ff, #e1ffea22 60%);
+}
+
+.newsletter p{
+  color: var(--black17);
+  font-size: 18px;
+}
+
+.newsletter .input-wrapper{
+  border: 1px solid #e3e3e3;
+  width: 52%;
+}
+
+.newsletter button{
+  /* width: 20%; */
+}

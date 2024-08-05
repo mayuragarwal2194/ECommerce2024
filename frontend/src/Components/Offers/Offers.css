@@ -1,0 +1,21 @@
+.offers{
+  background: linear-gradient(180deg, #fde1ff, #e1ffea22 60%);
+}
+
+.offers-left h1{
+  color: var(--black17);
+  font-size: 70px;
+  font-weight: 600;
+}
+
+.offers-left p{
+  color: var(--black17);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.offers-left button{
+  background-color: var(--shopper-red);
+  border: 1px solid var(--shopper-red);
+  font-size: 20px;
+}

@@ -1,0 +1,24 @@
+.loginsignup{
+  background-color: #fce3fe;
+}
+
+.loginsignup-wrapper input{
+  border: 1px solid #c9c9c9;
+}
+
+.loginsignup-wrapper input:focus-visible {
+  outline: none;
+}
+
+.loginsignup-login{
+  color: #5c5c5c;
+}
+
+.loginsignup-login span{
+  color: var(--shopper-red);
+}
+
+.loginsignup-agree{
+  color: #5c5c5c;
+  font-size: 16px;
+}
