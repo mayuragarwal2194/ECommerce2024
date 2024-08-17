@@ -28,37 +28,28 @@ const addProduct = async (req, res) => {
       return res.status(400).json({ message: 'Product with this id already exists.' });
     }
 
-    // Collect gallery image filenames
-    const featuredImage = req.files.find(file => file.fieldname === 'featuredImage')?.filename || null;
-    const galleryImages = req.files.filter(file => file.fieldname === 'galleryImages').map(file => file.filename) || [];
-
-    // Parse variants data from JSON string
+    // Parse and process variants data from JSON string
     const parsedVariants = await Promise.all(JSON.parse(variants).map(async (variant, index) => {
-      const variantFeaturedImageKey = `variantFeaturedImage${index}`;
-      const variantGalleryImagesKey = `variantGalleryImages${index}`;
-      const variantFeaturedImage = req.files.find(file => file.fieldname === variantFeaturedImageKey)?.filename || null;
-      const variantGalleryImages = req.files.filter(file => file.fieldname === variantGalleryImagesKey).map(file => file.filename) || [];
+      const sizeArray = Array.isArray(variant.attributes.size) ? variant.attributes.size : [variant.attributes.size];
+      const sizeIds = await Promise.all(
+        sizeArray.map(async sizeName => {
+          const sizeDoc = await Size.findOne({ sizeName: sizeName.toLowerCase() });
+          return sizeDoc ? sizeDoc._id : null;
+        })
+      );
 
-      // Convert size names to size IDs
-      let sizeIds = [];
-      if (variant.attributes && variant.attributes.size) {
-        const sizeArray = Array.isArray(variant.attributes.size) ? variant.attributes.size : [variant.attributes.size];
-        sizeIds = await Promise.all(
-          sizeArray.map(async sizeName => {
-            // console.log(`Looking up size: ${sizeName.toLowerCase()}`);
-            const sizeDoc = await Size.findOne({ sizeName: sizeName.toLowerCase() });
-            // console.log(`Found sizeDoc for ${sizeName}:`, sizeDoc);
-            return sizeDoc ? sizeDoc._id : null;
-          })
-        );
-        sizeIds = sizeIds.filter(id => id !== null); // Remove any null values
-        // console.log(`Size IDs for variant ${index}:`, sizeIds);
-      }
-
-      return { ...variant, variantFeaturedImage, variantGalleryImages, attributes: { ...variant.attributes, size: sizeIds } };
+      return {
+        ...variant,
+        attributes: {
+          ...variant.attributes,
+          size: sizeIds.filter(id => id !== null) // Convert size names to ObjectIds
+        },
+        variantFeaturedImage: null, // Placeholder
+        variantGalleryImages: []    // Placeholder
+      };
     }));
 
-    // Create and save the new product
+    // Create and save the new product without images
     const newProduct = new Product({
       id,
       itemName,
@@ -67,8 +58,8 @@ const addProduct = async (req, res) => {
       isPopular,
       shortDescription,
       fullDescription,
-      featuredImage,
-      galleryImages,
+      featuredImage: null, // Placeholder
+      galleryImages: [],    // Placeholder
       stockStatus,
       tag,
       variants: parsedVariants, // Include variants when creating the product
@@ -80,16 +71,74 @@ const addProduct = async (req, res) => {
     // Add the new product ID to the products array of the child category
     await childCategory.findByIdAndUpdate(category, { $push: { products: newProduct._id } });
 
+    // If the product is successfully added, proceed to handle images
+    const featuredImage = req.files.find(file => file.fieldname === 'featuredImage')?.filename || null;
+    const galleryImages = req.files.filter(file => file.fieldname === 'galleryImages').map(file => file.filename) || [];
+
+    // Update product with images
+    newProduct.featuredImage = featuredImage;
+    newProduct.galleryImages = galleryImages;
+
+    // Handle variant images after saving the product
+    newProduct.variants = await Promise.all(parsedVariants.map(async (variant, index) => {
+      const variantFeaturedImageKey = `variantFeaturedImage${index}`;
+      const variantGalleryImagesKey = `variantGalleryImages${index}`;
+      const variantFeaturedImage = req.files.find(file => file.fieldname === variantFeaturedImageKey)?.filename || null;
+      const variantGalleryImages = req.files.filter(file => file.fieldname === variantGalleryImagesKey).map(file => file.filename) || [];
+
+      return { ...variant, variantFeaturedImage, variantGalleryImages };
+    }));
+
+    // Save the product again with the updated images and variant data
+    await newProduct.save();
+
     res.status(201).json({ message: 'Product added successfully', product: newProduct });
   } catch (error) {
     console.error('Error in addProduct:', error);
+
+    // Cleanup: delete any uploaded files if the process failed
+    cleanupUploadedFiles(req.files);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
+// Helper function to delete uploaded files(If product adding failed)
+const cleanupUploadedFiles = async (files) => {
+  if (files) {
+    for (const file of files) {
+      let filePath;
+
+      if (file.fieldname === 'featuredImage') {
+        filePath = path.join(__dirname, '..', 'uploads', 'featured', file.filename);
+      } else if (file.fieldname === 'galleryImages') {
+        filePath = path.join(__dirname, '..', 'uploads', 'gallery', file.filename);
+      } else if (file.fieldname.startsWith('variantFeaturedImage')) {
+        filePath = path.join(__dirname, '..', 'uploads', 'variants', 'featured', file.filename);
+      } else if (file.fieldname.startsWith('variantGalleryImages')) {
+        filePath = path.join(__dirname, '..', 'uploads', 'variants', 'gallery', file.filename);
+      }
+
+      if (filePath) {
+        try {
+          console.log('Attempting to delete file:', filePath);
+          await fs.promises.unlink(filePath);
+          console.log('Successfully deleted file:', filePath);
+        } catch (err) {
+          console.error('Failed to delete image during cleanup:', filePath, err);
+        }
+      }
+    }
+  } else {
+    console.log('No files to clean up.');
+  }
+};
+
+
+
+// Update Product
 const FEATURED_DIR = path.join(__dirname, '..', 'uploads', 'featured');
 const GALLERY_DIR = path.join(__dirname, '..', 'uploads', 'gallery');
-// Update Product
+
 const updateProduct = async (req, res) => {
   try {
     const productId = req.params._id;
