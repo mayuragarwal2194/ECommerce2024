@@ -2,6 +2,8 @@ const ParentCategory = require('../models/parentCategory');
 const ChildCategory = require('../models/childCategory');
 const TopCategory = require('../models/topCategory');
 const mongoose = require("mongoose");
+const fs = require('fs');
+const path = require('path');
 
 // Helper function to clean up category name
 const cleanName = (name) => {
@@ -35,7 +37,7 @@ exports.getParentById = async (req, res) => {
 
 // Add a new parent category
 exports.addParentCategory = async (req, res) => {
-  let { name, topCategory, isActive, showInNavbar } = req.body;
+  let { name, topCategory, showInNavbar, megaMenu } = req.body;
 
   // Validate name length
   if (!name || cleanName(name).length < 3) {
@@ -73,12 +75,36 @@ exports.addParentCategory = async (req, res) => {
       return res.status(400).json({ message: 'This parent category name already exists under the selected top category' });
     }
 
+    // Check if the top category has showInNavbar set to true
+    const topCategoryDoc = await TopCategory.findById(topCatId);
+    if (!topCategoryDoc.showInNavbar) {
+      return res.status(400).json({ message: 'Cannot add ParentCategory to megaMenu as the associated TopCategory is not shown in the navbar.' });
+    }
+
+    // Check the megaMenu limit
+    if (megaMenu) {
+      const megaMenuCount = await ParentCategory.countDocuments({ topCategory: topCatId, megaMenu: true });
+      if (megaMenuCount >= 3) {
+        return res.status(400).json({ message: 'Maximum limit of 3 parent categories with megaMenu set to true per TopCategory exceeded.' });
+      }
+    }
+
+    // Handle file upload
+    let parentImage = '';
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(file => file.fieldname === 'parentImage');
+      if (file) {
+        parentImage = file.path; // Store the file path
+      }
+    }
+
     // Create new parent category
     const newParentCategory = new ParentCategory({
       name,
       topCategory: topCatId,
-      isActive: typeof isActive === 'boolean' ? isActive : true,
-      showInNavbar: typeof showInNavbar === 'boolean' ? showInNavbar : true,
+      parentImage,
+      showInNavbar,
+      megaMenu,
     });
 
     const savedParentCategory = await newParentCategory.save();
@@ -96,10 +122,12 @@ exports.addParentCategory = async (req, res) => {
   }
 };
 
+
+
 // Update a parent category
 exports.updateParentCategory = async (req, res) => {
   const parentCategoryId = req.params.id;
-  let { name, topCategory, isActive, showInNavbar } = req.body;
+  let { name, topCategory, megaMenu, showInNavbar } = req.body;
 
   if (name && cleanName(name).length < 3) {
     return res.status(400).json({ message: 'Name should be at least 3 characters long' });
@@ -140,9 +168,17 @@ exports.updateParentCategory = async (req, res) => {
     // Prepare update data
     const updateData = {
       name: name || existingParentCategory.name,
-      isActive: isActive !== undefined ? (isActive === 'true' || isActive === true) : existingParentCategory.isActive,
+      megaMenu: megaMenu !== undefined ? (megaMenu === 'true' || megaMenu === true) : existingParentCategory.megaMenu,
       showInNavbar: showInNavbar !== undefined ? (showInNavbar === 'true' || showInNavbar === true) : existingParentCategory.showInNavbar,
     };
+
+    // Check the megaMenu limit
+    if (updateData.megaMenu && !existingParentCategory.megaMenu) { // Only check if megaMenu is being set to true
+      const megaMenuCount = await ParentCategory.countDocuments({ topCategory: topCatId || existingParentCategory.topCategory, megaMenu: true });
+      if (megaMenuCount >= 3) {
+        return res.status(400).json({ message: 'Maximum limit of 3 parent categories with megaMenu set to true per TopCategory exceeded.' });
+      }
+    }
 
     // Handle Top Category update if needed
     if (topCatId && (!existingParentCategory.topCategory || existingParentCategory.topCategory.toString() !== topCatId.toString())) {
@@ -164,6 +200,37 @@ exports.updateParentCategory = async (req, res) => {
       updateData.topCategory = topCatId;
     }
 
+    // Handle file upload
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(file => file.fieldname === 'parentImage');
+      if (file) {
+        // Delete the old parentImage if it exists
+        if (existingParentCategory.parentImage) {
+          const oldImagePath = existingParentCategory.parentImage
+
+          // Check if the file exists before attempting to delete
+          fs.access(oldImagePath, fs.constants.F_OK, (err) => {
+            if (err) {
+              console.error('File does not exist:', oldImagePath);
+              return;
+            }
+
+            // Delete the old image
+            fs.unlink(oldImagePath, (err) => {
+              if (err) {
+                console.error('Failed to delete old image:', err);
+              } else {
+                console.log('Successfully deleted old image:', oldImagePath);
+              }
+            });
+          });
+        }
+
+        // Update with the new file path
+        updateData.parentImage = file.path;
+      }
+    }
+
     // Update the Parent category
     const updatedParentCategory = await ParentCategory.findByIdAndUpdate(parentCategoryId, updateData, { new: true });
 
@@ -177,6 +244,7 @@ exports.updateParentCategory = async (req, res) => {
   }
 }
 
+
 // Delete a parent category
 exports.deleteParentCategory = async (req, res) => {
   const parentCategoryId = req.params.id;
@@ -186,7 +254,7 @@ exports.deleteParentCategory = async (req, res) => {
     if (!deletedParentCategory) {
       return res.status(404).json({ message: 'Parent Category Not Found' });
     }
-    
+
     // Remove parent reference from child categories
     await ChildCategory.updateMany({ parent: parentCategoryId }, { $set: { parent: null } });
 

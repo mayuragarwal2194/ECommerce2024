@@ -6,8 +6,8 @@ const Item = ({ image, itemName, newPrice, oldPrice, id }) => {
   return (
     <div className="col item">
       <Link to={`/product/${id}`} className='text-decoration-none'>
-        <div className="card border-0">
-          <div className='item-image'>
+        <div className="border-0">
+          <div className='item-image overflow-hidden'>
           <img src={`http://localhost:5000/uploads/featured/${image}`} alt={itemName} className='w-100' />
           </div>
           <div className="card-body px-0">

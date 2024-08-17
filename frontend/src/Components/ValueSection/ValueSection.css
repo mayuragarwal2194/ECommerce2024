@@ -6,13 +6,13 @@
 .value-section .value-head {
   /* font-size: 98px; */
   font-size: clamp(52px, 7vw, 98px);
-  color: var(--accent);
+  color: var(--secondary);
   margin-bottom: 32px;
 }
 
 .value-section .value-description {
   font-size: clamp(12px, 2vw, 28px);
-  color: var(--accent-secondary);
+  color: var(--secondary);
 }
 
 /* Css for value section- End */

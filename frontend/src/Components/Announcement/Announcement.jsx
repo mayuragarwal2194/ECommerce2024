@@ -24,28 +24,28 @@ const Announcement = () => {
                 <li className="text-center d-flex align-items-center gap-2">
                   <div>
                     <span className="d-block" id="days">99</span>
-                    day
+                    {/* day */}
                   </div>
                   <div className="colon">:</div>
                 </li>
                 <li className="text-center d-flex align-items-center gap-2">
                   <div>
                     <span className="d-block" id="hours">17</span>
-                    Hrs
+                    {/* Hrs */}
                   </div>
                   <div className="colon">:</div>
                 </li>
                 <li className="text-center d-flex align-items-center gap-2">
                   <div>
                     <span className="d-block" id="minutes">47</span>
-                    Min
+                    {/* Min */}
                   </div>
                 </li>
                 <li className="text-center d-flex align-items-center gap-2">
                   <div className="colon">:</div>
                   <div>
                     <span className="d-block" id="seconds">08</span>
-                    Sec
+                    {/* Sec */}
                   </div>
                 </li>
               </ul>

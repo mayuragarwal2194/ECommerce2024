@@ -5,6 +5,10 @@
   transition: all ease 0.3s;
 }
 
+.item-image{
+  z-index: -1;
+}
+
 .itemnew:hover img{
   transform: scale(1.05);
 }

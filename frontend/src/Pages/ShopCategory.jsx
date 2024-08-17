@@ -4,6 +4,7 @@ import './CSS/ShopCategory.css';
 import { getProductsByTopCategory, fetchTopCategories } from '../services/api';
 import Item from '../Components/Item/Item';
 import dropdown_icon from '../Components/Assets/dropdown_icon.png';
+import ItemNew from '../Components/ItemNew/ItemNew';
 
 const ShopCategory = () => {
   const { categoryId } = useParams(); // This is the category name from URL
@@ -85,13 +86,14 @@ const ShopCategory = () => {
           <div className="row row-cols-1 row-cols-md-5 g-4">
             {products.length > 0 ? (
               products.map((item) => (
-                <Item
+                <ItemNew
                   key={item._id}
                   id={item._id}
                   image={item.featuredImage}
                   itemName={item.itemName}
                   newPrice={item.newPrice}
                   oldPrice={item.oldPrice}
+                  tag={item.tag}
                 />
               ))
             ) : (

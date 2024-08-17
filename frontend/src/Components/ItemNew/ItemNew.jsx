@@ -13,7 +13,7 @@ const ItemNew = ({ image, itemName, newPrice, oldPrice, id, tag }) => {
   return (
     <div className="itemnew">
       <Link to={`/product/${id}`} className='mega-card text-decoration-none'>
-        <div className="item-image w-100 position-relative">
+        <div className="item-image w-100 position-relative overflow-hidden">
           <img src={`http://localhost:5000/uploads/featured/${image}`} alt={itemName} className="w-100 h-auto" />
           <div className={`best-seller-tag text-uppercase position-absolute`}>{formattedTag}</div>
         </div>

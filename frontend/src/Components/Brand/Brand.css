@@ -1,10 +1,10 @@
 /* Css for brand section- Start */
 .brand-section .section-subhead {
-	color: var(--accent);
+	color: var(--secondary);
 }
 
 .brand-section .section-head {
-	color: var(--accent-secondary);
+	color: var(--secondary);
 	font-size: 24px;
 	font-size: clamp(18px, 3vw, 24px);
 }

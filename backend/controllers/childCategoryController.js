@@ -1,6 +1,8 @@
 const ChildCategory = require('../models/childCategory');
 const ParentCategory = require('../models/parentCategory');
 const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
 
 // Helper function to clean up category name
 const cleanName = (name) => {
@@ -10,12 +12,19 @@ const cleanName = (name) => {
 // Get all child categories
 exports.getAllChildCategories = async (req, res) => {
   try {
-    const childCategories = await ChildCategory.find().populate('parent').populate('products');
+    const childCategories = await ChildCategory.find()
+      .populate({
+        path: 'parent',
+        populate: { path: 'topCategory' } // Populate topCategory within parent
+      })
+      .populate('products');
+    
     res.json(childCategories);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 }
+
 
 // Get a single child category by ID
 exports.getChildById = async (req, res) => {
@@ -58,7 +67,7 @@ exports.deleteChildCategory = async (req, res) => {
 
 // Add a new child category
 exports.addChildCategory = async (req, res) => {
-  let { name, parent, isActive, showInNavbar } = req.body;
+  let { name, parent, megaMenu, showInNavbar } = req.body;
 
   // Validate name length
   if (!name || cleanName(name).length < 3) {
@@ -95,12 +104,42 @@ exports.addChildCategory = async (req, res) => {
       return res.status(400).json({ message: 'This child category name already exists under the selected parent category' });
     }
 
+    // Get the parent category to find its top category
+    const parentCategory = await ParentCategory.findById(parentId);
+    if (!parentCategory) {
+      return res.status(400).json({ message: 'Parent category does not exist' });
+    }
+
+    const topCategoryId = parentCategory.topCategory;
+
+    // Check the megaMenu limit for child categories
+    if (megaMenu) {
+      const childMegaMenuCount = await ChildCategory.countDocuments({
+        megaMenu: true,
+        parent: { $in: await ParentCategory.find({ topCategory: topCategoryId }).select('_id') }
+      });
+
+      if (childMegaMenuCount >= 3) {
+        return res.status(400).json({ message: 'Maximum limit of 3 child categories with megaMenu set to true per TopCategory exceeded.' });
+      }
+    }
+
+    // Handle file upload
+    let childImage = '';
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(file => file.fieldname === 'childImage');
+      if (file) {
+        childImage = file.path; // Store the file path
+      }
+    }
+
     // Create new child category
     const newChildCategory = new ChildCategory({
       name,
       parent: parentId,
-      isActive: typeof isActive === 'boolean' ? isActive : true,
-      showInNavbar: typeof showInNavbar === 'boolean' ? showInNavbar : true,
+      megaMenu,
+      showInNavbar,
+      childImage
     });
 
     const savedChildCategory = await newChildCategory.save();
@@ -122,7 +161,7 @@ exports.addChildCategory = async (req, res) => {
 // Update a Child Category
 exports.updateChildCategory = async (req, res) => {
   const childCategoryId = req.params.id;
-  let { name, parent, isActive, showInNavbar } = req.body;
+  let { name, parent, megaMenu, showInNavbar } = req.body;
 
   // Validate name length if it's included in the request body
   if (name && cleanName(name).length < 3) {
@@ -139,11 +178,9 @@ exports.updateChildCategory = async (req, res) => {
 
   // Validate parent category if it's included in the request body
   if (parent) {
-    // If parent is an ObjectId
     if (mongoose.Types.ObjectId.isValid(parent)) {
       parentId = parent;
     } else {
-      // If parent is a name, find by name
       parent = cleanName(parent);
       const parentCategory = await ParentCategory.findOne({ name: parent });
       if (!parentCategory) {
@@ -163,35 +200,84 @@ exports.updateChildCategory = async (req, res) => {
     // Prepare update data
     const updateData = {
       name: name || existingChildCategory.name,
-      isActive: typeof isActive === 'boolean' ? isActive : existingChildCategory.isActive,
-      showInNavbar: typeof showInNavbar === 'boolean' ? showInNavbar : existingChildCategory.showInNavbar,
+      megaMenu: megaMenu !== undefined ? (megaMenu === 'true' || megaMenu === true) : existingChildCategory.megaMenu,
+      showInNavbar: showInNavbar !== undefined ? (showInNavbar === 'true' || showInNavbar === true) : existingChildCategory.showInNavbar,
     };
 
+    // Check the megaMenu limit if megaMenu is being set to true
+    if (megaMenu && !existingChildCategory.megaMenu) {
+      const parentCategory = await ParentCategory.findById(parentId || existingChildCategory.parent);
+      if (!parentCategory) {
+        return res.status(400).json({ message: 'Parent category not found' });
+      }
+
+      const topCategoryId = parentCategory.topCategory;
+      const parentIds = (await ParentCategory.find({ topCategory: topCategoryId })).map(pc => pc._id);
+      const megaMenuCount = await ChildCategory.countDocuments({
+        parent: { $in: parentIds },
+        megaMenu: true,
+      });
+
+      if (megaMenuCount >= 3) {
+        return res.status(400).json({ message: 'Maximum limit of 3 child categories with megaMenu set to true per TopCategory exceeded.' });
+      }
+    }
+
     // Handle parent update if needed
-    if (parentId && existingChildCategory.parent.toString() !== parentId.toString()) {
-      // Remove the child category from the old parent category
+    if (parentId && existingChildCategory.parent && existingChildCategory.parent.toString() !== parentId.toString()) {
       await ParentCategory.updateOne(
         { _id: existingChildCategory.parent },
         { $pull: { children: childCategoryId } }
       );
 
-      // Add the child category to the new parent category
       await ParentCategory.updateOne(
         { _id: parentId },
         { $push: { children: childCategoryId } }
       );
 
-      // Include parentId in the update data
       updateData.parent = parentId;
+    } else if (parentId) {
+      await ParentCategory.updateOne(
+        { _id: parentId },
+        { $push: { children: childCategoryId } }
+      );
+
+      updateData.parent = parentId;
+    }
+
+    // Handle file upload for childImage
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(file => file.fieldname === 'childImage');
+      if (file) {
+        // Delete the old parentImage if it exists
+        if (existingChildCategory.childImage) {
+          const oldImagePath = path.join(__dirname, '..','uploads','categories','child_image', existingChildCategory.childImage);
+          fs.unlink(oldImagePath, (err) => {
+            if (err) {
+              console.error('Failed to delete old image:', err);
+            }
+          });
+        }
+
+        // Update with the new file path
+        updateData.childImage = file.path;
+      }
     }
 
     // Update the child category
     const updatedChildCategory = await ChildCategory.findByIdAndUpdate(childCategoryId, updateData, { new: true });
+
+    if (!updatedChildCategory) {
+      return res.status(404).json({ message: 'Child category not found' });
+    }
 
     res.json(updatedChildCategory);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+
 
 

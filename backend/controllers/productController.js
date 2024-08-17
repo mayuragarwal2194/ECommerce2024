@@ -87,13 +87,12 @@ const addProduct = async (req, res) => {
   }
 };
 
+const FEATURED_DIR = path.join(__dirname, '..', 'uploads', 'featured');
+const GALLERY_DIR = path.join(__dirname, '..', 'uploads', 'gallery');
 // Update Product
 const updateProduct = async (req, res) => {
   try {
-    // console.log('Request body:', req.body);
-    // console.log('Request files:', req.files);
-
-    const productId = req.params.id;
+    const productId = req.params._id;
     const {
       itemName,
       newPrice,
@@ -107,24 +106,11 @@ const updateProduct = async (req, res) => {
       variants
     } = req.body;
 
-    // console.log('Product ID:', productId);
-
-    // Find the existing product
     const existingProduct = await Product.findById(productId);
     if (!existingProduct) {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    // console.log('Existing product:', existingProduct);
-
-    // Handle image uploads
-    const featuredImage = req.files?.find(file => file.fieldname === 'featuredImage')?.filename || existingProduct.featuredImage;
-    const newGalleryImages = req.files?.filter(file => file.fieldname === 'galleryImages').map(file => file.filename) || existingProduct.galleryImages;
-
-    // console.log('Featured image:', featuredImage);
-    // console.log('New gallery images:', newGalleryImages);
-
-    // Update fields conditionally
     if (itemName !== undefined) existingProduct.itemName = itemName;
     if (newPrice !== undefined) existingProduct.newPrice = newPrice;
     if (oldPrice !== undefined) existingProduct.oldPrice = oldPrice;
@@ -135,28 +121,65 @@ const updateProduct = async (req, res) => {
     if (tag !== undefined) existingProduct.tag = tag;
 
     if (category !== undefined) {
-      // console.log('Existing category:', existingProduct.category.toString());
-      // console.log('New category:', category);
+      const categoryDoc = await childCategory.findOne({ _id: category });
+      if (!categoryDoc) {
+        return res.status(400).json({ message: 'Invalid category' });
+      }
+      const categoryId = categoryDoc._id;
 
-      // Check if category has changed
-      if (existingProduct.category.toString() !== category) {
-        // console.log('Category has changed. Updating child categories.');
-
-        // Remove product ID from the old category's products array
+      if (existingProduct.category.toString() !== categoryId.toString()) {
         await childCategory.findByIdAndUpdate(existingProduct.category, { $pull: { products: existingProduct._id } });
-        // console.log(`Removed product ID from old category: ${existingProduct.category}`);
-
-        // Add product ID to the new category's products array
-        await childCategory.findByIdAndUpdate(category, { $push: { products: existingProduct._id } });
-        // console.log(`Added product ID to new category: ${category}`);
-
-        existingProduct.category = category;
+        await childCategory.findByIdAndUpdate(categoryId, { $push: { products: existingProduct._id } });
+        existingProduct.category = categoryId;
       }
     }
 
-    if (req.files) existingProduct.featuredImage = featuredImage;
-    if (req.files) existingProduct.galleryImages = newGalleryImages;
+    // Update featured image and delete the old one
+    if (req.files?.find(file => file.fieldname === 'featuredImage')) {
+      const oldFeaturedImagePath = path.join(FEATURED_DIR, existingProduct.featuredImage);
+      console.log(`Old featured image path: ${oldFeaturedImagePath}`);
 
+      const featuredImage = req.files.find(file => file.fieldname === 'featuredImage').filename;
+      existingProduct.featuredImage = featuredImage;
+
+      console.log(`New featured image path: ${path.join(FEATURED_DIR, featuredImage)}`);
+      console.log(`File exists: ${fs.existsSync(oldFeaturedImagePath)}`);
+
+      if (fs.existsSync(oldFeaturedImagePath)) {
+        fs.unlink(oldFeaturedImagePath, (err) => {
+          if (err) {
+            console.error(`Failed to delete old featured image: ${err.message}`);
+          } else {
+            console.log(`Successfully deleted old featured image: ${oldFeaturedImagePath}`);
+          }
+        });
+      } else {
+        console.log(`Old featured image file does not exist: ${oldFeaturedImagePath}`);
+      }
+    }
+
+    // Update gallery images and delete the old ones
+    if (req.files?.some(file => file.fieldname === 'galleryImages')) {
+      const oldGalleryImagesPaths = existingProduct.galleryImages.map(img => path.join(GALLERY_DIR, img));
+
+      const newGalleryImages = req.files.filter(file => file.fieldname === 'galleryImages').map(file => file.filename);
+      existingProduct.galleryImages = newGalleryImages;
+
+      oldGalleryImagesPaths.forEach(imagePath => {
+        console.log(`Attempting to delete old gallery image: ${imagePath}`);
+        if (fs.existsSync(imagePath)) {
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              console.error(`Failed to delete old gallery image: ${err.message}`);
+            } else {
+              console.log(`Successfully deleted old gallery image: ${imagePath}`);
+            }
+          });
+        } else {
+          console.log(`Old gallery image file does not exist: ${imagePath}`);
+        }
+      });
+    }
     // Update variants if provided
     if (variants !== undefined) {
       let parsedVariants;
@@ -207,8 +230,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-
-
 // Get all Products
 const getAllProducts = async (req, res) => {
   try {
@@ -223,7 +244,7 @@ const getAllProducts = async (req, res) => {
 // Get product by id
 const getProductById = async (req, res) => {
   try {
-    const productId = req.params.id;
+    const productId = req.params._id;
     const product = await Product.findById(productId).populate('category');
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
@@ -249,6 +270,7 @@ const deleteFiles = (files, dir) => {
   });
 };
 
+// Delete Product
 const deleteProduct = async (req, res) => {
   try {
     const productId = req.params.id;
@@ -300,8 +322,8 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-// Get all products by parent category id
-const getProductsByCategory = async (req, res) => {
+// Get all products by Top category id
+const getProductsByTopCategory = async (req, res) => {
   try {
     const topCategoryId = req.params.categoryId;
     console.log('Top Category ID:', topCategoryId);
@@ -341,6 +363,58 @@ const getProductsByCategory = async (req, res) => {
   }
 };
 
+// Get All Products by Parent Category id
+const getProductsByParentCategory = async (req, res) => {
+  try {
+    const parentCategoryId = req.params.categoryId;
+    console.log('Parent Category ID:', parentCategoryId);
+
+    // Find child categories for the given parent category
+    const childCategories = await childCategory.find({ parent: parentCategoryId });
+    console.log('Child Categories:', childCategories);
+
+    if (!childCategories.length) {
+      return res.status(404).json({ message: 'No child categories found for this parent category' });
+    }
+
+    // Extract child category IDs
+    const childCategoryIds = childCategories.map(child => child._id);
+    console.log('Child Category IDs:', childCategoryIds);
+
+    // Find products associated with the child categories
+    const products = await Product.find({ category: { $in: childCategoryIds } });
+    console.log('Products:', products);
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products by parent category:', error);
+    res.status(500).json({ message: 'Failed to fetch products' });
+  }
+};
+
+// Get All Products by Child Category Id
+const getProductsByChildCategory = async (req, res) => {
+  try {
+    const childCategoryId = req.params.categoryId;
+    console.log('Child Category ID:', childCategoryId);
+
+    // Find products associated with the given child category
+    const products = await Product.find({ category: childCategoryId });
+    console.log('Products:', products);
+
+    if (!products.length) {
+      return res.status(404).json({ message: 'No products found for this child category' });
+    }
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products by child category:', error);
+    res.status(500).json({ message: 'Failed to fetch products' });
+  }
+};
+
+
+
 
 
 module.exports = {
@@ -349,6 +423,8 @@ module.exports = {
   getProductById,
   // addVariant,
   deleteProduct,
-  getProductsByCategory,
-  updateProduct
+  updateProduct,
+  getProductsByTopCategory,
+  getProductsByParentCategory,
+  getProductsByChildCategory
 };

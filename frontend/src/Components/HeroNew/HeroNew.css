@@ -8,11 +8,11 @@
 }
 
 .hero-section .slide {
-	background-image: url("../../../public/Images/Slider.webp");
+	background-image: url("../../../public/Images/couple-winter-cloths-studio.jpg");
 	background-repeat: no-repeat;
 	background-size: cover;
-	background-position: center;
-	height: 760px;
+	background-position: top;
+	height: 650px;
 }
 
 .hero-section .slide-overlay {
@@ -35,14 +35,14 @@
 
 .hero-section .slide-content h2 {
 	font-size: 32px;
-	color: var(--accent);
+	color: var(--secondary);
 	letter-spacing: 5.76px;
 }
 
 .hero-section .slide-button {
-	color: var(--accent);
+	color: var(--secondary);
 	font-size: 13px;
-	border: 1px solid var(--accent);
+	border: 1px solid var(--secondary);
 	padding: 13px 33px;
 	border-radius: 29px;
 	min-width: 118px;

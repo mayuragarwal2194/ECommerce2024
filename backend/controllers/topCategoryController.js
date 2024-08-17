@@ -7,15 +7,17 @@ const cleanName = (name) => {
   return name.toLowerCase().trim().replace(/\s+/g, ' ');
 };
 
-// Get all Top categories
-exports.getAllTopCategories = async (req, res) => {
-  try {
-    const topCategories = await TopCategory.find().populate('children');
-    res.json(topCategories);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-}
+// exports.getAllTopCategories = async (req, res) => {
+//   try {
+//     const topCategories = await TopCategory.find().populate('children');
+//     console.log(JSON.stringify(topCategories, null, 2)); // Log the fetched categories with children
+//     res.json(topCategories);
+//   } catch (error) {
+//     console.error(error); // Log any errors
+//     res.status(500).json({ message: error.message });
+//   }
+// }
+
 
 // Get a single Top category by ID
 exports.getTopById = async (req, res) => {
@@ -132,14 +134,15 @@ exports.getTopCategoriesWithParentsAndChildren = async (req, res) => {
     const topCategories = await TopCategory.find()
       .populate({
         path: 'children', // Parent categories
-        match: { isActive: true },
+        match: { showInNavbar: true },
         populate: {
           path: 'children', // Child categories within parent categories
-          match: { isActive: true }
+          match: { showInNavbar: true }
         }
       })
       .exec();
     res.json(topCategories);
+    console.log(topCategories);
   } catch (error) {
     console.error('Error fetching top categories with parents and children:', error);
     res.status(500).json({ message: 'Failed to fetch top categories with parent and child categories' });

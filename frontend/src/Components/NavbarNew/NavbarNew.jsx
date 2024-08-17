@@ -1,32 +1,33 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import './NavbarNew.css';
 import { Link, useLocation } from 'react-router-dom';
-import { ShopContext } from '../../Context/ShopContext';
-import { fetchTopCategories } from '../../services/api';
+// import { ShopContext } from '../../Context/ShopContext';
+import { fetchTopCategories, API_URL } from '../../services/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
 const NavbarNew = () => {
   const [menu, setMenu] = useState('shop');
-  const [categories, setCategories] = useState([]);
-  const { getTotalCartItems } = useContext(ShopContext);
+  const [topCategories, setTopCategories] = useState([]);
+  // const { getTotalCartItems } = useContext(ShopContext);
   const [isSticky, setIsSticky] = useState(false);
   const [isReveal, setIsReveal] = useState(false);
   const location = useLocation();
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   const fetchCategories = async () => {
     try {
-      const topCategories = await fetchTopCategories();
-      setCategories(topCategories);
+      const topCats = await fetchTopCategories();
+      setTopCategories(topCats);
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Failed to fetch categories. Please try again later.');
     }
   };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -52,37 +53,91 @@ const NavbarNew = () => {
     <div className={`navbar-section inside-banner ${isSticky && location.pathname === '/' ? 'sticky' : ''} ${isReveal && location.pathname !== '/' ? 'reveal' : ''}`}>
       <div className="px-lg-5">
         <nav className='navbarnew d-flex align-items-center justify-content-between p-0'>
-          <ul className="desktop-menu letter-216 d-flex align-items-center list-unstyled mb-0 flex-1">
-            {categories
-              .filter(({ showInNavbar, isActive }) => showInNavbar && isActive)
-              .map(({ _id, name, children }) => {
+          <div className="store-logo-wrapper flex-1">
+            <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block default-logo">
+              <img src={`/images/${isSticky && location.pathname === '/' ? 'logoBlack.png' : 'logoWhite.png'}`} className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-none' : 'd-inline-block'}`} alt="Logo" />
+              <img src="images/logoBlack.png" className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-inline-block' : 'd-none'}`} alt="Logo" />
+            </Link>
+            <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block hover-logo d-none">
+              <img src="images/logoBlack.png" className='w-100 h-100' alt="Logo" />
+            </Link>
+          </div>
+          <ul className="desktop-menu letter-216 d-flex align-items-center list-unstyled mb-0">
+            {topCategories
+              .filter(({ showInNavbar }) => showInNavbar)
+              .map(({ _id: topId, name, children: parentCategories }) => {
                 const lowerCaseName = name.toLowerCase();
                 return (
                   <li
-                    key={_id}
+                    key={topId}
                     onClick={() => setMenu(lowerCaseName)}
-                    className={`nav-item cursor-pointer ${menu === lowerCaseName ? 'active' : ''}`}
+                    className={`nav-item ${menu === lowerCaseName ? 'active' : ''}`}
                   >
                     <Link className="text-decoration-none text-capitalize" to={`/${lowerCaseName}`}>
                       <span>{name}</span>
                     </Link>
-                    <div className="dropdown-content mega-menu w-100 px-lg-5">
-                      <div className="container-fluid px-lg-48">
-                        <div className="row">
-                          {children && children.length > 0 && children.filter(({ showInNavbar, isActive }) => showInNavbar && isActive).map(parent => (
-                            <div className="col-2" key={parent._id}>
-                              <div className="mega-navs pe-2 h-100">
-                                <a href="#arrival" className="mega-nav nav-currency d-flex align-items-center gap-2 px-0 text-uppercase active">
-                                  {parent.name}
-                                </a>
-                                {parent.children && parent.children.length > 0 && parent.children.filter(({ showInNavbar, isActive }) => showInNavbar && isActive).map(child => (
-                                  <a href="#arrival" key={child._id} className="mega-nav px-0 text-uppercase">
-                                    {child.name}
-                                  </a>
-                                ))}
+                    <div className="dropdown-content mega-menu px-lg-4">
+                      <div className="">
+                        <div className="d-flex gap-3">
+                          <div className="w-50">
+                            <div className="d-inline-flex flex-column flex-wrap max-h-300 gap-3">
+                              {parentCategories && parentCategories.length > 0 && parentCategories.filter(({ showInNavbar }) => showInNavbar).map(({ _id: parentId, name: parentName, children: childCategories, index }) => (
+                                <div className="w-fit-content" key={parentId}>
+                                  <div className="mega-navs pe-2 h-100">
+                                    <Link to={`/parentcat/${parentId}`} className="mega-nav nav-currency d-flex align-items-center gap-2 px-0 text-uppercase parent-category fw-bold active mb-3">
+                                      {parentName}
+                                    </Link>
+                                    {childCategories && childCategories.length > 0 && childCategories
+                                      .filter(({ showInNavbar }) => showInNavbar)
+                                      .map(({ _id: childId, name: childName }) => (
+                                        <Link to={`/childcat/${childId}`} key={childId} className="mega-nav px-0 child-category fw-500 text-uppercase mb-1">
+                                          {childName}
+                                        </Link>
+                                      ))}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <div className="w-50">
+                            <div className="row">
+                              <div className="col-3"></div>
+                              <div className="col-9">
+                                <div>
+                                  <h5 className='fw-bold text-uppercase'>Our Special Offerings</h5>
+                                  <div className="d-flex align-items-center justify-content-start gap-3 flex-wrap">
+                                    {parentCategories.filter(parent => parent.megaMenu).map(parent => (
+                                      <div className='mega-collection' key={parent._id}>
+                                        <Link to={`/parentcat/${parent._id}`} className='mega-image-link position-relative'>
+                                          <img src={`${API_URL}/${parent.parentImage}`} alt="" className='w-100 h-100 object-cover ' />
+                                          <div className="mega-collection-name text-white position-absolute">
+                                            {parent.name}
+                                          </div>
+                                        </Link>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className='mt-4'>
+                                  <h5 className='fw-bold text-uppercase'>Tranding Collections</h5>
+                                  <div className="d-flex align-items-center justify-content-start gap-3 flex-wrap">
+                                    {parentCategories
+                                      .flatMap(parent => parent.children.filter(child => child.megaMenu))
+                                      .map(child => (
+                                        <div className='mega-collection-child' key={child._id}>
+                                          <Link to={`/childcat/${child._id}`} className='mega-image-link mega-childImg-link position-relative text-center'>
+                                            <img src={`${API_URL}/${child.childImage}`} alt="" className='w-100 h-100 object-cover ' />
+                                            <div className="mega-collection-child-name text-white position-absolute">
+                                              {child.name}
+                                            </div>
+                                          </Link>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div>
                               </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -99,11 +154,6 @@ const NavbarNew = () => {
               <span className="position-relative">Blog</span>
             </li>
           </ul>
-          <div className="store-logo-wrapper">
-            <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block">
-              <img src="/images/logo.png" className="w-100 h-100" alt="Logo" />
-            </Link>
-          </div>
           <div className="navbar-right d-flex align-items-center justify-content-end flex-1">
             <div className="dropdown dropdown-hover desktop-dropdown position-relative">
               <button className="dropbtn border-0 bg-transparent">

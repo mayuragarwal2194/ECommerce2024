@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-import Footer from './Components/Footer/Footer';
+// import Footer from './Components/Footer/Footer';
 import Shop from './Pages/Shop';
 import ShopCategory from './Pages/ShopCategory';
 import Product from './Pages/Product';
@@ -12,6 +12,9 @@ import NavbarNew from './Components/NavbarNew/NavbarNew';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import FooterNew from './Components/FooterNew/FooterNew';
+import ProductsByTopCategory from './Pages/ProductsByTopCategory'; // New component
+import ProductsByParentCategory from './Pages/ProductsByParentCategory'; // New component
+import ProductsByChildCategory from './Pages/ProductsByChildCategory'; // New component
 
 function App() {
   return (
@@ -38,10 +41,10 @@ function AppContent() {
         <Route path='/product/:productId' element={<Product />} />
         <Route path='/cart' element={<Cart />} />
         <Route path='/login' element={<LoginSignup />} />
-        {/* Route for Admin panel */}
-        {/* <Route path='/admin/*' element={<AdminPanel />} /> */}
-        {/* Route for editing categories */}
-        {/* <Route path="/admin/categories/edit/:categoryId" element={<AdminPanel />} /> */}
+        <Route path='/category/:categoryId' element={<ProductsByTopCategory />} />
+        <Route path='/parentcat/:parentId' element={<ProductsByParentCategory />} />
+        <Route path='/childcat/:childId' element={<ProductsByChildCategory />} />
+
       </Routes>
       {shouldRenderComponent && <FooterNew />}
     </>

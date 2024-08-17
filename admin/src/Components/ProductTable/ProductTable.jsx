@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Function to fetch parent category details by ID
 const fetchParentCategoryById = async (parentId) => {
@@ -12,8 +13,9 @@ const fetchParentCategoryById = async (parentId) => {
   }
 };
 
-const ProductTable = ({ products, handleEdit, handleDelete }) => {
+const ProductTable = ({ products, handleDelete }) => {
   const [parentCategoryNames, setParentCategoryNames] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchParentCategories = async () => {
@@ -32,6 +34,10 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
 
     fetchParentCategories();
   }, [products]);
+
+  const handleEdit = (product) => {
+    navigate(`/edit/${product._id}`); // Adjust the route as needed
+  };
 
   return (
     <div className="table-responsive">

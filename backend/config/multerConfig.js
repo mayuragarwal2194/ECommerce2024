@@ -13,6 +13,10 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/variants/featured');
     } else if (file.fieldname.startsWith('variantGalleryImages')) {
       cb(null, 'uploads/variants/gallery');
+    } else if (file.fieldname === 'parentImage') {
+      cb(null, 'uploads/categories/parent_image');
+    } else if (file.fieldname === 'childImage') {
+      cb(null, 'uploads/categories/child_image');
     } else {
       cb(new Error('Unexpected field'));
     }

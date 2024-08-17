@@ -14,6 +14,21 @@ export const getAllProducts = async () => {
   }
 };
 
+export const getProductById = async (id) => {
+  try {
+    const response = await fetch(`${API_URL}/products/${id}`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch product');
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching product:', error);
+    throw error;
+  }
+};
+
+
 export const getTopCategories = async () => {
   try {
     const response = await fetch(`${API_URL}/api/v1/topcategories`);
@@ -35,7 +50,7 @@ export const getParentCategories = async () => {
       throw new Error('Failed to fetch parent categories');
     }
     const data = await response.json();
-    console.log(data);
+    // console.log(data);
     return data;
   } catch (error) {
     console.error('Error fetching parent categories:', error);

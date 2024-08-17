@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const parentCategorySchema = new mongoose.Schema({
+const parentCategorySchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -8,21 +9,25 @@ const parentCategorySchema = new mongoose.Schema({
     minlength: 3,
   },
   topCategory: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'TopCategory',
     required: true,
   },
+  parentImage: {
+    type: String,
+    default: ''
+  },
   children: [{
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'ChildCategory',
   }],
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
   showInNavbar: {
     type: Boolean,
     default: true,
+  },
+  megaMenu: {
+    type: Boolean,
+    default: false,
   },
 }, { timestamps: true });
 

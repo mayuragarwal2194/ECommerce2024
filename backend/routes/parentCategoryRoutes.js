@@ -8,10 +8,10 @@ const {
   deleteParentCategory,
   getChildCategoriesByParentId
 } = require('../controllers/parentCategoryController');
-const { uploadNone } = require('../config/multerConfig');
+const { uploadMiddleware,handleMulterError } = require('../config/multerConfig');
 
-router.post('/',uploadNone, addParentCategory);
-router.put('/:id',uploadNone, updateParentCategory);
+router.post('/',uploadMiddleware,handleMulterError, addParentCategory);
+router.put('/:id',uploadMiddleware,handleMulterError, updateParentCategory);
 router.get('/', getAllParentCategories);
 router.get('/:id', getParentById);
 router.delete('/:id', deleteParentCategory);
