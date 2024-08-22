@@ -1,11 +1,13 @@
 // ViewProducts.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './ViewProducts.css'; // Custom CSS for the modal
 import Filter from '../Filter/Filter';
 import Search from '../Search/Search';
 import ProductTable from '../ProductTable/ProductTable';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ViewProducts = ({ products, fetchProducts, categories }) => {
   const navigate = useNavigate();
@@ -20,6 +22,13 @@ const ViewProducts = ({ products, fetchProducts, categories }) => {
   //   },
   //   // Add more filter options if needed
   // ];
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.message) {
+      toast.success(location.state.message);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     fetchProducts();
@@ -89,6 +98,8 @@ const ViewProducts = ({ products, fetchProducts, categories }) => {
         handleEdit={handleEdit}
         handleDelete={handleDelete}
       />
+
+      <ToastContainer />
 
       {/* {showFilterModal && (
         <div className="modal">

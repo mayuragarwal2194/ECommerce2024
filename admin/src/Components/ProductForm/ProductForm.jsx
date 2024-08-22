@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { API_URL, getChildCategories, getAvailableSizes } from '../../Services/api';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -7,6 +7,9 @@ import './ProductForm.css';
 
 const ProductForm = () => {
   const { _id } = useParams(); // Get _id from URL params
+  const navigate = useNavigate();
+
+  // Track edit mode
   const [isEditMode, setIsEditMode] = useState(false); // Track whether we're editing
 
   // Form States
@@ -83,25 +86,36 @@ const ProductForm = () => {
           const response = await fetch(`${API_URL}/products/${_id}`);
           const product = await response.json();
 
+          // Set form states
           setId(product.id);
           setItemName(product.itemName);
           setNewPrice(product.newPrice);
           setOldPrice(product.oldPrice);
-          setCategory(product.category);
+          setCategory(product.category._id);
           setIsPopular(product.isPopular);
           setShortDescription(product.shortDescription);
           setFullDescription(product.fullDescription);
-          setFeaturedImage(null); // Reset to null, handle preview if needed
-          setGalleryImages([]); // Reset to empty, handle preview if needed
           setStockStatus(product.stockStatus);
           setTag(product.tag);
+
+          // Handle sizes and variants
           setVariants(product.variants.map(variant => ({
             ...variant,
-            variantFeaturedImage: null, // Reset to null, handle preview if needed
-            variantGalleryImages: [] // Reset to empty, handle preview if needed
+            attributes: {
+              ...variant.attributes,
+              size: variant.attributes.size.map(size =>
+                typeof size === 'string' ? size : size.toString() // Ensure size is in string format
+              )
+            },
+            variantFeaturedImage: null, // Placeholder for feature image
+            variantGalleryImages: []    // Placeholder for gallery images
           })));
 
-          // Set previews
+          // Reset and populate image states
+          setFeaturedImage(null);
+          setGalleryImages([]);
+
+          // Set image previews
           setFeaturedImagePreview(product.featuredImage ? `${API_URL}/uploads/featured/${product.featuredImage}` : null);
           setGalleryImagesPreview(product.galleryImages.map(img => `${API_URL}/uploads/gallery/${img}`));
           setVariantPreviews(product.variants.map(variant => ({
@@ -117,7 +131,6 @@ const ProductForm = () => {
       fetchProductData();
     }
   }, [_id]);
-
 
   // Handle form field changes
   const handleChange = (setter) => (e) => setter(e.target.value);
@@ -137,8 +150,6 @@ const ProductForm = () => {
     setGalleryImages(files);
     setGalleryImagesPreview(files.map(file => URL.createObjectURL(file)));
   };
-
-
 
   // Handle variant input changes
   const handleVariantChange = (index, field, isAttribute = false) => (e) => {
@@ -192,7 +203,7 @@ const ProductForm = () => {
     );
   };
 
-  const handleSizeChange = (index, size) => (e) => {
+  const handleSizeChange = (index, sizeId) => (e) => {
     setVariants((prevVariants) =>
       prevVariants.map((variant, i) =>
         i === index
@@ -201,8 +212,8 @@ const ProductForm = () => {
             attributes: {
               ...variant.attributes,
               size: e.target.checked
-                ? [...variant.attributes.size, size]
-                : variant.attributes.size.filter((s) => s !== size),
+                ? [...variant.attributes.size, sizeId]
+                : variant.attributes.size.filter((s) => s !== sizeId),
             },
           }
           : variant
@@ -259,7 +270,6 @@ const ProductForm = () => {
     }
   };
 
-
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -279,12 +289,17 @@ const ProductForm = () => {
     });
     formData.append('stockStatus', stockStatus);
     formData.append('tag', tag);
+
+    // Log variants before appending them to FormData
+    console.log("Parsed Variants before submission:", JSON.stringify(variants));
+
     formData.append('variants', JSON.stringify(variants.map((variant) => ({
       ...variant,
       variantFeaturedImage: variant.variantFeaturedImage?.name,
       variantGalleryImages: variant.variantGalleryImages.map(file => file.name)
     }))));
 
+    // Append variant images
     variants.forEach((variant, index) => {
       if (variant.variantFeaturedImage) {
         formData.append(`variantFeaturedImage${index}`, variant.variantFeaturedImage);
@@ -294,11 +309,12 @@ const ProductForm = () => {
       });
     });
 
-    // Debug: Log the FormData keys and values
+    // Log FormData entries
     for (let pair of formData.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
+      console.log(pair[0] + ': ' + JSON.stringify(pair[1]));
     }
 
+    // Proceed with submission...
     try {
       const response = await fetch(`${API_URL}/products/${isEditMode ? `${_id}` : 'add'}`, {
         method: isEditMode ? 'PUT' : 'POST',
@@ -310,43 +326,42 @@ const ProductForm = () => {
         handleErrors(errorData);
       } else {
         const result = await response.json();
-        // console.log('Server Response:', result);
-
         toast.success(`Product ${isEditMode ? 'updated' : 'added'} successfully`);
+        navigate(`/viewproduct`, { state: { message: `Product ${isEditMode ? 'updated' : 'added'} successfully` } });
 
-        // Reset form fields after successful submission
-        setId('');
-        setItemName('');
-        setNewPrice('');
-        setOldPrice('');
-        setIsPopular(false);
-        setShortDescription('');
-        setFullDescription('');
-        setFeaturedImage(null);
-        setGalleryImages([]);
-        setStockStatus('In Stock');
-        setTag('');
-        setVariants([{ sku: '', newPrice: '', oldPrice: '', quantity: '', attributes: { color: '', size: [] }, variantFeaturedImage: null, variantGalleryImages: [] }]);
-
-        setFeaturedImagePreview(null);
-        setGalleryImagesPreview([]);
-        setVariantPreviews([{
-          variantFeaturedImagePreview: null,
-          variantGalleryImagesPreview: []
-        }]);
+        resetFormFields();
+        // Reset form fields after successful submission...
       }
     } catch (error) {
       if (error.name === 'TypeError') {
-        // Network error
         toast.error('Network error: Please check your internet connection and try again.');
       } else {
-        // Other errors
         toast.error('Error submitting form: ' + error.message);
       }
     }
   };
 
-
+  // Optional: You could extract this reset logic into its own function
+  const resetFormFields = () => {
+    setId('');
+    setItemName('');
+    setNewPrice('');
+    setOldPrice('');
+    setIsPopular(false);
+    setShortDescription('');
+    setFullDescription('');
+    setFeaturedImage(null);
+    setGalleryImages([]);
+    setStockStatus('In Stock');
+    setTag('');
+    setVariants([{ sku: '', newPrice: '', oldPrice: '', quantity: '', attributes: { color: '', size: [] }, variantFeaturedImage: null, variantGalleryImages: [] }]);
+    setFeaturedImagePreview(null);
+    setGalleryImagesPreview([]);
+    setVariantPreviews([{
+      variantFeaturedImagePreview: null,
+      variantGalleryImagesPreview: []
+    }]);
+  };
 
   return (
     <>
@@ -620,9 +635,9 @@ const ProductForm = () => {
                         <input
                           type="checkbox"
                           name={`variantSize${index}`}
-                          value={size.sizeName}
-                          checked={variant.attributes.size.includes(size.sizeName)}
-                          onChange={handleSizeChange(index, size.sizeName)}
+                          value={size.sizeName} // Use _id for value
+                          checked={variant.attributes.size.includes(size._id)} // Check against _id
+                          onChange={handleSizeChange(index, size._id)} // Pass _id to handler
                         />
                         {size.sizeName}
                       </label>

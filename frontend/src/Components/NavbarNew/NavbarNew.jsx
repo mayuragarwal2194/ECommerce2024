@@ -15,6 +15,8 @@ const NavbarNew = () => {
   const [isReveal, setIsReveal] = useState(false);
   const location = useLocation();
 
+  const [hoveredMenu, setHoveredMenu] = useState(null);
+
   const fetchCategories = async () => {
     try {
       const topCats = await fetchTopCategories();
@@ -65,18 +67,23 @@ const NavbarNew = () => {
           <ul className="desktop-menu letter-216 d-flex align-items-center list-unstyled mb-0">
             {topCategories
               .filter(({ showInNavbar }) => showInNavbar)
-              .map(({ _id: topId, name, children: parentCategories }) => {
+              .map(({ _id: topId, name, topImage, children: parentCategories }) => {
                 const lowerCaseName = name.toLowerCase();
                 return (
                   <li
                     key={topId}
-                    onClick={() => setMenu(lowerCaseName)}
+                    onClick={() => {
+                      setMenu(lowerCaseName);
+                      setHoveredMenu(null); // Hide the dropdown on click
+                    }}
+                    onMouseEnter={() => setHoveredMenu(lowerCaseName)}
+                    onMouseLeave={() => setHoveredMenu(null)}
                     className={`nav-item ${menu === lowerCaseName ? 'active' : ''}`}
                   >
                     <Link className="text-decoration-none text-capitalize" to={`/${lowerCaseName}`}>
                       <span>{name}</span>
                     </Link>
-                    <div className="dropdown-content mega-menu px-lg-4">
+                    <div className="dropdown-content mega-menu px-lg-4" style={{ display: hoveredMenu === lowerCaseName ? 'block' : 'none' }}>
                       <div className="">
                         <div className="d-flex gap-3">
                           <div className="w-50">
@@ -100,9 +107,20 @@ const NavbarNew = () => {
                             </div>
                           </div>
                           <div className="w-50">
-                            <div className="row">
-                              <div className="col-3"></div>
-                              <div className="col-9">
+                            <div className="d-flex gap-3">
+                              <div className="every-section">
+                                <Link to={`/${lowerCaseName}`} className='mega-image-link position-relative h-100'>
+                                  <img src={`${API_URL}/${topImage}`} alt="" className='w-100 h-100 object-cover every-image' />
+                                  <div className="img-overlay position-absolute w-100 h-100">
+                                    <div className="topCat-name text-white position-absolute text-uppercase fw-bold">
+                                      <div className='everything-text fw-normal mt-5'>Everything For</div>
+                                      {name}
+                                      <div className='explore-btn border border-1 border-white rounded w-fit-content m-auto px-3 py-1 text-white mt-3'>Explore</div>
+                                    </div>
+                                  </div>
+                                </Link>
+                              </div>
+                              <div className="">
                                 <div>
                                   <h5 className='fw-bold text-uppercase'>Our Special Offerings</h5>
                                   <div className="d-flex align-items-center justify-content-start gap-3 flex-wrap">
@@ -110,7 +128,7 @@ const NavbarNew = () => {
                                       <div className='mega-collection' key={parent._id}>
                                         <Link to={`/parentcat/${parent._id}`} className='mega-image-link position-relative'>
                                           <img src={`${API_URL}/${parent.parentImage}`} alt="" className='w-100 h-100 object-cover ' />
-                                          <div className="mega-collection-name text-white position-absolute">
+                                          <div className="mega-collection-name text-white position-absolute text-uppercase fw-bold">
                                             {parent.name}
                                           </div>
                                         </Link>
@@ -127,7 +145,7 @@ const NavbarNew = () => {
                                         <div className='mega-collection-child' key={child._id}>
                                           <Link to={`/childcat/${child._id}`} className='mega-image-link mega-childImg-link position-relative text-center'>
                                             <img src={`${API_URL}/${child.childImage}`} alt="" className='w-100 h-100 object-cover ' />
-                                            <div className="mega-collection-child-name text-white position-absolute">
+                                            <div className="mega-collection-child-name text-white position-absolute text-uppercase fw-bold">
                                               {child.name}
                                             </div>
                                           </Link>

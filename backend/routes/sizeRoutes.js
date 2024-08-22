@@ -4,8 +4,8 @@ const { getAllSizes, getSizeById, addSize } = require('../controllers/sizeContro
 const { uploadNone } = require('../config/multerConfig');
 
 
+router.post('/', uploadNone ,addSize);
 router.get('/', getAllSizes);
 router.get('/:id', getSizeById);
-router.post('/add', uploadNone ,addSize);
 
 module.exports = router;

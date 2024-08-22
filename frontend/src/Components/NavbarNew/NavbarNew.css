@@ -192,11 +192,11 @@
   border-bottom: 1px solid #1c1c1c;
 }
 
-.navbar-section:hover .hover-logo{
+.navbar-section:hover .hover-logo {
   display: inline-block !important;
 }
 
-.navbar-section:hover .default-logo{
+.navbar-section:hover .default-logo {
   display: none !important;
 }
 
@@ -264,9 +264,8 @@
   color: var(--primary);
 }
 
-.mega-navs .parent-category, 
-.dropdown-content h5
-{
+.mega-navs .parent-category,
+.dropdown-content h5 {
   --black: #000000;
   color: var(--black) !important;
   font-size: 0.8rem;
@@ -333,8 +332,14 @@
   background-repeat: no-repeat;
 }
 
-.mega-card-collection .card-image .img-overlay {
-  background-color: rgba(102, 102, 102, 0.3);
+.every-section .img-overlay {
+  background: rgba(255, 255, 255, 0.20);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 12px;
+  top: 0;
 }
 
 .mega-card-collection .collection-name {
@@ -347,16 +352,16 @@
   /* Show on hover */
 }
 
-.mega-collection, 
-.mega-collection-child 
-{
+.mega-collection,
+.mega-collection-child {
   width: 135px;
 }
 
-.mega-childImg-link{
-  height:124px !important;
+.mega-childImg-link {
+  height: 124px !important;
 }
-.mega-childImg-link img{
+
+.mega-childImg-link img {
   object-position: top;
 }
 
@@ -369,23 +374,45 @@
   border-radius: 12px;
 }
 
+.topCat-name {
+  top: 0%;
+  font-size: 18px;
+  width: 100%;
+  text-align: center;
+}
+
+.every-section {
+  width: 170px;
+  min-height: fit-content;
+}
+
+.every-image {
+  min-height: 200px;
+}
+
+.everything-text {
+  font-size: 13px;
+}
+
+.explore-btn {
+  font-size: 12px;
+  letter-spacing: normal;
+}
+
 .mega-collection-name {
-  writing-mode: vertical-rl; /* Vertical text, right to left */
+  writing-mode: vertical-rl;
+  /* Vertical text, right to left */
   top: 50%;
   right: 0;
-  text-transform: uppercase;
-  font-weight: bold;
   font-size: 24px;
   word-wrap: unset;
   white-space: nowrap;
   transform: translateY(-50%);
 }
 
-.mega-collection-child-name{
+.mega-collection-child-name {
   bottom: 0%;
   left: 50%;
-  text-transform: uppercase;
-  font-weight: bold;
   font-size: 16px;
   transform: translateX(-50%);
 }

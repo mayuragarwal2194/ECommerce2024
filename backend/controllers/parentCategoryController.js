@@ -255,6 +255,11 @@ exports.deleteParentCategory = async (req, res) => {
       return res.status(404).json({ message: 'Parent Category Not Found' });
     }
 
+    // Delete the featured image if it exists
+    if (deletedParentCategory.parentImage) {
+      deleteFiles([deletedParentCategory.parentImage]);
+    }
+
     // Remove parent reference from child categories
     await ChildCategory.updateMany({ parent: parentCategoryId }, { $set: { parent: null } });
 

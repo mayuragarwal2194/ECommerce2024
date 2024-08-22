@@ -4,6 +4,7 @@ const ParentCategory = require('../models/parentCategory');
 const Size = require('../models/size');
 const fs = require('fs');
 const path = require('path');
+const mongoose = require("mongoose");
 
 // Add a product
 const addProduct = async (req, res) => {
@@ -32,9 +33,17 @@ const addProduct = async (req, res) => {
     const parsedVariants = await Promise.all(JSON.parse(variants).map(async (variant, index) => {
       const sizeArray = Array.isArray(variant.attributes.size) ? variant.attributes.size : [variant.attributes.size];
       const sizeIds = await Promise.all(
-        sizeArray.map(async sizeName => {
-          const sizeDoc = await Size.findOne({ sizeName: sizeName.toLowerCase() });
-          return sizeDoc ? sizeDoc._id : null;
+        sizeArray.map(async size => {
+          // Check if the size is already an ObjectId (using a regex to validate ObjectId format)
+          const isObjectId = /^[0-9a-fA-F]{24}$/.test(size);
+
+          if (isObjectId) {
+            return size; // Directly return if it's an ObjectId
+          } else {
+            // Otherwise, look up the ID by size name
+            const sizeDoc = await Size.findOne({ sizeName: size.toLowerCase() });
+            return sizeDoc ? sizeDoc._id : null;
+          }
         })
       );
 
@@ -42,12 +51,13 @@ const addProduct = async (req, res) => {
         ...variant,
         attributes: {
           ...variant.attributes,
-          size: sizeIds.filter(id => id !== null) // Convert size names to ObjectIds
+          size: sizeIds.filter(id => id !== null) // Filter out any nulls in case of missing sizes
         },
         variantFeaturedImage: null, // Placeholder
         variantGalleryImages: []    // Placeholder
       };
     }));
+
 
     // Create and save the new product without images
     const newProduct = new Product({
@@ -134,7 +144,6 @@ const cleanupUploadedFiles = async (files) => {
 };
 
 
-
 // Update Product
 const FEATURED_DIR = path.join(__dirname, '..', 'uploads', 'featured');
 const GALLERY_DIR = path.join(__dirname, '..', 'uploads', 'gallery');
@@ -186,60 +195,43 @@ const updateProduct = async (req, res) => {
     // Update featured image and delete the old one
     if (req.files?.find(file => file.fieldname === 'featuredImage')) {
       const oldFeaturedImagePath = path.join(FEATURED_DIR, existingProduct.featuredImage);
-      console.log(`Old featured image path: ${oldFeaturedImagePath}`);
-
       const featuredImage = req.files.find(file => file.fieldname === 'featuredImage').filename;
       existingProduct.featuredImage = featuredImage;
-
-      console.log(`New featured image path: ${path.join(FEATURED_DIR, featuredImage)}`);
-      console.log(`File exists: ${fs.existsSync(oldFeaturedImagePath)}`);
 
       if (fs.existsSync(oldFeaturedImagePath)) {
         fs.unlink(oldFeaturedImagePath, (err) => {
           if (err) {
             console.error(`Failed to delete old featured image: ${err.message}`);
-          } else {
-            console.log(`Successfully deleted old featured image: ${oldFeaturedImagePath}`);
           }
         });
-      } else {
-        console.log(`Old featured image file does not exist: ${oldFeaturedImagePath}`);
       }
     }
 
     // Update gallery images and delete the old ones
     if (req.files?.some(file => file.fieldname === 'galleryImages')) {
       const oldGalleryImagesPaths = existingProduct.galleryImages.map(img => path.join(GALLERY_DIR, img));
-
       const newGalleryImages = req.files.filter(file => file.fieldname === 'galleryImages').map(file => file.filename);
       existingProduct.galleryImages = newGalleryImages;
 
       oldGalleryImagesPaths.forEach(imagePath => {
-        console.log(`Attempting to delete old gallery image: ${imagePath}`);
         if (fs.existsSync(imagePath)) {
           fs.unlink(imagePath, (err) => {
             if (err) {
               console.error(`Failed to delete old gallery image: ${err.message}`);
-            } else {
-              console.log(`Successfully deleted old gallery image: ${imagePath}`);
             }
           });
-        } else {
-          console.log(`Old gallery image file does not exist: ${imagePath}`);
         }
       });
     }
+
     // Update variants if provided
     if (variants !== undefined) {
       let parsedVariants;
       try {
         parsedVariants = JSON.parse(variants);
       } catch (parseError) {
-        console.error('Error parsing variants JSON:', parseError);
         return res.status(400).json({ message: 'Invalid variants JSON format', error: parseError.message });
       }
-
-      // console.log('Parsed variants:', parsedVariants);
 
       const updatedVariants = await Promise.all(parsedVariants.map(async (variant, index) => {
         const variantFeaturedImageKey = `variantFeaturedImage${index}`;
@@ -247,36 +239,63 @@ const updateProduct = async (req, res) => {
         const variantFeaturedImage = req.files?.find(file => file.fieldname === variantFeaturedImageKey)?.filename || variant.variantFeaturedImage;
         const variantGalleryImages = req.files?.filter(file => file.fieldname === variantGalleryImagesKey).map(file => file.filename) || variant.variantGalleryImages;
 
-        // console.log(`Variant ${index} featured image:`, variantFeaturedImage);
-        // console.log(`Variant ${index} gallery images:`, variantGalleryImages);
+        const sizeIds = await getSizeIds(variant.attributes.size);
 
-        let sizeIds = [];
-        if (variant.attributes?.size) {
-          const sizeArray = Array.isArray(variant.attributes.size) ? variant.attributes.size : [variant.attributes.size];
-          sizeIds = await Promise.all(sizeArray.map(async sizeName => {
-            const sizeDoc = await Size.findOne({ sizeName: sizeName.toLowerCase() });
-            return sizeDoc ? sizeDoc._id : null;
-          }));
-          sizeIds = sizeIds.filter(id => id !== null);
-        }
+        // console.log(`Size IDs for variant ${index}:`, sizeIds);
 
-        // console.log(`Variant ${index} size IDs:`, sizeIds);
-
-        return { ...variant, variantFeaturedImage, variantGalleryImages, attributes: { ...variant.attributes, size: sizeIds } };
+        return {
+          ...variant,
+          variantFeaturedImage: variantFeaturedImage || existingProduct.variants[index]?.variantFeaturedImage,
+          variantGalleryImages: variantGalleryImages.length > 0 ? variantGalleryImages : existingProduct.variants[index]?.variantGalleryImages,
+          attributes: {
+            ...variant.attributes,
+            size: sizeIds.length > 0 ? sizeIds : existingProduct.variants[index]?.attributes.size // Use new sizes or retain existing ones
+          }
+        };
       }));
+
+      // console.log("Final Updated Variants:", updatedVariants);
 
       existingProduct.variants = updatedVariants;
     }
 
-    // console.log('Updated product:', existingProduct);
+
 
     await existingProduct.save();
-
     res.status(200).json({ message: 'Product updated successfully', product: existingProduct });
   } catch (error) {
-    console.error('Error in updateProduct:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
   }
+};
+
+// Helper function to get size IDs
+const getSizeIds = async (sizeArray) => {
+  if (!sizeArray || sizeArray.length === 0) {
+    console.log("No size identifiers provided.");
+    return [];
+  }
+
+  // Log the identifiers being processed
+  console.log("Size identifiers to convert:", sizeArray);
+
+  const sizeIds = await Promise.all(sizeArray.map(async identifier => {
+    // Check if the identifier is a valid ObjectId
+    if (mongoose.Types.ObjectId.isValid(identifier)) {
+      console.log("Valid ObjectId provided:", identifier);
+      return identifier;
+    } else {
+      // Log the size name being queried
+      console.log("Querying size by name:", identifier.toLowerCase());
+      const sizeDoc = await Size.findOne({ sizeName: identifier.toLowerCase() });
+      // console.log("Size document found:", sizeDoc);
+      return sizeDoc ? sizeDoc._id : null;
+    }
+  }));
+
+  // Log the size IDs that were resolved
+  console.log("Size IDs resolved:", sizeIds);
+
+  return sizeIds.filter(id => id !== null);
 };
 
 // Get all Products
@@ -375,11 +394,11 @@ const deleteProduct = async (req, res) => {
 const getProductsByTopCategory = async (req, res) => {
   try {
     const topCategoryId = req.params.categoryId;
-    console.log('Top Category ID:', topCategoryId);
+    // console.log('Top Category ID:', topCategoryId);
 
     // Find parent categories for the given top category
     const parentCategories = await ParentCategory.find({ topCategory: topCategoryId });
-    console.log('Parent Categories:', parentCategories);
+    // console.log('Parent Categories:', parentCategories);
 
     if (!parentCategories.length) {
       return res.status(404).json({ message: 'No parent categories found for this top category' });
@@ -387,11 +406,11 @@ const getProductsByTopCategory = async (req, res) => {
 
     // Extract parent category IDs
     const parentCategoryIds = parentCategories.map(parent => parent._id);
-    console.log('Parent Category IDs:', parentCategoryIds);
+    // console.log('Parent Category IDs:', parentCategoryIds);
 
     // Find child categories for the given parent categories
     const childCategories = await childCategory.find({ parent: { $in: parentCategoryIds } });
-    console.log('Child Categories:', childCategories);
+    // console.log('Child Categories:', childCategories);
 
     if (!childCategories.length) {
       return res.status(404).json({ message: 'No child categories found for these parent categories' });
@@ -399,11 +418,11 @@ const getProductsByTopCategory = async (req, res) => {
 
     // Extract child category IDs
     const childCategoryIds = childCategories.map(child => child._id);
-    console.log('Child Category IDs:', childCategoryIds);
+    // console.log('Child Category IDs:', childCategoryIds);
 
     // Find products associated with the child categories
     const products = await Product.find({ category: { $in: childCategoryIds } });
-    console.log('Products:', products);
+    // console.log('Products:', products);
 
     res.json(products);
   } catch (error) {

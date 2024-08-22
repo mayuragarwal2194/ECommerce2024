@@ -2,10 +2,19 @@ const express = require('express');
 const router = express.Router();
 const { uploadNone } = require('../config/multerConfig');
 
-const { getAllTopCategories, addTopCategory, getTopById, updateTopCategory, deleteTopCategory, getParentCategoriesByTopId, getTopCategoriesWithParentsAndChildren } = require('../controllers/topCategoryController');
+const {
+  addTopCategory,
+  getTopById,
+  updateTopCategory,
+  deleteTopCategory,
+  getParentCategoriesByTopId,
+  getTopCategoriesWithParentsAndChildren
+} = require('../controllers/topCategoryController');
 
-router.post('/', uploadNone, addTopCategory);
-router.put('/:id',uploadNone, updateTopCategory);
+const { uploadMiddleware,handleMulterError } = require('../config/multerConfig');
+
+router.post('/', uploadMiddleware,handleMulterError, addTopCategory);
+router.put('/:id', uploadMiddleware,handleMulterError, updateTopCategory);
 router.get('/', getTopCategoriesWithParentsAndChildren);
 router.get('/:id', getTopById);
 router.delete('/:id', deleteTopCategory);

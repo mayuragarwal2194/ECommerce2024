@@ -51,7 +51,7 @@ const startServer = async () => {
     app.use('/api/v1/parentcategories', parentCategoryRoutes);
     app.use('/childcategories', childCategoryRoutes);
     app.use('/products', productRoutes);
-    app.use('/size', sizeRoutes);
+    app.use('/api/v1/size', sizeRoutes);
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

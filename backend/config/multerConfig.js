@@ -13,6 +13,8 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/variants/featured');
     } else if (file.fieldname.startsWith('variantGalleryImages')) {
       cb(null, 'uploads/variants/gallery');
+    } else if (file.fieldname === 'topImage') {
+      cb(null, 'uploads/categories/top_image');
     } else if (file.fieldname === 'parentImage') {
       cb(null, 'uploads/categories/parent_image');
     } else if (file.fieldname === 'childImage') {

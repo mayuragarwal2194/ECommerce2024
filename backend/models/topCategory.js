@@ -11,14 +11,18 @@ const topCategorySchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'ParentCategory',
   }],
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
   showInNavbar: {
     type: Boolean,
     default: true,
-  }, 
-}, {timestamps: true});
+  },
+  megaMenu: {
+    type: Boolean,
+    default: false,
+  },
+  topImage: {
+    type: String,
+    default: ''
+  }
+}, { timestamps: true });
 
 module.exports = mongoose.model('TopCategory', topCategorySchema);
