@@ -5,7 +5,7 @@ const router = express.Router();
 const { uploadMiddleware,handleMulterError } = require('../config/multerConfig'); // Import the multer configuration
 const { getAllChildCategories, getChildById, deleteChildCategory, addChildCategory, updateChildCategory } = require('../controllers/childCategoryController');
 
-router.post('/add', uploadMiddleware,handleMulterError, addChildCategory);
+router.post('/', uploadMiddleware,handleMulterError, addChildCategory);
 router.put('/:id',uploadMiddleware,handleMulterError, updateChildCategory);
 router.get('/', getAllChildCategories);
 router.get('/:id', getChildById);

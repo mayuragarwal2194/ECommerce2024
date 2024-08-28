@@ -548,7 +548,8 @@ const ProductForm = () => {
               <option value="">Select Category</option>
               {childCategories.map((child, index) => (
                 <option key={index} value={child._id} className='mb-2'>
-                  {`${toCapitalize(child.name)} (${child.parent.name}-${child.parent.topCategory.name.toUpperCase()})`}
+                  {`${child?.name ?? 'Unknown Child'} (${child?.parent?.name ?? 'Unknown Parent'}-${child?.parent?.topCategory?.name?.toUpperCase() ?? 'UNKNOWN TOPCATEGORY'})`}
+                  {console.log(child)}
                 </option>
               ))}
             </select>

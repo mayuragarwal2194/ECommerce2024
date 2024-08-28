@@ -88,7 +88,7 @@ const NavbarNew = () => {
                         <div className="d-flex gap-3">
                           <div className="w-50">
                             <div className="d-inline-flex flex-column flex-wrap max-h-300 gap-3">
-                              {parentCategories && parentCategories.length > 0 && parentCategories.filter(({ showInNavbar }) => showInNavbar).map(({ _id: parentId, name: parentName, children: childCategories, index }) => (
+                              {parentCategories && parentCategories.length > 0 && parentCategories.filter(({ showInNavbar }) => showInNavbar).map(({ _id: parentId, name: parentName, children: childCategories }) => (
                                 <div className="w-fit-content" key={parentId}>
                                   <div className="mega-navs pe-2 h-100">
                                     <Link to={`/parentcat/${parentId}`} className="mega-nav nav-currency d-flex align-items-center gap-2 px-0 text-uppercase parent-category fw-bold active mb-3">

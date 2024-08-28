@@ -7,18 +7,25 @@ import { API_URL } from '../../../Services/api';
 const AddTopCategory = () => {
   const initialCategoryState = {
     name: '',
-    isActive: true,
+    megaMenu: false,
     showInNavbar: true,
-  };
+    topImage: null, // For file upload
+    imageUrl: '', // URL of the image for edit mode
+  }
 
   const location = useLocation();
   const navigate = useNavigate();
   const [category, setCategory] = useState(initialCategoryState);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
     if (location.state?.category) {
-      setCategory(location.state.category);
+      setCategory({
+        ...location.state.category,
+        imageUrl: location.state.category.topImage // Assuming childImage contains the relative path
+      });
       setIsEditMode(true);
     }
   }, [location.state]);
@@ -29,10 +36,29 @@ const AddTopCategory = () => {
       ...category,
       [name]: type === 'checkbox' ? checked : value,
     });
+    console.log(`Field changed: ${name}, Value: ${type === 'checkbox' ? checked : value}`); // Log field changes
   };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append('name', category.name);
+    formData.append('megaMenu', category.megaMenu);
+    formData.append('showInNavbar', category.showInNavbar);
+    if (image) {
+      formData.append('topImage', image);
+    }
+
     const url = isEditMode
       ? `${API_URL}/api/v1/topcategories/${category._id}`
       : `${API_URL}/api/v1/topcategories`;
@@ -40,16 +66,18 @@ const AddTopCategory = () => {
     try {
       const response = await fetch(url, {
         method: isEditMode ? 'PUT' : 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(category),
+        body: formData,
       });
 
       if (response.ok) {
-        toast.success(isEditMode ? 'Top category updated successfully!' : 'Top category added successfully!');
+        const successMessage = isEditMode
+          ? 'Top category updated successfully!'
+          : 'Top category added successfully!';
+
         setCategory(initialCategoryState); // Reset form state
-        navigate('/viewtopcategory'); // Redirect to view page after success
+        setImage(null); // Reset image file state
+        setImagePreview(''); // Reset image preview state
+        navigate('/viewtopcategory', { state: { message: successMessage } }); // Redirect to view page after success
       } else {
         const errorData = await response.json();
         toast.error(errorData.message || 'Failed to add or update top category');
@@ -58,6 +86,9 @@ const AddTopCategory = () => {
       toast.error('Error adding or updating top category');
     }
   };
+
+
+  const imageSrc = imagePreview || (category.imageUrl ? `http://localhost:5000/${category.imageUrl}` : '');
 
   return (
     <div className="add-category">
@@ -73,27 +104,48 @@ const AddTopCategory = () => {
           className="px-2"
           autoComplete="true"
         />
-        <div>
-          <label>
-            Active:
+        <div className='d-flex align-items-center gap-3'>
+          <div className="form-check">
+            <label className='form-check-label cursor-pointer' htmlFor='megaMenu'>Mega Menu:</label>
             <input
               type="checkbox"
-              name="isActive"
-              checked={category.isActive}
+              className="form-check-input"
+              name="megaMenu"
+              id='megaMenu'
+              checked={category.megaMenu}
               onChange={handleChange}
             />
-          </label>
-          <label>
-            Show in Navbar:
+          </div>
+          <div className='form-check'>
+            <label className='form-check-label cursor-pointer' htmlFor='showInNavbar'>
+              Show in Navbar:
+            </label>
             <input
               type="checkbox"
+              className="form-check-input"
               name="showInNavbar"
+              id='showInNavbar'
               checked={category.showInNavbar}
               onChange={handleChange}
             />
-          </label>
+          </div>
         </div>
-        <button type="submit" className="btn_fill_red text-white px-4 py-2 rounded-pill cursor-pointer fw-500">
+        <div>
+          <label className='cursor-pointer d-block mb-1' htmlFor='topImage'>Top Image:</label>
+          <input
+            type="file"
+            name="topImage"
+            id='topImage'
+            onChange={handleFileChange}
+            accept="image/*"
+          />
+        </div>
+        {imageSrc && (
+          <div className="image-preview">
+            <img src={imageSrc} alt="Image Preview" className="img-thumbnail mt-2" width="150px" />
+          </div>
+        )}
+        <button type="submit" className="btn_fill_red text-white px-4 py-2 mt-4 rounded cursor-pointer fw-500">
           {isEditMode ? 'Update Top Category' : 'Add Top Category'}
         </button>
       </form>

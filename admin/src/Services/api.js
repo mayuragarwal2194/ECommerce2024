@@ -60,7 +60,7 @@ export const getParentCategories = async () => {
 
 export const getChildCategories = async () => {
   try {
-    const response = await fetch(`${API_URL}/childcategories`);
+    const response = await fetch(`${API_URL}/api/v1/childcategories`);
     if (!response.ok) {
       throw new Error('Failed to fetch child categories');
     }

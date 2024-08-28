@@ -133,6 +133,21 @@ exports.updateTopCategory = async (req, res) => {
 };
 
 
+// Helper function to delete files from a directory
+const deleteFiles = (files) => {
+  files.forEach(file => {
+    const filePath = path.join(__dirname, '../uploads/categories/top_image', file);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+      } else {
+        // Optionally log the successful deletion
+        // console.log(`Deleted file ${filePath}`);
+      }
+    });
+  });
+};
+
 // Delete a Top Category
 exports.deleteTopCategory = async (req, res) => {
   const topCategoryId = req.params.id;
@@ -141,6 +156,13 @@ exports.deleteTopCategory = async (req, res) => {
     const deletedTopCategory = await TopCategory.findOneAndDelete({ _id: topCategoryId });
     if (!deletedTopCategory) {
       return res.status(404).json({ message: 'Top Category Not Found' });
+    }
+
+    // Delete the featured image if it exists
+    if (deletedTopCategory.topImage) {
+      // Extract the filename from the path
+      const fileName = path.basename(deletedTopCategory.topImage);
+      deleteFiles([fileName]); // Pass only the filename
     }
 
     // Set Top Category reference to null in its child categories

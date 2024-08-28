@@ -1,94 +1,112 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { API_URL, getParentCategories } from '../../../Services/api';
 
 const AddChildCategory = () => {
-  const [category, setCategory] = useState({
+  const initialCategoryState = {
     name: '',
-    parent: '', // Single parent selection
-    isActive: true,
-    showInNavbar: false,
-  });
+    parent: '', // Default to empty string
+    megaMenu: false,
+    showInNavbar: true,
+    childImage: null,
+    imageUrl: '', // URL of the image for edit mode
+  };
 
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [category, setCategory] = useState(initialCategoryState);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [parentCategories, setParentCategories] = useState([]);
-  const [categoryToEdit, setCategoryToEdit] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   useEffect(() => {
-    // Fetch parent categories
+    if (location.state?.category) {
+      const categoryData = location.state.category;
+      setCategory({
+        ...categoryData,
+        parent: categoryData.parent?._id || '', // Convert null to empty string
+        imageUrl: categoryData.childImage || '' // Ensure imageUrl is a string
+      });
+      setIsEditMode(true);
+    }
+  }, [location.state]);
+
+  useEffect(() => {
     const fetchParentCategories = async () => {
       try {
-        const response = await fetch('http://localhost:5000/parentcategories');
-        const data = await response.json();
+        const data = await getParentCategories();
         setParentCategories(data);
       } catch (error) {
-        console.error('Error fetching parent categories:', error);
+        toast.error('Failed to fetch parent categories');
       }
     };
-
     fetchParentCategories();
-
-    // Set category to edit if there's a category to edit
-    if (categoryToEdit) {
-      setCategory({
-        ...categoryToEdit,
-        parent: categoryToEdit.parent || '',
-      });
-    }
-  }, [categoryToEdit]);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setCategory((prevCategory) => ({
-      ...prevCategory,
+    setCategory({
+      ...category,
       [name]: type === 'checkbox' ? checked : value,
-    }));
+    });
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Submitting category data:', category); // Added logging for debugging
+
+    const formData = new FormData();
+    formData.append('name', category.name);
+    formData.append('megaMenu', category.megaMenu);
+    formData.append('showInNavbar', category.showInNavbar);
+    formData.append('parent', category.parent || ''); // Ensure empty string if null
+
+    if (image) {
+      formData.append('childImage', image);
+    }
+
+    const url = isEditMode
+      ? `${API_URL}/api/v1/childcategories/${category._id}`
+      : `${API_URL}/api/v1/childcategories`;
 
     try {
-      const categoryData = {
-        ...category,
-      };
-
-      let url = 'http://localhost:5000/childcategories/add';
-      let method = 'POST';
-
-      if (categoryToEdit) {
-        url = `http://localhost:5000/childcategories/${categoryToEdit._id}`;
-        method = 'PUT';
-      }
-
       const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(categoryData),
+        method: isEditMode ? 'PUT' : 'POST',
+        body: formData,
       });
 
+      const responseData = await response.json();
+
       if (response.ok) {
-        alert(categoryToEdit ? 'Category updated successfully!' : 'Category added successfully!');
-        setCategory({
-          name: '',
-          parent: '', // Reset single parent selection
-          isActive: true,
-          showInNavbar: false,
-        }); // Reset form state
-        setCategoryToEdit(null);
+        toast.success(isEditMode ? 'Category updated successfully!' : 'Category added successfully!');
+        setCategory(initialCategoryState);
+        setImage(null); // Reset image file state
+        setImagePreview(''); // Reset image preview state
+        navigate('/childcategories/view', { state: { message: `Category ${isEditMode ? 'updated' : 'added'} successfully` } });
       } else {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to add or update category');
+        toast.error(responseData.message || 'Failed to add or update category');
       }
     } catch (error) {
-      console.error('Error adding or updating category:', error.message);
-      alert(error.message);
+      toast.error('Error adding or updating category');
     }
   };
 
+  // Ensure that `imageSrc` is always a string
+  const imageSrc = imagePreview || (category.imageUrl ? `http://localhost:5000/${category.imageUrl}` : '');
+
   return (
     <div className="add-category">
-      <h2>{categoryToEdit ? 'Edit Child Category' : 'Add Child Category'}</h2>
+      <h2 className="mb-4">{isEditMode ? 'Edit Child Category' : 'Add Child Category'}</h2>
       <form onSubmit={handleSubmit} className="d-flex flex-column align-items-start gap-3">
         <input
           type="text"
@@ -97,12 +115,12 @@ const AddChildCategory = () => {
           onChange={handleChange}
           placeholder="Category Name"
           required
-          autoComplete='true'
           className="px-2"
+          autoComplete="true"
         />
         <select
           name="parent"
-          value={category.parent}
+          value={category.parent || ''} // Ensure the value is an empty string if null
           onChange={handleChange}
           className="px-2"
           required
@@ -114,30 +132,54 @@ const AddChildCategory = () => {
             </option>
           ))}
         </select>
-        <div>
-          <label>
-            Active:
+
+        <div className=''>
+          <div className='form-check'>
+            <label htmlFor='megaMenu' className='form-check-label cursor-pointer'>
+              Mega Menu:
+            </label>
             <input
               type="checkbox"
-              name="isActive"
-              checked={category.isActive}
+              name="megaMenu"
+              id="megaMenu"
+              checked={category.megaMenu}
               onChange={handleChange}
+              className='form-check-input'
             />
-          </label>
-          <label>
-            Show in Navbar:
+          </div>
+          <div className='form-check'>
+            <label htmlFor='showInNavbar' className='form-check-label cursor-pointer'>
+              Show in Navbar:
+            </label>
             <input
               type="checkbox"
               name="showInNavbar"
+              id="showInNavbar"
               checked={category.showInNavbar}
               onChange={handleChange}
+              className='form-check-input'
             />
-          </label>
+          </div>
         </div>
+        <label>
+          Child Image:
+          <input
+            type="file"
+            name="childImage"
+            onChange={handleFileChange}
+            className="form-control"
+          />
+        </label>
+        {imageSrc && (
+          <div className="image-preview">
+            <img src={imageSrc} alt="Image Preview" className="img-thumbnail mt-2" width="150px" />
+          </div>
+        )}
         <button type="submit" className="btn_fill_red text-white px-4 py-2 rounded-pill cursor-pointer fw-500">
-          {categoryToEdit ? 'Update Category' : 'Add Category'}
+          {isEditMode ? 'Update Category' : 'Add Category'}
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

@@ -10,6 +10,8 @@ const cleanName = (name) => {
   return name.toLowerCase().trim().replace(/\s+/g, ' ');
 };
 
+const safeToString = (value) => (value ? value.toString() : '');
+
 // Get all parent categories
 exports.getAllParentCategories = async (req, res) => {
   try {
@@ -82,7 +84,7 @@ exports.addParentCategory = async (req, res) => {
     }
 
     // Check the megaMenu limit
-    if (megaMenu) {
+    if (megaMenu === 'true' || megaMenu === true) {
       const megaMenuCount = await ParentCategory.countDocuments({ topCategory: topCatId, megaMenu: true });
       if (megaMenuCount >= 3) {
         return res.status(400).json({ message: 'Maximum limit of 3 parent categories with megaMenu set to true per TopCategory exceeded.' });
@@ -172,23 +174,57 @@ exports.updateParentCategory = async (req, res) => {
       showInNavbar: showInNavbar !== undefined ? (showInNavbar === 'true' || showInNavbar === true) : existingParentCategory.showInNavbar,
     };
 
-    // Check the megaMenu limit
-    if (updateData.megaMenu && !existingParentCategory.megaMenu) { // Only check if megaMenu is being set to true
-      const megaMenuCount = await ParentCategory.countDocuments({ topCategory: topCatId || existingParentCategory.topCategory, megaMenu: true });
-      if (megaMenuCount >= 3) {
-        return res.status(400).json({ message: 'Maximum limit of 3 parent categories with megaMenu set to true per TopCategory exceeded.' });
+    // Check the megaMenu limit within the top category's children
+    if (updateData.megaMenu === true) { // Only check if megaMenu is being set to true or remains true
+      const topCategoryToCheck = topCatId || existingParentCategory.topCategory;
+
+      // Fetch the top category along with its children (parent categories)
+      const topCategoryWithChildren = await TopCategory.findById(topCategoryToCheck)
+        .populate({
+          path: 'children',
+          populate: {
+            path: 'children', // Populate child categories of each parent category
+            model: 'ChildCategory'
+          }
+        })
+        .select('name children'); // Select the name and children fields;
+
+      // Count how many parent categories under the top category have megaMenu set to true
+      const parentMegaMenuCount = topCategoryWithChildren.children.reduce((count, parentCategory) => {
+        if (parentCategory.megaMenu && parentCategory._id.toString() !== parentCategoryId) {
+          return count + 1;
+        }
+        return count;
+      }, 0);
+
+      // Count how many child categories under the parent categories have megaMenu set to true
+      const childMegaMenuCount = topCategoryWithChildren.children.reduce((total, parentCategory) => {
+        const childCount = parentCategory.children.filter(child => child.megaMenu).length;
+        return total + childCount;
+      }, 0);
+
+      // Check if either parent or child categories exceed the limit
+      if (parentMegaMenuCount >= 3) {
+        return res.status(400).json({
+          message: `Maximum limit of 3 parent categories with megaMenu set to true exceeded for TopCategory: ${topCategoryWithChildren.name}.`
+        });
+      }
+
+      if (childMegaMenuCount >= 3) {
+        return res.status(400).json({
+          message: `The TopCategory "${topCategoryWithChildren.name}" already has 3 child categories with megaMenu set to true. Please modify or remove megaMenu from existing child categories before adding or updating another.`,
+        });
+
       }
     }
 
     // Handle Top Category update if needed
-    if (topCatId && (!existingParentCategory.topCategory || existingParentCategory.topCategory.toString() !== topCatId.toString())) {
+    if (topCatId && existingParentCategory.topCategory && safeToString(existingParentCategory.topCategory) !== safeToString(topCatId)) {
       // Remove the Parent category from the old Top category
-      if (existingParentCategory.topCategory) {
-        await TopCategory.updateOne(
-          { _id: existingParentCategory.topCategory },
-          { $pull: { children: parentCategoryId } }
-        );
-      }
+      await TopCategory.updateOne(
+        { _id: existingParentCategory.topCategory },
+        { $pull: { children: parentCategoryId } }
+      );
 
       // Add the Parent category to the new Top category
       await TopCategory.updateOne(
@@ -198,6 +234,17 @@ exports.updateParentCategory = async (req, res) => {
 
       // Include top Category ID in the update data
       updateData.topCategory = topCatId;
+    } else if (topCatId) {
+      // If there's no change in Top but topId is valid, ensure it's added to the Top's children
+      if (safeToString(existingParentCategory.topCategory) !== safeToString(topCatId)) {
+        await TopCategory.updateOne(
+          { _id: topCatId },
+          { $addToSet: { children: parentCategoryId } } // Use $addToSet to prevent duplicate entries
+        );
+
+        // Update the parent in the child category
+        updateData.topCategory = topCatId;
+      }
     }
 
     // Handle file upload
@@ -245,6 +292,21 @@ exports.updateParentCategory = async (req, res) => {
 }
 
 
+// Helper function to delete files from a directory
+const deleteFiles = (files) => {
+  files.forEach(file => {
+    const filePath = path.join(__dirname, '../uploads/categories/parent_image', file);
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.error(`Error deleting file ${filePath}:`, err);
+      } else {
+        // Optionally log the successful deletion
+        // console.log(`Deleted file ${filePath}`);
+      }
+    });
+  });
+};
+
 // Delete a parent category
 exports.deleteParentCategory = async (req, res) => {
   const parentCategoryId = req.params.id;
@@ -257,7 +319,9 @@ exports.deleteParentCategory = async (req, res) => {
 
     // Delete the featured image if it exists
     if (deletedParentCategory.parentImage) {
-      deleteFiles([deletedParentCategory.parentImage]);
+      // Extract the filename from the path
+      const fileName = path.basename(deletedParentCategory.parentImage);
+      deleteFiles([fileName]); // Pass only the filename
     }
 
     // Remove parent reference from child categories
@@ -276,7 +340,7 @@ exports.deleteParentCategory = async (req, res) => {
 exports.getChildCategoriesByParentId = async (req, res) => {
   try {
     const parentCategoryId = req.params.id;
-    const parentCategoryFound = await ParentCategoryIdarentCategory.findById(parentCategoryId).populate('children');
+    const parentCategoryFound = await ParentCategory.findById(parentCategoryId).populate('children');
     if (!parentCategoryFound) {
       return res.status(404).json({ message: 'Parent category not found' });
     }

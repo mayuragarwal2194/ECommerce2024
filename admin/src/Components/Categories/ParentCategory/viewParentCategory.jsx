@@ -1,10 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getParentCategories } from '../../../Services/api';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ViewParentCategory = () => {
-  const [categories, setCategories] = useState([]);
+  const location = useLocation();
   const navigate = useNavigate();
+  const message = location.state?.message;
+
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (message) {
+      toast.success(message);
+
+      // Clear the message from history state after showing the toast
+      navigate(location.pathname, { replace: true });
+    }
+  }, [message, navigate, location.pathname]);
+
 
   useEffect(() => {
     fetchParentCategories();
@@ -26,15 +41,15 @@ const ViewParentCategory = () => {
   const handleDelete = async (categoryId) => {
     if (window.confirm('Are you sure you want to delete this category?')) {
       try {
-        const response = await fetch(`http://localhost:5000/parentcategories/${categoryId}`, {
+        const response = await fetch(`http://localhost:5000/api/v1/parentcategories/${categoryId}`, {
           method: 'DELETE',
         });
 
         if (response.ok) {
-          alert('Category deleted successfully');
+          toast.success('Category deleted successfully');
           fetchParentCategories();
         } else {
-          alert('Failed to delete category');
+          toast.error('Failed to delete category');
         }
       } catch (error) {
         console.error('Error deleting category:', error);
@@ -50,8 +65,10 @@ const ViewParentCategory = () => {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Active</th>
+              <th>Mega Menu</th>
               <th>Show in Navbar</th>
+              <th>Image</th>
+              <th>Top Category</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -59,8 +76,21 @@ const ViewParentCategory = () => {
             {categories.map((category) => (
               <tr key={category._id}>
                 <td>{category.name}</td>
-                <td>{category.isActive ? 'Yes' : 'No'}</td>
+                <td>{category.megaMenu ? 'Yes' : 'No'}</td>
                 <td>{category.showInNavbar ? 'Yes' : 'No'}</td>
+                <td>
+                  {category.parentImage ? (
+                    <img
+                      src={`http://localhost:5000/${category.parentImage}`}
+                      alt={category.name}
+                      style={{ width: '50px', height: '50px' }}
+                      className='object-cover object-top'
+                    />
+                  ) : (
+                    'No Image'
+                  )}
+                </td>
+                <td>{category.topCategory}</td>
                 <td>
                   <button
                     className="btn btn-primary btn-sm me-2"
@@ -80,6 +110,7 @@ const ViewParentCategory = () => {
           </tbody>
         </table>
       </div>
+      <ToastContainer />
     </div>
   );
 };
