@@ -21,7 +21,7 @@ const Shop = () => {
     <div>
       <HeroNew />
       <ValueSection />
-      <BestProducts />
+      {/* <BestProducts />
       <CategorySection />
       <PopularNew />
       <NewArrivalSection />
@@ -29,7 +29,7 @@ const Shop = () => {
       <Brand />
       <VideoSection />
       <AboutSection />
-      <BlogSection />
+      <BlogSection /> */}
       {/* <Hero /> */}
       {/* <Popular /> */}
       {/* <Offers /> */}

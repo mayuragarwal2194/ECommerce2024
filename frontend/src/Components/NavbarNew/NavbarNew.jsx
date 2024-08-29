@@ -53,8 +53,8 @@ const NavbarNew = () => {
 
   return (
     <div className={`navbar-section inside-banner ${isSticky && location.pathname === '/' ? 'sticky' : ''} ${isReveal && location.pathname !== '/' ? 'reveal' : ''}`}>
-      <div className="px-lg-5">
-        <nav className='navbarnew d-flex align-items-center justify-content-between p-0'>
+      <div className="px-3 px-lg-5">
+        <nav className='navbarnew d-none d-lg-flex align-items-center justify-content-between p-0'>
           <div className="store-logo-wrapper flex-1">
             <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block default-logo">
               <img src={`/images/${isSticky && location.pathname === '/' ? 'logoBlack.png' : 'logoWhite.png'}`} className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-none' : 'd-inline-block'}`} alt="Logo" />
@@ -204,6 +204,39 @@ const NavbarNew = () => {
                 <Link className="text-decoration-none" to="/cart">
                   <i className="ri-shopping-bag-line"></i>
                 </Link>
+              </li>
+            </ul>
+          </div>
+        </nav>
+        <nav className='d-flex d-lg-none py-2'>
+          <div className="hamburger-icon flex-1" id="hamburger-icon">
+            <i className="ri-menu-line"></i>
+          </div>
+          <div className="store-logo-wrapper flex-1">
+            <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block default-logo">
+              <img src={`/images/${isSticky && location.pathname === '/' ? 'logoBlack.png' : 'logoWhite.png'}`} className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-none' : 'd-inline-block'}`} alt="Logo" />
+              <img src="images/logoBlack.png" className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-inline-block' : 'd-none'}`} alt="Logo" />
+            </Link>
+            <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block hover-logo d-none">
+              <img src="images/logoBlack.png" className='w-100 h-100' alt="Logo" />
+            </Link>
+          </div>
+          <div className="navbar-right d-flex align-items-center justify-content-end">
+            <ul
+              className="nav-icons d-flex align-items-center justify-content-between list-unstyled mb-0"
+            >
+              <li className="user-login">
+                <a
+                  href="#"
+                  className="nav-link border-0 bg-transparent"
+                  aria-label="Login Here"
+                  role="button"
+                >
+                  <i className="ri-user-line"></i>
+                </a>
+              </li>
+              <li className="cart">
+                <i className="ri-shopping-bag-line"></i>
               </li>
             </ul>
           </div>

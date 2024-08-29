@@ -1,38 +1,81 @@
+/* General Navbar Styles */
 .navbar-section {
   transition: all ease-in-out 0.3s;
-  /* Smooth transition for all properties */
   z-index: 10;
   border-bottom: 1px solid transparent;
   position: absolute;
-  /* Initially absolute */
   width: 100%;
+  /* Initially absolute */
 }
 
-/* Sticky styles */
+/* Sticky Navbar */
 .navbar-section.sticky {
   position: fixed;
   top: 0;
   background-color: #fff;
-  /* Background color when sticky */
-  width: 100%;
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-  /* Example box shadow */
+  width: 100%;
 }
 
-.navbar-section .desktop-menu .nav-item span {
-  padding: 27px 20px;
-  display: block;
+/* Reveal Effect for Navbar */
+.navbar-section.reveal {
+  transition: transform 0.3s ease-in-out;
+  will-change: transform;
+  z-index: 99;
+  border-bottom: 1px solid #1c1c1c62;
 }
 
-.navbar-section .desktop-menu .nav-item:first-child {
-  margin-left: -20px;
+/* Inside Banner Styles */
+.navbar-section.inside-banner,
+.navbar-section.inside-banner .nav-item a {
+  color: #fff;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
 }
 
-.navbar-section .store-logo {
-  width: 122px;
-  height: 40px;
+.navbar-section.inside-banner.reveal {
+  color: var(--black);
+  position: static;
 }
 
+.navbar-section.inside-banner.reveal .nav-item a,
+.navbar-section.inside-banner.reveal i,
+.navbar-section.inside-banner.reveal .dropdown-hover .dropbtn {
+  color: var(--black);
+}
+
+/* On-Top Navbar */
+.navbar-section.on-top {
+  background-color: transparent;
+}
+
+.navbar-section.on-top,
+.navbar-section.sticky,
+.navbar-section.navbar-visible,
+.navbar-section:hover,
+.navbar-section:hover .nav-item a,
+.navbar-section.sticky .nav-item a {
+  --black: #000000;
+  color: var(--black);
+  background-color: var(--white) !important;
+  z-index: 99;
+  border-bottom: 1px solid #1c1c1c;
+  box-shadow: unset !important;
+  backdrop-filter: unset !important;
+  -webkit-backdrop-filter: unset !important;
+}
+
+/* Logo Behavior on Hover */
+.navbar-section:hover .hover-logo {
+  display: inline-block !important;
+}
+
+.navbar-section:hover .default-logo {
+  display: none !important;
+}
+
+/* Navbar Right Section */
 .navbar-section .navbar-right,
 .navbar-section .navbar-right .nav-icons {
   gap: 20px;
@@ -43,14 +86,19 @@
   flex: 1;
 }
 
+/* Dropdown Hover */
 .dropdown-hover .dropbtn {
   font-size: 16px;
   color: var(--white);
-  padding-bottom: 27px;
-  padding-top: 27px;
+  padding: 27px 0;
   transition: all ease 0.2s;
 }
 
+.dropdown-hover:hover .dropdown-content {
+  display: block;
+}
+
+/* Dropdown Content */
 .dropdown-content {
   background-color: var(--white);
   min-width: 160px;
@@ -77,162 +125,7 @@
   color: var(--primary);
 }
 
-/* .dropdown-content a.mega-nav {
-  margin: 12px 0
-} */
-
-.dropdown-hover:hover .dropdown-content {
-  display: block;
-}
-
-.nav-icons li a,
-.nav-icons li i {
-  color: var(--white);
-}
-
-.nav-icons li i {
-  font-size: 20px;
-}
-
-.navbar-section.inside-banner,
-.navbar-section.inside-banner .nav-item a {
-  color: #fff;
-  background-color: transparent;
-  transition: all 0.2s ease-in-out;
-  width: 100%;
-}
-
-.navbar-section.on-top {
-  background-color: transparent;
-}
-
-.navbar-section.sticky .inside-banner {
-  background-color: #fff;
-  color: #000;
-  /* Adjust text color when background is white */
-}
-
-.navbar-section.reveal {
-  transition: transform 0.3s ease-in-out;
-  will-change: transform;
-  z-index: 99;
-  border-bottom: 1px solid #1c1c1c62;
-}
-
-.navbar-section.inside-banner.reveal {
-  color: var(--black);
-  position: static;
-}
-
-.navbar-section.inside-banner.reveal .nav-item a {
-  color: var(--black);
-}
-
-.navbar-section.inside-banner.reveal i {
-  color: black !important;
-}
-
-.navbar-section.inside-banner.reveal .dropdown-hover .dropbtn {
-  color: var(--black);
-}
-
-.navbar-section.navbar-not-visible {
-  transform: translateY(-200%);
-}
-
-.navbar-section.navbar-visible {
-  transform: translateY(0%);
-}
-
-.navbar-section.on-top,
-.navbar-section.sticky,
-.navbar-section.sticky .nav-item a {
-  --black: #000000;
-  color: var(--black);
-  background-color: var(--white);
-  z-index: 99;
-  border-bottom: 1px solid #1c1c1c;
-}
-
-.navbar-section.on-top .dropdown-hover .dropbtn {
-  --black: #000000;
-  color: var(--black);
-}
-
-.navbar-section.on-top .dropdown-hover svg path {
-  --black: #000000;
-  stroke: var(--black);
-}
-
-.navbar-section.on-top .nav-icons svg path,
-.navbar-section.sticky .nav-icons svg path {
-  stroke: black;
-}
-
-.navbar-section.sticky {
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-.navbar-section.sticky i,
-.navbar-section.sticky .dropdown-hover .dropbtn {
-  color: #000000;
-  transition: all ease 0.2s;
-}
-
-.navbar-section.on-top,
-.navbar-section.navbar-visible,
-.navbar-section:hover,
-.navbar-section:hover .nav-item a {
-  --black: #000000;
-  color: var(--black);
-  background-color: var(--white);
-  z-index: 99;
-  border-bottom: 1px solid #1c1c1c;
-}
-
-.navbar-section:hover .hover-logo {
-  display: inline-block !important;
-}
-
-.navbar-section:hover .default-logo {
-  display: none !important;
-}
-
-.navbar-section:hover i,
-.navbar-section:hover .dropdown-hover .dropbtn {
-  --black: #000000;
-  color: var(--black);
-}
-
-.navbar-section .nav-item span {
-  transition: all ease 0.2s;
-  font-size: 16px;
-}
-
-.navbar-section .nav-item span:hover::after {
-  content: "";
-  width: 100%;
-  height: 2px;
-  background-color: var(--primary);
-  position: absolute;
-  bottom: -1px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.navbar-section:hover .dropdown-hover .dropbtn {
-  --black: #000000;
-  color: var(--black) !important;
-}
-
-/* Css For Mega Menu */
-
-.dropdown-hover:hover .dropdown-content {
-  display: block;
-}
-
+/* Mega Menu */
 .mega-menu {
   --black: #1c1c1c4d;
   top: 100%;
@@ -242,20 +135,12 @@
   padding: 16px 0;
 }
 
+/* Mega Nav Styles */
 .mega-navs {
-  /* border-right: 1px solid var(--black); */
-  /* width: 15%; */
   flex-shrink: 0;
 }
 
-.mega-menu a {
-  border-bottom: none !important;
-}
-
-.mega-navs .mega-nav:first-child {
-  margin-top: 0;
-}
-
+.mega-navs .mega-nav:first-child,
 .mega-navs .mega-nav:last-child {
   margin-top: 0;
 }
@@ -271,6 +156,130 @@
   font-size: 0.8rem;
 }
 
+/* Mega Menu Links */
+.mega-menu a {
+  border-bottom: none !important;
+}
+
+.mega-childImg-link {
+  height: 124px !important;
+}
+
+.mega-childImg-link img {
+  object-position: top;
+}
+
+.mega-image-link {
+  width: 100% !important;
+  height: 240px;
+}
+
+.mega-image-link img {
+  border-radius: 12px;
+}
+
+/* Mega Collection Styles */
+.mega-collection,
+.mega-collection-child {
+  width: 135px;
+}
+
+.mega-collection-name {
+  writing-mode: vertical-rl;
+  /* Vertical text, right to left */
+  top: 50%;
+  right: 0;
+  font-size: 24px;
+  word-wrap: unset;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  letter-spacing: 2.34px;
+}
+
+.mega-collection-child-name {
+  bottom: 0%;
+  left: 50%;
+  font-size: 16px;
+  transform: translateX(-50%);
+}
+
+/* Navbar Icons */
+.nav-icons li a,
+.nav-icons li i {
+  color: var(--white);
+}
+
+.navbar-section.sticky i,
+.navbar-section.sticky .dropdown-hover .dropbtn {
+  color: #000000;
+  transition: all ease 0.2s;
+}
+
+.nav-icons li i {
+  font-size: 20px;
+}
+
+.navbar-section.on-top .nav-icons svg path,
+.navbar-section.sticky .nav-icons svg path {
+  stroke: black;
+}
+
+/* Desktop Menu */
+.navbar-section .desktop-menu .nav-item span {
+  padding: 27px 20px;
+  display: block;
+}
+
+.navbar-section .desktop-menu .nav-item:first-child {
+  margin-left: -20px;
+}
+
+.navbar-section .nav-item span:hover::after {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background-color: var(--primary);
+  position: absolute;
+  bottom: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Store Logo */
+.navbar-section .store-logo {
+  width: 122px;
+  height: 40px;
+}
+
+.navbar-section.on-top .dropdown-hover .dropbtn {
+  --black: #000000;
+  color: var(--black);
+}
+
+.navbar-section.on-top .dropdown-hover svg path {
+  --black: #000000;
+  stroke: var(--black);
+}
+
+.navbar-section:hover i,
+.navbar-section:hover .dropdown-hover .dropbtn {
+  --black: #000000;
+  color: var(--black);
+}
+
+.navbar-section .nav-item span {
+  transition: all ease 0.2s;
+  font-size: 16px;
+}
+
+.navbar-section:hover .dropdown-hover .dropbtn {
+  --black: #000000;
+  color: var(--black) !important;
+}
+
+
+
+/* Miscellaneous Styles */
 .max-h-300 {
   max-height: 300px;
 }
@@ -278,7 +287,6 @@
 .child-category {
   font-size: .7rem !important;
   color: #1c1c1ca6 !important;
-  /* margin-left: 12px !important; */
   font-family: "Poppins", sans-serif !important;
 }
 
@@ -306,32 +314,6 @@
   text-align: center;
 }
 
-.mega-card .product-title {
-  color: var(--text-primary);
-  font-size: var(--small-font-size);
-  font-family: var(--small-font-family);
-  font-weight: var(--small-font-weight);
-  line-height: var(--small-line-height);
-  letter-spacing: var(--small-letter-spacing);
-}
-
-.mega-card .product-price {
-  color: var(--text-secondary);
-  font-family: var(--large-font-family);
-  font-size: var(--large-font-size);
-  font-weight: var(--large-font-weight);
-  line-height: var(--large-line-height);
-  letter-spacing: var(--large-letter-spacing);
-}
-
-.mega-card-collection .card-image {
-  height: 100% !important;
-  background-image: url("../../../public//Images/suits.webp");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
-
 .every-section .img-overlay {
   background: rgba(255, 255, 255, 0.20);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
@@ -342,36 +324,8 @@
   top: 0;
 }
 
-.mega-card-collection .collection-name {
-  font-size: 16px;
-  letter-spacing: 2.34px;
-}
-
 .nav-item:hover .dropdown-content.mega-menu {
   display: block;
-  /* Show on hover */
-}
-
-.mega-collection,
-.mega-collection-child {
-  width: 135px;
-}
-
-.mega-childImg-link {
-  height: 124px !important;
-}
-
-.mega-childImg-link img {
-  object-position: top;
-}
-
-.mega-image-link {
-  width: 100% !important;
-  height: 240px;
-}
-
-.mega-image-link img {
-  border-radius: 12px;
 }
 
 .topCat-name {
@@ -399,20 +353,19 @@
   letter-spacing: normal;
 }
 
-.mega-collection-name {
-  writing-mode: vertical-rl;
-  /* Vertical text, right to left */
-  top: 50%;
-  right: 0;
+/* Hamburger Css */
+.hamburger-icon i {
   font-size: 24px;
-  word-wrap: unset;
-  white-space: nowrap;
-  transform: translateY(-50%);
 }
 
-.mega-collection-child-name {
-  bottom: 0%;
-  left: 50%;
-  font-size: 16px;
-  transform: translateX(-50%);
+.hamburger-icon {
+  height: fit-content;
+}
+
+@media (max-width: 576px) {
+  .navbar-section.inside-banner {
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.187);
+    backdrop-filter: blur(2px);
+  }
 }

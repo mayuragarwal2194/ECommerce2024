@@ -175,7 +175,7 @@ exports.updateParentCategory = async (req, res) => {
     };
 
     // Check the megaMenu limit within the top category's children
-    if (updateData.megaMenu === true) { // Only check if megaMenu is being set to true or remains true
+    if (updateData.megaMenu) { // Only check if megaMenu is being set to true or remains true
       const topCategoryToCheck = topCatId || existingParentCategory.topCategory;
 
       // Fetch the top category along with its children (parent categories)

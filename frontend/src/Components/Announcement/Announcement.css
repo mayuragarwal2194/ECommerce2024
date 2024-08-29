@@ -20,3 +20,19 @@
 }
 
 /* Css for announcement section- End */
+
+
+/* Responsive Css for Announcemenet Section- Start */
+@media (max-width: 576px) {
+	.announcement-section-desktop {
+		display: none;
+	}
+}
+
+@media (min-width: 576px) {
+	.announcement-section-mobile {
+		display: none;
+	}
+}
+
+/* Responsive Css for Announcemenet Section- End */

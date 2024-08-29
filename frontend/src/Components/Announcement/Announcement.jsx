@@ -4,9 +4,9 @@ import './Announcement.css'
 const Announcement = () => {
   return (
     <>
-      <div className="announcement-section">
+      <div className="announcement-section announcement-section-desktop">
         <div className="announcement-bg bg-black w-100 py-3">
-          <div className="px-lg-5">
+          <div className="px-3 px-lg-5">
             <div className="text-white d-flex align-items-center justify-content-between text-uppercase">
               <div className="d-md-flex align-items-center gap-3">
                 <div className="announcement">super Sale Up to 40% off</div>
@@ -49,6 +49,15 @@ const Announcement = () => {
                   </div>
                 </li>
               </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="announcement-section announcement-section-mobile">
+        <div className="announcement-bg bg-black w-100 py-3">
+          <div className="px-3 px-lg-5">
+            <div className="text-white text-center text-uppercase">
+              <div className="announcement">super Sale Up to 40% off</div>
             </div>
           </div>
         </div>

@@ -49,3 +49,17 @@
 }
 
 /* Css for Hero Banner- End */
+
+/* Responsive Css For Hero Banner- Start */
+@media (max-width: 576px) {
+	.hero-section .slide {
+		background-image: url("../../../public/Images/couple-winter-cloths-studio-small.jpg");
+		height: calc(100vh - 100px);
+	}
+
+	.hero-section .slide-content{
+		align-items: center !important;
+	}
+}
+
+/* Responsive Css For Hero Banner- End */

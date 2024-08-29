@@ -24,3 +24,12 @@
     width: 90%;
   }
 }
+
+@media (max-width: 768px) {
+  .value-section .value-description {
+		letter-spacing: 4px !important;
+		line-height: 25px;
+    font-size: 4vw;
+    /* max-width: 90%; */
+	}
+}
