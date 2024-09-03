@@ -1,5 +1,6 @@
 import React from 'react'
 import './NewArrivalSection.css'
+import { Link } from 'react-router-dom'
 
 const NewArrivalSection = () => {
   return (
@@ -17,20 +18,20 @@ const NewArrivalSection = () => {
                   Handpicked for style and comfort, these are the must-haves every closet needs.
                 </p>
                 <div className="arrival-buttons">
-                  <a
-                    href="#"
+                  <Link
+                    to={'/'}
                     role="button"
                     className="ff-btn ff-btn-fill-dark text-capitalize text-decoration-none d-inline-block"
                   >
                     Shop Now
-                  </a>
-                  <a
-                    href="#"
+                  </Link>
+                  <Link
+                    to={'/'}
                     role="button"
                     className="text-decoration-none text-white ms-4"
                   >
                     Learn More
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

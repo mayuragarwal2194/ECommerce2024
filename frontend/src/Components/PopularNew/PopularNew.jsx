@@ -1,6 +1,7 @@
 import React from 'react'
 import Slider from "react-slick";
 import './PopularNew.css'
+import { Link } from 'react-router-dom';
 
 const PopularNew = () => {
   var settings = {
@@ -30,18 +31,18 @@ const PopularNew = () => {
                         <img
                           src="images/popula-bigr.png"
                           className="img-fluid"
-                          alt="Product Image"
+                          alt="Product_Image"
                         />
-                        <a
-                          href="#"
+                        <Link
+                          to={'/'}
                           className="goto-item-btn rounded-circle position-absolute p-3"
                           role="button"
                           aria-label="Go to This Popular Item"
                         >
                           <div className="goto-inner-circle bg-white rounded-circle"></div>
-                        </a>
-                        <a
-                          href="#"
+                        </Link>
+                        <Link
+                          to={'/'}
                           className="addto-item-btn position-absolute text-decoration-none"
                           role="button"
                           aria-label="Add The Popular Item to this button"
@@ -60,15 +61,15 @@ const PopularNew = () => {
                               />
                             </svg>
                           </div>
-                        </a>
+                        </Link>
                       </div>
-                      <a
-                        href="#"
+                      <Link
+                        to={'/'}
                         role="button"
                         className="btn-fill-black text-decoration-none text-white bg-black-1c rounded d-inline-block mt-3 d-lg-none text-uppercase"
                       >
                         View Product
-                      </a>
+                      </Link>
                     </div>
                     <div className="col-12 col-md-6 col-lg-4">
                       <div id="popular-inner-sliderContainer" className="responsive">
@@ -80,7 +81,7 @@ const PopularNew = () => {
                                   <img
                                     src="./images/Grand-Nova.png"
                                     className="img-fluid"
-                                    alt="Product Image"
+                                    alt="Product_Image"
                                   />
                                   <div className="best-seller-tag best-seller-tag-white text-uppercase position-absolute">
                                     Best Seller
@@ -93,13 +94,13 @@ const PopularNew = () => {
                                   <div className="product-price w-fit-content m-auto">
                                     $ 380
                                   </div>
-                                  <a
-                                    href="#"
+                                  <Link
+                                    to={'/'}
                                     role="button"
                                     className="ff-btn ff-btn-fill-dark text-decoration-none d-inline-block mt-3 text-uppercase"
                                   >
                                     View Product
-                                  </a>
+                                  </Link>
                                 </div>
                               </div>
                             </div>
@@ -116,18 +117,18 @@ const PopularNew = () => {
                         <img
                           src="images/popula-bigr.png"
                           className="img-fluid"
-                          alt="Product Image"
+                          alt="Product_Image"
                         />
-                        <a
-                          href="#"
+                        <Link
+                          to={'/'}
                           className="goto-item-btn rounded-circle position-absolute p-3"
                           role="button"
                           aria-label="Go to This Popular Item"
                         >
                           <div className="goto-inner-circle bg-white rounded-circle"></div>
-                        </a>
-                        <a
-                          href="#"
+                        </Link>
+                        <Link
+                          to={'/'}
                           className="addto-item-btn position-absolute text-decoration-none"
                           role="button"
                           aria-label="Add The Popular Item to this button"
@@ -146,15 +147,15 @@ const PopularNew = () => {
                               />
                             </svg>
                           </div>
-                        </a>
+                        </Link>
                       </div>
-                      <a
-                        href="#"
+                      <Link
+                        to={'/'}
                         role="button"
                         className="btn-fill-black text-decoration-none text-white bg-black-1c rounded d-inline-block mt-3 d-lg-none text-uppercase"
                       >
                         View Product
-                      </a>
+                      </Link>
                     </div>
                     <div className="col-12 col-md-6 col-lg-4">
                       <div id="popular-inner-sliderContainer" className="responsive">
@@ -166,7 +167,7 @@ const PopularNew = () => {
                                   <img
                                     src="./images/Grand-Nova.png"
                                     className="img-fluid"
-                                    alt="Product Image"
+                                    alt="Product_Image"
                                   />
                                   <div className="best-seller-tag best-seller-tag-white text-uppercase position-absolute">
                                     Best Seller
@@ -179,13 +180,13 @@ const PopularNew = () => {
                                   <div className="product-price w-fit-content m-auto">
                                     $ 380
                                   </div>
-                                  <a
-                                    href="#"
+                                  <Link
+                                    to={'/'}
                                     role="button"
                                     className="ff-btn ff-btn-fill-dark text-decoration-none d-inline-block mt-3 text-uppercase"
                                   >
                                     View Product
-                                  </a>
+                                  </Link>
                                 </div>
                               </div>
                             </div>

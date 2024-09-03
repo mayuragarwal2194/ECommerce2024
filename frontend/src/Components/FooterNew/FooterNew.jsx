@@ -1,6 +1,7 @@
  /* eslint-disable */
 import React from 'react';
 import './FooterNew.css';
+import { Link } from 'react-router-dom';
 
 const FooterNew = () => {
   return (
@@ -43,16 +44,16 @@ const FooterNew = () => {
                       <div className="footer-collection mt-3">
                         <ul className="text-capitalize list-unstyled mb-0">
                           <li>
-                            <a href="#" className="text-decoration-none"> Women </a>
+                            <Link to={'/'} className="text-decoration-none"> Women </Link>
                           </li>
                           <li>
-                            <a href="#" className="text-decoration-none"> Men </a>
+                            <Link to={'/'} className="text-decoration-none"> Men </Link>
                           </li>
                           <li>
-                            <a href="#" className="text-decoration-none"> Small Leather Goods </a>
+                            <Link to={'/'} className="text-decoration-none"> Small Leather Goods </Link>
                           </li>
                           <li>
-                            <a href="#" className="text-decoration-none"> Collaboration </a>
+                            <Link to={'/'} className="text-decoration-none"> Collaboration </Link>
                           </li>
                         </ul>
                       </div>
@@ -66,29 +67,29 @@ const FooterNew = () => {
                       <div className="footer-quick-links mt-3">
                         <ul className="ps-0 mb-0">
                           <li className="list-unstyled underline-hover-effect">
-                            <a href="#" className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
                               Theme Features
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <a href="#" className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
                               About Us
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <a href="#" className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
                               Contact Us
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <a href="#" className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
                               FAQ
-                            </a>
+                            </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <a href="#" className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
                               Maintenance Tips
-                            </a>
+                            </Link>
                           </li>
                         </ul>
                       </div>
@@ -109,19 +110,19 @@ const FooterNew = () => {
             </div>
             <ul className="footer-navs d-flex align-items-center justify-content-center justify-content-md-start gap-3 flex-wrap list-unstyled mt-4 mt-lg-5">
               <li className="share-link mb-0">
-                <a href="#" className="d-block mb-0">
+                <Link to={'/'} className="d-block mb-0">
                   <i className="ri-facebook-fill"></i>
-                </a>
+                </Link>
               </li>
               <li className="share-link mb-0">
-                <a href="#" className="d-block mb-0">
+                <Link to={'/'} className="d-block mb-0">
                   <i className="ri-twitter-x-fill"></i>
-                </a>
+                </Link>
               </li>
               <li className="share-link mb-0">
-                <a href="#" className="d-block mb-0">
+                <Link to={'/'} className="d-block mb-0">
                   <i className="ri-instagram-line"></i>
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -141,15 +142,15 @@ const FooterNew = () => {
                     </button>
                     <div className="dropdown-content">
                       <div className="ps-3 py-3 d-flex flex-column gap-2">
-                        <a href="#" className="nav-currency d-flex align-items-center gap-2">
+                        <Link to={'/'} className="nav-currency d-flex align-items-center gap-2">
                           <img src="./icons/us.svg" alt="" />
                           <span>United States (USD $)</span>
                           <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M9 1L5 5L1 1" stroke="#ffffff" strokeLinecap="square" />
                           </svg>
-                        </a>
-                        <a href="#">Service 2</a>
-                        <a href="#">Service 3</a>
+                        </Link>
+                        <Link to={'/'}>Service 2</Link>
+                        <Link to={'/'}>Service 3</Link>
                       </div>
                     </div>
                   </div>
@@ -163,14 +164,14 @@ const FooterNew = () => {
               <div className="mt-lg-3 mt-lg-0 flex-1">
                 <ul className="footer-bottom-navs list-unstyled d-flex justify-content-center justify-content-lg-end mb-0">
                   <li>
-                    <a href="#" className="text-creame text-decoration-none ps-0 ps-lg-3">
+                    <Link to={'/'} className="text-creame text-decoration-none ps-0 ps-lg-3">
                       Terms of Service
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a href="#" className="text-creame text-decoration-none ps-0 ps-lg-3">
+                    <Link to={'/'} className="text-creame text-decoration-none ps-0 ps-lg-3">
                       Privacy Policy
-                    </a>
+                    </Link>
                   </li>
                 </ul>
               </div>

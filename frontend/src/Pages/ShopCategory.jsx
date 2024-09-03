@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import './CSS/ShopCategory.css';
 import { getProductsByTopCategory, fetchTopCategories } from '../services/api';
-import Item from '../Components/Item/Item';
+// import Item from '../Components/Item/Item';
 import dropdown_icon from '../Components/Assets/dropdown_icon.png';
 import ItemNew from '../Components/ItemNew/ItemNew';
 

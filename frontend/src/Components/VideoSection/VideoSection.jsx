@@ -3,23 +3,23 @@ import './VideoSection.css';
 
 const VideoSection = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false); // State to track play/pause
+  // const [isPlaying, setIsPlaying] = useState(false); // State to track play/pause
 
   const handleLoadedData = () => {
     setIsLoading(false);
   };
 
-  const handlePlayPauseButtonClick = () => {
-    const videoElement = document.getElementById('video-banner');
-    if (videoElement) {
-      if (isPlaying) {
-        videoElement.pause();
-      } else {
-        videoElement.play();
-      }
-      setIsPlaying(!isPlaying); // Toggle play/pause state
-    }
-  };
+  // const handlePlayPauseButtonClick = () => {
+  //   const videoElement = document.getElementById('video-banner');
+  //   if (videoElement) {
+  //     if (isPlaying) {
+  //       videoElement.pause();
+  //     } else {
+  //       videoElement.play();
+  //     }
+  //     setIsPlaying(!isPlaying); // Toggle play/pause state
+  //   }
+  // };
 
   return (
     <>

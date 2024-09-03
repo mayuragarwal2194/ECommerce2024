@@ -16,7 +16,7 @@ const ProductDisplay = ({ product }) => {
 
   // Dynamic rendering for product images
   const imageList = product.galleryImages.map((image, index) => (
-    <img key={index} src={`${API_URL}/uploads/gallery/${image}`} alt={`Gallery image ${index}`} />
+    <img key={index} src={`${API_URL}/uploads/gallery/${image}`} alt={`${index}`} />
   ));
 
   return (

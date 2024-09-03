@@ -1,5 +1,6 @@
 import React from 'react'
 import './HeroNew.css'
+import { Link } from 'react-router-dom'
 
 const HeroNew = () => {
   return (
@@ -15,12 +16,12 @@ const HeroNew = () => {
                       <h6 className="mb-3">New Arrivals</h6>
                       <h2 className="fw-normal text-uppercase mb-3 letter-5">Beauties</h2>
                       <div className="slide-buttons d-flex align-items-center gap-4 letter-216">
-                        <a href="#" className="slide-button text-decoration-none text-uppercase d-inline-block" role="button">
+                        <Link to={'/'} className="slide-button text-decoration-none text-uppercase d-inline-block" role="button">
                           Women
-                        </a>
-                        <a href="#" className="slide-button text-decoration-none text-uppercase d-inline-block" role="button">
+                        </Link>
+                        <Link to={'/'} className="slide-button text-decoration-none text-uppercase d-inline-block" role="button">
                           Men
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   </div>

@@ -194,7 +194,7 @@ const NavbarNew = () => {
             </div>
             <ul className="nav-icons d-flex align-items-center justify-content-between list-unstyled mb-0">
               <li className="user-login">
-                <Link className="text-decoration-none" to="/login">
+                <Link to="/login" className="text-decoration-none">
                   <i className="ri-user-3-line"></i>
                 </Link>
               </li>
@@ -219,14 +219,14 @@ const NavbarNew = () => {
           </div>
           <ul className="nav-icons d-flex align-items-center justify-content-end list-unstyled mb-0 flex-1 gap-3">
             <li className="user-login">
-              <a
-                href="#"
+              <Link
+                to={'/'}
                 className="border-0 bg-transparent text-decoration-none"
                 aria-label="Login Here"
                 role="button"
               >
                 <i className="ri-user-line"></i>
-              </a>
+              </Link>
             </li>
             <li className="cart">
               <Link className="text-decoration-none" to="/cart">

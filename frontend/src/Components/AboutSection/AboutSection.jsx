@@ -17,7 +17,7 @@ const AboutSection = () => {
                   Dalia was born from the encounter between Wendy and Léo et Violette. Wendy's minimalist and elegant universe corresponds perfectly to the spirit of Léo et Violette.
                 </p>
                 <a
-                  href="#"
+                  href="#aboutImage"
                   role="button"
                   className="ff-btn ff-btn-fill-dark text-capitalize text-decoration-none d-inline-block mt-20 w-fit-content"
                 >
@@ -26,7 +26,7 @@ const AboutSection = () => {
               </div>
             </div>
             <div className="col-12 col-lg-7">
-              <div className="about-images d-flex">
+              <div className="about-images d-flex" id='aboutImage'>
                 <div
                   className="about-image-small flex-shrink-0"
                   style={{ backgroundImage: 'url(images/about-small.webp)' }}
