@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchProductsByParentCategory } from '../services/api';
 import ItemNew from '../Components/ItemNew/ItemNew';
-import dropdown_icon from '../Components/Assets/dropdown_icon.png';
 
 const ProductsByParentCategory = () => {
   const { parentId } = useParams();
@@ -29,7 +28,7 @@ const ProductsByParentCategory = () => {
             <span className='fw-600'>Showing 1-{products.length}</span> Out of {products.length} products
           </p>
           <div className="shopcategory-sort rounded-pill px-4 py-2">
-            Sort By <img src={dropdown_icon} alt="Sort Icon" />
+            Sort By <i className="ri-arrow-down-s-line"></i>
           </div>
         </div>
         <div className="shopcategory-products">

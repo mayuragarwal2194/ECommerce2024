@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useMemo } from 'react';
 import { getAllProducts } from '../services/api';
 import { getDefaultCart } from '../Components/Utils/utils';
 
@@ -58,18 +58,20 @@ const ShopContextProvider = ({ children }) => {
   };
 
   // Function to get the total number of items in the cart
-  const getTotalCartItems = () => {
+  const getTotalCartItems = useMemo(() => {
     return Object.values(cartItems).reduce((total, count) => total + count, 0);
-  };
+  }, [cartItems]);
 
-  const contextValue = {
+
+  const contextValue = useMemo(() => ({
     allProducts,
     cartItems,
     addToCart,
     removeFromCart,
     deleteFromCart,
     getTotalCartItems,
-  };
+  }), [allProducts, cartItems, getTotalCartItems]);
+
 
   return (
     <ShopContext.Provider value={contextValue}>

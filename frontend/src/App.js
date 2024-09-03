@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
-// import Footer from './Components/Footer/Footer';
 import Shop from './Pages/Shop';
 import ShopCategory from './Pages/ShopCategory';
 import Product from './Pages/Product';

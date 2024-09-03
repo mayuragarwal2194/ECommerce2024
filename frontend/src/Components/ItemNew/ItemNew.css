@@ -17,6 +17,16 @@
   color: var(--black);
 }
 
+.item-price-new {
+  color: var(--black);
+  font-size: 18px;
+}
+
+.item-price-old {
+  color: var(--black-75);
+  font-size: 16px;
+}
+
 @media (max-width: 576px) {
   .product-title {
     display: -webkit-box;

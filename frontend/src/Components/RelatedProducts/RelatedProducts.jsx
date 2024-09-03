@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { ShopContext } from '../../Context/ShopContext';
 import './RelatedProducts.css'
-import Item from '../Item/Item'
+import ItemNew from '../ItemNew/ItemNew';
 
 const RelatedProducts = ({ category, currentProductId }) => {
   const { allProducts } = useContext(ShopContext);
@@ -17,7 +17,15 @@ const RelatedProducts = ({ category, currentProductId }) => {
       <div className="related-products-list">
         <div className="row row-cols-1 row-cols-md-4 g-4">
           {relatedProducts.map((item, i) => (
-            <Item key={i} id={item.id} image={item.featuredImage} itemName={item.itemName} newPrice={item.newPrice} oldPrice={item.oldPrice} />
+            <ItemNew
+              key={item._id}
+              id={item._id}
+              image={item.featuredImage}
+              itemName={item.itemName}
+              newPrice={item.newPrice}
+              oldPrice={item.oldPrice}
+              tag={item.tag}
+            />
           ))}
         </div>
       </div>

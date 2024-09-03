@@ -1,8 +1,5 @@
 import React, { useContext } from 'react';
 import './ProductDisplay.css';
-import star_icon from '../Assets/star_icon.png';
-import star_dull_icon from '../Assets/star_dull_icon.png';
-import payment_info_img from '../Assets/payment-info.png';
 import { ShopContext } from '../../Context/ShopContext';
 import DescriptionBox from '../DescriptionBox/DescriptionBox';
 import { API_URL } from '../../services/api';
@@ -38,11 +35,11 @@ const ProductDisplay = ({ product }) => {
           </p>
           <div className="productdisplay-stars d-flex align-items-center gap-2">
             <div className="d-flex align-items-center gap-1">
-              <img src={star_icon} alt="Star icon" />
-              <img src={star_icon} alt="Star icon" />
-              <img src={star_icon} alt="Star icon" />
-              <img src={star_icon} alt="Star icon" />
-              <img src={star_dull_icon} alt="Star dull icon" />
+              <i className="ri-star-fill"></i>
+              <i className="ri-star-fill"></i>
+              <i className="ri-star-fill"></i>
+              <i className="ri-star-half-fill"></i>
+              <i className="ri-star-line"></i>
             </div>
             <p className='mb-0'>(122 Ratings)</p>
           </div>
@@ -74,7 +71,7 @@ const ProductDisplay = ({ product }) => {
           <div className="payment-info">
             <div className="payment-head">GUARANTEED SAFE CHECKOUT:</div>
             <div className="payment-info-image w-50 mt-2">
-              <img src={payment_info_img} alt="Payment Info" className='w-100' />
+              <img src="/images/payment-info.png" alt="Payment Info" className='w-100' />
             </div>
           </div>
         </div>
