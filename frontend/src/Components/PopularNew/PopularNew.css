@@ -49,3 +49,9 @@
 }
 
 /* Css for popolar section- End */
+
+@media (max-width:576px) {
+	.popular-section .btn-fill-black{
+		padding: 12px 24px;
+	}
+}

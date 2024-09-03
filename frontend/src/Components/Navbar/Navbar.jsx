@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ShopContext } from '../../Context/ShopContext';
 import logo from '../Assets/logo.png';
 import cart_icon from '../Assets/cart_icon.png';
+import { API_URL } from '../../services/api';
 
 const Navbar = () => {
   const [menu, setMenu] = useState('shop');
@@ -19,7 +20,7 @@ const Navbar = () => {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('http://localhost:5000/categories');
+      const response = await fetch(`${API_URL}/api/v1/topcategories`);
       if (response.ok) {
         const data = await response.json();
         setCategories(data);

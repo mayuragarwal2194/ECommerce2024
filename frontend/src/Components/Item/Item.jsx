@@ -1,6 +1,7 @@
 import React from 'react'
 import './Item.css'
 import { Link } from 'react-router-dom'
+import { API_URL } from '../../services/api';
 
 const Item = ({ image, itemName, newPrice, oldPrice, id }) => {
   return (
@@ -8,7 +9,7 @@ const Item = ({ image, itemName, newPrice, oldPrice, id }) => {
       <Link to={`/product/${id}`} className='text-decoration-none'>
         <div className="border-0">
           <div className='item-image overflow-hidden'>
-          <img src={`http://localhost:5000/uploads/featured/${image}`} alt={itemName} className='w-100' />
+          <img src={`${API_URL}/uploads/featured/${image}`} alt={itemName} className='w-100' />
           </div>
           <div className="card-body px-0">
             <h5 className="item-name fw-500">{itemName}</h5>

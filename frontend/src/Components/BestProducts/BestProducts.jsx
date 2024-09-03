@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Slider from "react-slick";
 import './BestProducts.css';
 import ItemNew from '../ItemNew/ItemNew';
@@ -8,6 +8,7 @@ const BestProducts = () => {
   const [popularProducts, setPopularProducts] = useState([]);
   const [activeTab, setActiveTab] = useState('women'); // Default active tab is 'women'
   const [categories, setCategories] = useState({ women: null, men: null });
+  const sliderRef = useRef(null); // Add this line at the beginning
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -16,7 +17,7 @@ const BestProducts = () => {
         const womenCategory = categoryData.find(category => category.name.toLowerCase() === 'women');
         const menCategory = categoryData.find(category => category.name.toLowerCase() === 'men');
         setCategories({ women: womenCategory?._id, men: menCategory?._id });
-        
+
         if (womenCategory) {
           const products = await getProductsByTopCategory(womenCategory._id);
           const popularItems = products.filter(product => product.isPopular);
@@ -46,12 +47,30 @@ const BestProducts = () => {
     fetchProducts();
   }, [activeTab, categories]);
 
+  useEffect(() => {
+    if (sliderRef.current) {
+      sliderRef.current.slickGoTo(0); // Go to the first slide on popularProducts update
+    }
+  }, [popularProducts]);
+
   const settings = {
     dots: false,
-    infinite: false,
-    speed: 500,
+    infinite: true,
+    speed: 200,
     slidesToShow: 4,
-    slidesToScroll: 4
+    slidesToScroll: 4,
+    responsive: [
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 2,
+          arrows: false,
+          dots: true,
+          speed: 200
+        },
+      },
+    ]
   };
 
   const handleTabClick = (tab) => {
@@ -80,10 +99,10 @@ const BestProducts = () => {
             </h3>
           </div>
           <div className="slider-container responsive" id='best-sliderContainer'>
-            <Slider {...settings}>
-              {popularProducts.map((item, i) => (
+            <Slider {...settings} ref={sliderRef}>
+              {popularProducts.map((item) => (
                 <ItemNew
-                  key={i}
+                  key={item._id}
                   id={item._id}
                   image={item.featuredImage}
                   itemName={item.itemName}

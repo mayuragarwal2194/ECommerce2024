@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import './CartItems.css';
 import { ShopContext } from '../../Context/ShopContext';
+import { API_URL } from '../../services/api';
 
 const CartItems = () => {
   const { allProducts, cartItems, addToCart, removeFromCart, deleteFromCart } = useContext(ShopContext);
@@ -25,7 +26,7 @@ const CartItems = () => {
         {cartProducts.map((item) => (
           <div key={item.id} className="row align-items-center cart-item text-center">
             <div className="col">
-              <img src={`http://localhost:5000${item.image}`} alt={item.itemName} className='carticon-product-image img-fluid' />
+              <img src={`${API_URL}/uploads/featured/${item.featuredImage}`} alt={item.itemName} className='carticon-product-image img-fluid' />
             </div>
             <div className="col-3 text-start">{item.itemName}</div>
             <div className="col">${item.newPrice}</div>

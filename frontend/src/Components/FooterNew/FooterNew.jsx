@@ -126,9 +126,9 @@ const FooterNew = () => {
             </ul>
           </div>
         </div>
-        <div className="footer-below text-center text-lg-start mt-4 copyright-footer">
+        <div className="footer-below text-center text-lg-start mt-4">
           <div className="container">
-            <div className="d-flex align-items-center justify-content-between">
+            <div className="copyright-footer d-flex align-items-center justify-content-between">
               <div className="flex-1">
                 <div className="footer-dropdown-wrapper">
                   <div className="dropdown dropdown-hover desktop-dropdown position-relative w-fit-content py-1">
@@ -160,7 +160,7 @@ const FooterNew = () => {
                   &copy; 2023 Leo & Violette. All Rights Reserved
                 </p>
               </div>
-              <div className="mt-3 mt-lg-0 flex-1">
+              <div className="mt-lg-3 mt-lg-0 flex-1">
                 <ul className="footer-bottom-navs list-unstyled d-flex justify-content-center justify-content-lg-end mb-0">
                   <li>
                     <a href="#" className="text-creame text-decoration-none ps-0 ps-lg-3">

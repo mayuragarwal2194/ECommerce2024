@@ -46,7 +46,7 @@ function AppContent() {
         <Route path='/childcat/:childId' element={<ProductsByChildCategory />} />
 
       </Routes>
-      {/* {shouldRenderComponent && <FooterNew />} */}
+      {shouldRenderComponent && <FooterNew />}
     </>
   );
 }

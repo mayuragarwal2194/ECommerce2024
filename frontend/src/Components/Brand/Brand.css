@@ -3,10 +3,14 @@
 	color: var(--secondary);
 }
 
+.brand-section .slider-container {
+	width: 50%;
+}
+
 .brand-section .section-head {
 	color: var(--secondary);
 	font-size: 24px;
-	font-size: clamp(18px, 3vw, 24px);
+	font-size: clamp(14px, 3vw, 24px);
 }
 
 .brand-section .brand-image {
@@ -15,3 +19,17 @@
 }
 
 /* Css for brand section- End */
+
+@media (max-width: 576px) {
+	.brand-section .brand-image {
+		width: 100px;
+	}
+
+	.brand-section .section-subhead {
+		margin-bottom: 16px;
+	}
+
+	.brand-section .slider-container {
+		width: 100%;
+	}
+}

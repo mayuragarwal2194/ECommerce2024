@@ -19,7 +19,7 @@ export const getAllProducts = async () => {
 
 // Get all parents categories
 export const fetchParentCategories = async () => {
-  const response = await fetch('http://localhost:5000/api/v1/parentcategories');
+  const response = await fetch(`${API_URL}/api/v1/parentcategories`);
   if (!response.ok) {
     throw new Error('Failed to fetch categories');
   }
@@ -30,7 +30,7 @@ export const fetchParentCategories = async () => {
 
 // Get all Child categories
 export const fetchChildCategories = async () => {
-  const response = await fetch('http://localhost:5000/api/v1/childcategories');
+  const response = await fetch(`${API_URL}/api/v1/childcategories`);
   if (!response.ok) {
     throw new Error('Failed to fetch categories');
   }

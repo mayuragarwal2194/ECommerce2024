@@ -36,9 +36,11 @@ const VideoSection = () => {
               width="100%"
               height="100%"
               className="object-cover"
-              // controls
-              muted
+              autoPlay
               loop
+              playsInline
+              muted
+              // controls
               preload="metadata"
               poster="/videos/my-video-poster.jpg" // Ensure you have a poster image in the same folder
               onLoadedData={handleLoadedData}
@@ -48,8 +50,9 @@ const VideoSection = () => {
                 type="video/mp4"
               />
             </video>
-            <div
-              className="custom-play-btn position-absolute top-50 start-50 translate-middle"
+            {/* Custom Play Button */}
+            {/* <div
+              className="custom-play-btn position-absolute top-50 start-50 translate-middle d-none d-lg-inline-block"
               onClick={handlePlayPauseButtonClick}
               style={{ cursor: 'pointer' }}
             >
@@ -71,7 +74,7 @@ const VideoSection = () => {
                   />
                 </svg>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

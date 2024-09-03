@@ -55,10 +55,10 @@
 	gap: 32px;
 }
 
-.footer-navs .share-link a{
-  text-decoration: none;
-  color: var(--secondary);
-  font-size: 20px;
+.footer-navs .share-link a {
+	text-decoration: none;
+	color: var(--secondary);
+	font-size: 20px;
 }
 
 .footer-navs .share-link svg path {
@@ -110,3 +110,24 @@
 }
 
 /* Css for Footer- End */
+
+@media (max-width: 768px) {
+
+	/* Css for footer */
+	.footer-main-row {
+		flex-direction: column-reverse;
+	}
+
+	.footer-wrapper {
+		margin: unset;
+	}
+
+	.footer-navs {
+		justify-content: left !important;
+	}
+
+	.copyright-footer {
+		flex-direction: column !important;
+		gap: 16px;
+	}
+}

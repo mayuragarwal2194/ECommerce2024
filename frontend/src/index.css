@@ -132,6 +132,15 @@ body {
   user-select: none;
 }
 
+.px-12 {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.py-12 {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
 
 
 .section-head h1 {
@@ -276,4 +285,35 @@ body {
 .ff-btn-fill-light:hover {
   background-color: transparent;
   color: var(--secondary);
+}
+
+.large-fonts {
+  font-size: var(--large-font-size);
+  font-family: var(--large-font-family);
+  font-weight: var(--large-font-weight);
+  line-height: var(--large-line-height);
+  letter-spacing: var(--large-letter-spacing);
+}
+
+@media (max-width:576px) {
+  .xs-small-fonts {
+    font-size: var(--small-font-size) !important;
+    font-family: var(--small-font-family);
+    font-weight: var(--small-font-weight);
+    line-height: var(--small-line-height);
+    letter-spacing: var(--small-letter-spacing);
+  }
+
+  .xs-large-fonts {
+    font-size: var(--large-font-size) !important;
+    font-family: var(--large-font-family);
+    font-weight: var(--large-font-weight);
+    line-height: var(--large-line-height);
+    letter-spacing: var(--large-letter-spacing);
+  }
+
+  .ff-btn-fill-dark{
+    padding: 10px 28px;
+    font-size: 14px;
+  }
 }

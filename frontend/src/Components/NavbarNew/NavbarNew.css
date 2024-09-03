@@ -353,19 +353,36 @@
   letter-spacing: normal;
 }
 
-/* Hamburger Css */
-.hamburger-icon i {
-  font-size: 24px;
-}
-
-.hamburger-icon {
-  height: fit-content;
-}
-
 @media (max-width: 576px) {
+  .navbar-section{
+    border-bottom: 0 !important;
+  }
   .navbar-section.inside-banner {
     background-color: rgba(255, 255, 255, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.187);
     backdrop-filter: blur(2px);
+  }
+
+  .navbar-section:hover{
+    background-color: rgba(255, 255, 255, 0) !important;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.187) !important;
+    backdrop-filter: blur(2px) !important;
+    border-bottom: 0;
+  }
+
+  .navbar-section:hover .default-logo{
+    display: block !important;
+  }
+
+  .navbar-section:hover i, 
+  .navbar-section:hover .dropdown-hover .dropbtn{
+    color: var(--white);
+  }
+
+  .navbar-section.sticky:hover,
+  .navbar-section.sticky:hover i
+  {
+    background-color: var(--white) !important;
+    color: var(--black) !important;
   }
 }

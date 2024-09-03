@@ -10,3 +10,9 @@
 }
 
 /* Css for Video Section- End */
+
+@media (max-width: 576px) {
+	.banner-video{
+		height: 240px;
+	}
+}

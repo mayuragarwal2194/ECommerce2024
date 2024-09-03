@@ -23,3 +23,24 @@
 }
 
 /* Css for Category Section- End*/
+
+@media (max-width:576px) {
+	/* Css for Category section */
+
+	.category-right {
+		margin-top: 12px;
+	}
+
+	.category-right {
+		flex-direction: row !important;
+		gap: 12px;
+	}
+
+	.category-section .category-image {
+		height: 266px;
+	}
+
+	.category-right .category-image {
+		height: 150px;
+	}
+}

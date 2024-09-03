@@ -1,0 +1,159 @@
+/* Hamburger Css */
+.hamburger-icon {
+  height: fit-content;
+}
+
+.hamburger-menu {
+  background-color: #fff;
+  width: 70%;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 99;
+  transform: translateX(-100%);
+  -webkit-transition: 0.2s ease-in-out;
+  -o-transition: 0.2s ease-in-out;
+  transition: 0.2s ease-in-out;
+}
+
+.hamburger .hamburger-overlay {
+  position: fixed;
+  top: 0;
+  left: 70%;
+  width: 30%;
+  height: 100vh;
+  z-index: 98;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Show the overlay when the menu is open */
+.hamburger-menu.open+.hamburger-overlay {
+  display: block;
+}
+
+/* Stop body scrolling */
+body.no-scroll {
+  overflow: hidden;
+}
+
+.hamburger-menu.open {
+  transform: translateX(0);
+}
+
+.hamburger-close-icon i {
+  font-size: 24px;
+  color: var(--black) !important;
+}
+
+.mobile-menu i {
+  font-size: 24px !important;
+}
+
+.hamburger-header-right i {
+  color: var(--black) !important;
+}
+
+.ham-store-logo {
+  width: 122px;
+  height: 40px;
+}
+
+.hamburger-navs {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.hamburger-navs li {
+  color: var(--black);
+  letter-spacing: normal !important;
+  padding: 4px 8px;
+}
+
+.select-menu {
+  width: 100%;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.options-list {
+  width: 100%;
+  padding: 0 20px;
+  overflow-y: auto;
+  max-height: 0;
+  -webkit-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+  margin-top: 0;
+}
+
+.options-list.active {
+  max-height: 500px;
+}
+
+.child-options-list {
+  width: 100%;
+  padding: 0 20px;
+  overflow-y: auto;
+  max-height: 0;
+  -webkit-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+  margin-top: 0;
+}
+
+.child-options-list.active {
+  max-height: 180px;
+}
+
+.option,
+.child-option {
+  padding: 8px 0;
+  font-size: 16px !important;
+  color: var(--text-secondary);
+  -webkit-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
+
+.option:hover,
+.option.selected,
+.child-option:hover {
+  color: var(--black-07);
+}
+
+.ri-arrow-down-s-line {
+  -webkit-transition: 0.3s ease-in-out;
+  -o-transition: 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
+}
+
+.rotate {
+  transform: rotate(180deg);
+}
+
+#ham-arrow {
+  color: var(--black);
+}
+
+.hamburger-navs .topcat,
+.hamburger-navs li {
+  font-size: 18px;
+  color: var(--black) !important;
+}
+
+.hamburger-navs svg {
+  color: var(--black) !important;
+}
+
+.topcat.active {
+  color: darkblue !important;
+  font-weight: bold;
+}

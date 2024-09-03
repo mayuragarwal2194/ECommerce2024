@@ -39,7 +39,26 @@
   border-bottom: 1px solid var(--text-primary);
 }
 
-#best-sliderContainer .itemnew{
+#best-sliderContainer .itemnew {
   padding: 0 16px;
 }
+
 /* Css for best product section- End */
+
+@media (max-width: 576px) {
+  #best-sliderContainer .itemnew {
+    padding: 0 5px;
+  }
+
+  .itemnew img{
+    height: 63vw !important;
+  }
+
+  .section-subhead{
+    margin-bottom: 0;
+  }
+
+  .section-head{
+    margin-bottom: 40px;
+  }
+}

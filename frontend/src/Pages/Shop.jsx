@@ -1,9 +1,4 @@
 import React from 'react'
-// import Hero from '../Components/Hero/Hero'
-// import Popular from '../Components/Popular/Popular'
-// import Offers from '../Components/Offers/Offers'
-// import NewCollections from '../Components/NewCollections/NewCollections'
-// import NewsLetter from '../Components/NewsLetter/NewsLetter'
 import HeroNew from '../Components/HeroNew/HeroNew'
 import ValueSection from '../Components/ValueSection/ValueSection'
 import BestProducts from '../Components/BestProducts/BestProducts'
@@ -21,20 +16,15 @@ const Shop = () => {
     <div>
       <HeroNew />
       <ValueSection />
-      {/* <BestProducts />
+      <BestProducts />
       <CategorySection />
       <PopularNew />
       <NewArrivalSection />
       <OurSelectionSection />
       <Brand />
-      <VideoSection />
       <AboutSection />
-      <BlogSection /> */}
-      {/* <Hero /> */}
-      {/* <Popular /> */}
-      {/* <Offers /> */}
-      {/* <NewCollections /> */}
-      {/* <NewsLetter /> */}
+      <VideoSection />
+      <BlogSection />
     </div>
   )
 }

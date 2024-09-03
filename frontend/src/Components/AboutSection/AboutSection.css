@@ -1,7 +1,7 @@
 /* Css for about section- Start */
 .about-section {
 	color: var(--text-primary);
-  padding-bottom: 100px !important;
+	padding-bottom: 100px !important;
 }
 
 .about-section .about-subhead {
@@ -52,3 +52,31 @@
 }
 
 /* Css for about section- End */
+@media (max-width: 576px) {
+	.about-image-big {
+		min-width: unset;
+		max-height: 95vh;
+	}
+
+	.about-section{
+		padding-bottom: 36px !important;
+	}
+}
+
+@media (max-width: 768px) {
+	.about-row {
+		gap: 32px;
+		flex-direction: column-reverse;
+	}
+}
+
+@media (max-width: 992px) {
+	.about-images {
+		justify-content: start;
+	}
+
+	.about-image-small {
+		right: 0;
+		left: auto;
+	}
+}

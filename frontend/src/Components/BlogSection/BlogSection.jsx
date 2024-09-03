@@ -6,10 +6,24 @@ const BlogSection = () => {
   var settings = {
     arrows: false,
     dots: false,
-    infinite: false,
-    speed: 500,
+    infinite: true,
+    speed: 200,
     slidesToShow: 3,
-    slidesToScroll: 3
+    slidesToScroll: 3,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    cssEase: "linear",
+    responsive: [
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          dots: true,
+          speed: 200
+        },
+      },
+    ]
   };
   return (
     <>
@@ -112,7 +126,7 @@ const BlogSection = () => {
               href="#"
               role="button"
               id="discover-btn"
-              className="ff-btn ff-btn-fill-dark discover-btn text-uppercase text-decoration-none d-block w-fit-content m-auto"
+              className="ff-btn ff-btn-fill-dark discover-btn text-uppercase text-decoration-none d-block w-fit-content m-auto xs-small-fonts"
             >
               Discover all our stories
             </a>

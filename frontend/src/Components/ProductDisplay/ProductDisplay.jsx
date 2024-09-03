@@ -5,6 +5,7 @@ import star_dull_icon from '../Assets/star_dull_icon.png';
 import payment_info_img from '../Assets/payment-info.png';
 import { ShopContext } from '../../Context/ShopContext';
 import DescriptionBox from '../DescriptionBox/DescriptionBox';
+import { API_URL } from '../../services/api';
 
 const ProductDisplay = ({ product }) => {
   const { addToCart } = useContext(ShopContext);
@@ -15,7 +16,7 @@ const ProductDisplay = ({ product }) => {
 
   // Dynamic rendering for product images
   const imageList = product.galleryImages.map((image, index) => (
-    <img key={index} src={`http://localhost:5000/uploads/gallery/${image}`} alt={`Gallery image ${index}`} />
+    <img key={index} src={`${API_URL}/uploads/gallery/${image}`} alt={`Gallery image ${index}`} />
   ));
 
   return (
@@ -23,11 +24,11 @@ const ProductDisplay = ({ product }) => {
       <div className='productdisplay my-4 d-flex align-items-start gap-5'>
         <div className="productdisplay-left d-flex align-items-start gap-3">
           <div className="productdisplay-img-list d-flex align-items-center justify-content-between flex-column gap-3">
-            <img src={`http://localhost:5000/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
+            <img src={`${API_URL}/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
             {imageList}
           </div>
           <div className="productdisplay-img">
-            <img src={`http://localhost:5000/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
+            <img src={`${API_URL}/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
           </div>
         </div>
         <div className="productdisplay-right d-flex flex-column gap-3">

@@ -52,8 +52,21 @@
 	max-width: 392px;
 }
 
-#blog-sliderContainer .slide{
-  padding: 0 24px;
+#blog-sliderContainer .slide {
+	padding: 0 24px;
 }
 
 /* Css for Blog Section- End */
+
+@media (max-width: 768px) {
+	.blog-section .discover-btn {
+		padding: 12px 24px;
+		width: 100%;
+		text-align: center;
+		width: fit-content;
+	}
+
+	#blog-sliderContainer .slide{
+		padding: 0 4px;
+	}
+}

@@ -1,5 +1,5 @@
 .item a{
-  color: var(--text-black);
+  color: var(--black);
 }
 
 .item p {
@@ -7,7 +7,7 @@
 }
 
 .item-price-new {
-  color: var(--text-black);
+  color: var(--black);
   font-size: 18px;
 }
 
@@ -26,7 +26,7 @@
 
 .item-name {
   font-size: 18px;
-  color: var(--text-black) !important;
+  color: var(--black) !important;
   font-family: 'Lato', sans-serif;
   text-overflow: ellipsis;
   white-space: nowrap;

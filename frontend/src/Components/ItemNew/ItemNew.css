@@ -1,14 +1,42 @@
-.itemnew img{
+.itemnew img {
   max-height: 330px;
   object-fit: cover;
   object-position: top;
   transition: all ease 0.3s;
 }
 
-.item-image{
+.item-image {
   z-index: -1;
 }
 
-.itemnew:hover img{
+.itemnew:hover img {
   transform: scale(1.05);
+}
+
+.product-title {
+  color: var(--black);
+}
+
+@media (max-width: 576px) {
+  .product-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* For browsers */
+    line-clamp: 2; /* For VS Code to avoid warnings */
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+  }
+
+  .itemnew .best-seller-tag{
+    font-size: 10px;
+    padding: 6px 4px;
+    writing-mode: vertical-rl;
+    top: 0;
+    left: 0;
+  }
+
+  .itemnew:hover img{
+    transform: unset;
+  }
 }

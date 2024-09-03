@@ -24,7 +24,7 @@ const Brand = () => {
           </div>
           <div className="section-body">
             <slider-container id="brand-sliderContainer">
-              <div className="slider-container w-50 m-auto">
+              <div className="slider-container m-auto">
                 <Slider {...settings}>
                   <div className="slide">
                     <div className="brand-image">
