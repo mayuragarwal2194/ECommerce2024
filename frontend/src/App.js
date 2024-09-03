@@ -7,7 +7,7 @@ import Product from './Pages/Product';
 import Cart from './Pages/Cart';
 import LoginSignup from './Pages/LoginSignup';
 import Announcement from './Components/Announcement/Announcement';
-import NavbarNew from './Components/NavbarNew/NavbarNew';
+import Navbar from './Components/Navbar/Navbar';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import FooterNew from './Components/FooterNew/FooterNew';
@@ -32,7 +32,7 @@ function AppContent() {
   return (
     <>
       {shouldRenderComponent && <Announcement />}
-      {shouldRenderComponent && <NavbarNew />}
+      {shouldRenderComponent && <Navbar />}
       <Routes>
         <Route path='/' element={<Shop />} />
         <Route path='/:categoryId' element={<ShopCategory />} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import './NavbarNew.css';
+import './Navbar.css';
 import { Link, useLocation } from 'react-router-dom';
 // import { ShopContext } from '../../Context/ShopContext';
 import { fetchTopCategories, API_URL } from '../../services/api';
@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Hamburger from './Hamburger/Hamburger';
 
 
-const NavbarNew = () => {
+const Navbar = () => {
   const [menu, setMenu] = useState('shop');
   const [topCategories, setTopCategories] = useState([]);
   // const { getTotalCartItems } = useContext(ShopContext);
@@ -55,7 +55,7 @@ const NavbarNew = () => {
   return (
     <div className={`navbar-section inside-banner ${isSticky && location.pathname === '/' ? 'sticky' : ''} ${isReveal && location.pathname !== '/' ? 'reveal' : ''}`}>
       <div className="px-12 px-lg-5">
-        <nav className='navbarnew d-none d-lg-flex align-items-center justify-content-between p-0'>
+        <nav className='navbar d-none d-lg-flex align-items-center justify-content-between p-0'>
           <div className="store-logo-wrapper flex-1">
             <Link to='/' aria-label="Visit FashionFusion Homepage" className="store-logo d-block default-logo">
               <img src={`/images/${isSticky && location.pathname === '/' ? 'logoBlack.png' : 'logoWhite.png'}`} className={`w-100 h-100 ${isReveal && location.pathname !== '/' ? 'd-none' : 'd-inline-block'}`} alt="Logo" />
@@ -241,4 +241,4 @@ const NavbarNew = () => {
   );
 }
 
-export default NavbarNew;
+export default Navbar;
