@@ -13,3 +13,9 @@
 .descriptionbox-description p{
   color: #121212bf;
 }
+
+@media (max-width: 576px) {
+  .descriptionbox-navigator{
+    flex-wrap: wrap;
+  }
+}

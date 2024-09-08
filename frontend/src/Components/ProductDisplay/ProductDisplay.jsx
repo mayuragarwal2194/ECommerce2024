@@ -18,7 +18,7 @@ const ProductDisplay = ({ product }) => {
 
   return (
     <>
-      <div className='productdisplay my-4 d-flex align-items-start gap-5'>
+      <div className='productdisplay my-4 d-lg-flex align-items-start gap-5'>
         <div className="productdisplay-left d-flex align-items-start gap-3">
           <div className="productdisplay-img-list d-flex align-items-center justify-content-between flex-column gap-3">
             <img src={`${API_URL}/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
@@ -60,7 +60,7 @@ const ProductDisplay = ({ product }) => {
               ))}
             </ul>
           </div>
-          <div className='productdisplay-add-btn d-flex align-items-center gap-3'>
+          <div className='productdisplay-add-btn d-lg-flex align-items-center gap-3'>
             {/* <BTN_FILL_RED btn_name={`Add To Cart`}  /> */}
             <div role="button" className="ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center" onClick={handleAddToCart}>Add to cart</div>
             <div role="button" className="ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center">Wishlist</div>

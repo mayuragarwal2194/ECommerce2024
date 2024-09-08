@@ -1,6 +1,7 @@
 /* Hamburger Css */
 .hamburger-icon {
   height: fit-content;
+  width: fit-content;
 }
 
 .hamburger-menu {
@@ -15,6 +16,14 @@
   -webkit-transition: 0.2s ease-in-out;
   -o-transition: 0.2s ease-in-out;
   transition: 0.2s ease-in-out;
+}
+
+.hamvurger-nav-item{
+  color: var(--black);
+}
+
+.hamvurger-nav-item:last-child .select{
+  padding-bottom: 0 !important;
 }
 
 .hamburger .hamburger-overlay {
@@ -129,11 +138,11 @@ body.no-scroll {
   color: var(--black-07);
 }
 
-.ri-arrow-down-s-line {
+/* .ri-arrow-down-s-line {
   -webkit-transition: 0.3s ease-in-out;
   -o-transition: 0.3s ease-in-out;
   transition: 0.3s ease-in-out;
-}
+} */
 
 .rotate {
   transform: rotate(180deg);

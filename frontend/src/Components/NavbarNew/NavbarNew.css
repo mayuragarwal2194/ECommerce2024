@@ -3,16 +3,14 @@
   transition: all ease-in-out 0.3s;
   z-index: 10;
   border-bottom: 1px solid transparent;
-  position: absolute;
   width: 100%;
-  /* Initially absolute */
 }
 
 /* Sticky Navbar */
 .navbar-section.sticky {
-  position: fixed;
+  position: fixed !important;
   top: 0;
-  background-color: #fff;
+  /* background-color: #fff; */
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
   width: 100%;
 }
@@ -27,33 +25,32 @@
 
 /* Inside Banner Styles */
 .navbar-section.inside-banner,
-.navbar-section.inside-banner .nav-item a {
+.navbar-section.inside-banner .nav-item a,
+.navbar-section.inside-banner .nav-icons svg path {
   color: #fff;
   background-color: transparent;
   transition: all 0.2s ease-in-out;
   width: 100%;
 }
 
-.navbar-section.inside-banner.reveal {
-  color: var(--black);
-  position: static;
-}
-
-.navbar-section.inside-banner.reveal .nav-item a,
-.navbar-section.inside-banner.reveal i,
-.navbar-section.inside-banner.reveal .dropdown-hover .dropbtn {
+.navbar-section.inside-banner.notHomeCss .nav-icons svg path {
   color: var(--black);
 }
 
-/* On-Top Navbar */
-.navbar-section.on-top {
-  background-color: transparent;
+.navbar-section.inside-banner.notHomeCss {
+  border-bottom: 1px solid #1c1c1c;
+}
+
+.navbar-section.inside-banner.notHomeCss,
+.navbar-section.inside-banner.notHomeCss .nav-item a,
+.navbar-section.inside-banner.notHomeCss .nav-icons li i,
+.navbar-section.inside-banner.notHomeCss .dropdown-hover .dropbtn {
+  color: var(--black);
 }
 
 .navbar-section.on-top,
 .navbar-section.sticky,
 .navbar-section.navbar-visible,
-.navbar-section:hover,
 .navbar-section:hover .nav-item a,
 .navbar-section.sticky .nav-item a {
   --black: #000000;
@@ -66,19 +63,23 @@
   -webkit-backdrop-filter: unset !important;
 }
 
-/* Logo Behavior on Hover */
-.navbar-section:hover .hover-logo {
-  display: inline-block !important;
-}
-
-.navbar-section:hover .default-logo {
-  display: none !important;
+.navbar-section:hover {
+  background-color: var(--white) !important;
+  z-index: 99;
+  border-bottom: 1px solid #1c1c1c;
+  box-shadow: unset !important;
+  backdrop-filter: unset !important;
+  -webkit-backdrop-filter: unset !important;
 }
 
 /* Navbar Right Section */
 .navbar-section .navbar-right,
 .navbar-section .navbar-right .nav-icons {
   gap: 20px;
+}
+
+.navbar-section .navbar-right .nav-icons i {
+  font-size: 24px;
 }
 
 .navbar-section .navbar-right,
@@ -204,7 +205,7 @@
 }
 
 /* Navbar Icons */
-.nav-icons li a,
+.nav-icons li .nav-item a,
 .nav-icons li i {
   color: var(--white);
 }
@@ -261,9 +262,13 @@
   stroke: var(--black);
 }
 
-.navbar-section:hover i,
+.navbar-section:hover .navbar-right i,
 .navbar-section:hover .dropdown-hover .dropbtn {
   --black: #000000;
+  color: var(--black);
+}
+
+.navbar-section:hover .navbar-right svg path {
   color: var(--black);
 }
 
@@ -353,35 +358,55 @@
   letter-spacing: normal;
 }
 
-@media (max-width: 576px) {
-  .navbar-section{
-    border-bottom: 0 !important;
+.cart {
+  position: relative;
+}
+
+.cart .cart-count {
+  position: absolute;
+  bottom: 1px;
+  right: -2px;
+  background-color: red;
+  color: white;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+@media (min-width: 992px) {
+
+  /* Logo Behavior on Hover */
+  .navbar-section:hover .store-logo {
+    content: url('../../../public/Images/logoBlack.png') !important;
   }
+}
+
+@media (max-width: 576px) { 
   .navbar-section.inside-banner {
     background-color: rgba(255, 255, 255, 0);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.187);
     backdrop-filter: blur(2px);
   }
 
-  .navbar-section:hover{
+  .navbar-section:hover {
     background-color: rgba(255, 255, 255, 0) !important;
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.187) !important;
     backdrop-filter: blur(2px) !important;
     border-bottom: 0;
   }
 
-  .navbar-section:hover .default-logo{
+  .navbar-section:hover .default-logo {
     display: block !important;
   }
 
-  .navbar-section:hover i, 
-  .navbar-section:hover .dropdown-hover .dropbtn{
+  .navbar-section:hover .navbar-right i,
+  .navbar-section:hover .dropdown-hover .dropbtn {
     color: var(--white);
   }
 
   .navbar-section.sticky:hover,
-  .navbar-section.sticky:hover i
-  {
+  .navbar-section.sticky:hover i {
     background-color: var(--white) !important;
     color: var(--black) !important;
   }

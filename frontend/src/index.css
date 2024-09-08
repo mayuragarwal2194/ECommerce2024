@@ -84,6 +84,14 @@ body {
   width: 100%;
 }
 
+body{
+  overflow-x: hidden;
+}
+
+.overflow-x-hidden{
+  overflow-x: hidden;
+}
+
 .cursor-pointer {
   cursor: pointer;
 }
@@ -106,6 +114,10 @@ body {
 
 .w-fit-content {
   width: fit-content;
+}
+
+.line-height-normal{
+  line-height: normal;
 }
 
 .outline-0 {

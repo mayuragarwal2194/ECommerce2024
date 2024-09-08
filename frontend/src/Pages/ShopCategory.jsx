@@ -65,7 +65,7 @@ const ShopCategory = () => {
   }
 
   return (
-    <div className='shop-category'>
+    <div className='shop-category mt-5'>
       <div className="container">
         <div className="shopcategory-indexsort my-4 d-flex align-items-center justify-content-between">
           <p className='mb-0'>
@@ -76,7 +76,7 @@ const ShopCategory = () => {
           </div>
         </div>
         <div className="shopcategory-products">
-          <div className="row row-cols-1 row-cols-md-5 g-4">
+          <div className="row row-cols-2 row-cols-md-5 g-4">
             {products.length > 0 ? (
               products.map((item) => (
                 <ItemNew

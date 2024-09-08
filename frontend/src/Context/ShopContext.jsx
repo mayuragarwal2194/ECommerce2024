@@ -7,6 +7,7 @@ export const ShopContext = createContext(null);
 const ShopContextProvider = ({ children }) => {
   const [allProducts, setAllProducts] = useState([]);
   const [cartItems, setCartItems] = useState({});
+  const [isCartOpen, setIsCartOpen] = useState(false); // Added state for cart drawer
 
   // Fetch products when the component mounts
   useEffect(() => {
@@ -35,6 +36,7 @@ const ShopContextProvider = ({ children }) => {
       ...prev,
       [itemId]: (prev[itemId] || 0) + 1,
     }));
+    openCartDrawer(); // Open cart drawer when item is added
   };
 
   // Function to remove one unit of an item from the cart
@@ -62,6 +64,14 @@ const ShopContextProvider = ({ children }) => {
     return Object.values(cartItems).reduce((total, count) => total + count, 0);
   }, [cartItems]);
 
+   // Function to open the cart drawer
+  const openCartDrawer = () => setIsCartOpen(true);
+
+  // Function to close the cart drawer
+  const closeCartDrawer = () => setIsCartOpen(false);
+
+  // Function to toggle the cart drawer
+  const toggleCartDrawer = () => setIsCartOpen(prev => !prev);
 
   const contextValue = useMemo(() => ({
     allProducts,
@@ -70,8 +80,11 @@ const ShopContextProvider = ({ children }) => {
     removeFromCart,
     deleteFromCart,
     getTotalCartItems,
-  }), [allProducts, cartItems, getTotalCartItems]);
-
+    isCartOpen,
+    openCartDrawer,
+    closeCartDrawer,
+    toggleCartDrawer
+  }), [allProducts, cartItems, getTotalCartItems, isCartOpen, addToCart, removeFromCart, deleteFromCart]);
 
   return (
     <ShopContext.Provider value={contextValue}>

@@ -56,7 +56,24 @@ const Hamburger = () => {
       <ToastContainer />
       <div className="hamburger d-lg-none flex-1">
         <div className="hamburger-icon" onClick={toggleMenu}>
-          <i className="ri-menu-line"></i>
+          <svg
+            aria-hidden="true"
+            focusable="false"
+            role="presentation"
+            className="icon icon-hamburger hamburger-icon"
+            viewBox="0 0 64 64"
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+          >
+            <title>icon-hamburger</title>
+            <path
+              d="M7 15h51M7 32h43M7 49h51"
+              stroke="currentColor"
+              fill="none"
+              strokeWidth="3"
+            />
+          </svg>
         </div>
         <div className={`hamburger-menu ${isOpen ? 'open' : ''}`}>
           <div className="border-bottom mb-3">

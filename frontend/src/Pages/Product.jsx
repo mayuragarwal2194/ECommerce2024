@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { ShopContext } from '../Context/ShopContext';
 import Breadcrum from '../Components/Breadcrums/Breadcrum';
 import ProductDisplay from '../Components/ProductDisplay/ProductDisplay';
-import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
+// import RelatedProducts from '../Components/RelatedProducts/RelatedProducts';
 // import DescriptionBox from '../Components/DescriptionBox/DescriptionBox';
 
 const Product = () => {
@@ -40,7 +40,7 @@ const Product = () => {
       <div className='container'>
         <Breadcrum product={product} />
         <ProductDisplay product={product} />
-        <RelatedProducts category={product.category} currentProductId={product._id} />
+        {/* <RelatedProducts category={product.category} currentProductId={product._id} /> */}
       </div>
     </div>
   );

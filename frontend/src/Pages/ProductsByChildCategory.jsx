@@ -37,7 +37,7 @@ const ProductsByChildCategory = () => {
           </div>
         </div>
         <div className="shopcategory-products">
-          <div className="row row-cols-1 row-cols-md-5 g-4">
+          <div className="row row-cols-2 row-cols-md-5 g-lg-4">
             {loading ? (
               <p>Loading products...</p>
             ) : products.length > 0 ? (
