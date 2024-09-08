@@ -1,0 +1,18 @@
+.BtnFillBlack .ff-btn-fill-dark {
+  background-color: var(--black);
+  border: 1px solid var(--black);
+  color: var(--white);
+  transition: all ease 0.2s;
+}
+
+.BtnFillBlack .ff-btn-fill-dark:hover {
+  background-color: transparent;
+  color: var(--black);
+}
+
+@media (max-width: 576px) {
+  .ff-btn-fill-dark{
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+}
