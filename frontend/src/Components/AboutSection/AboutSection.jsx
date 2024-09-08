@@ -1,5 +1,6 @@
 import React from 'react'
 import './AboutSection.css'
+import BtnFillBlack from '../Buttons/BtnFillBlack/BtnFillBlack'
 
 const AboutSection = () => {
   return (
@@ -16,13 +17,7 @@ const AboutSection = () => {
                 <p className="about-description">
                   Dalia was born from the encounter between Wendy and Léo et Violette. Wendy's minimalist and elegant universe corresponds perfectly to the spirit of Léo et Violette.
                 </p>
-                <a
-                  href="#aboutImage"
-                  role="button"
-                  className="ff-btn ff-btn-fill-dark text-capitalize text-decoration-none d-inline-block mt-20 w-fit-content"
-                >
-                  Discover
-                </a>
+                <BtnFillBlack btn_name={'Discover'} />
               </div>
             </div>
             <div className="col-12 col-lg-7">
