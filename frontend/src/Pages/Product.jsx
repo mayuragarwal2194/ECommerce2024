@@ -36,7 +36,7 @@ const Product = () => {
   }
 
   return (
-    <div className="product-detail my-5">
+    <div className="product-detail my-3">
       <div className='container'>
         <Breadcrum product={product} />
         <ProductDisplay product={product} />

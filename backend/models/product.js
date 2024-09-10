@@ -12,6 +12,11 @@ const variantSchema = new mongoose.Schema({
   quantity: {
     type: Number,
   },
+  sizeStock: {
+    type: Map,
+    of: Number, // Map where the key is the size and the value is the stock quantity
+    default: {}
+  },
   attributes: {
     color: {
       type: String,
@@ -89,7 +94,11 @@ const productSchema = new mongoose.Schema({
 
 // Pre-save middleware to update stock status
 productSchema.pre('save', function (next) {
-  this.stockStatus = this.variants.some(variant => variant.quantity > 0) ? 'In Stock' : 'Out Of Stock';
+  // Check if any variant has stock available
+  const isInStock = this.variants.some(variant => {
+    return Object.values(variant.sizeStock).some(stock => stock > 0);
+  });
+  this.stockStatus = isInStock ? 'In Stock' : 'Out Of Stock';
   next();
 });
 

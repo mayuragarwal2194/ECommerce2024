@@ -1,0 +1,13 @@
+/* SyncedSlider.css */
+.main-slider-image-container {
+  cursor: grab; /* Default cursor when hovering */
+  user-select: none; /* Prevent text/image selection while dragging */
+}
+
+.main-slider-image-container.grabbing {
+  cursor: grabbing; /* Cursor when clicking and dragging */
+}
+
+.productdisplay-main-img {
+  pointer-events: none; /* Prevent pointer events on the image itself */
+}

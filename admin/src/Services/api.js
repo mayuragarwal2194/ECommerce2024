@@ -79,7 +79,7 @@ export const getAvailableSizes = async () => {
       throw new Error('Network response was not ok');
     }
     const sizes = await response.json();
-    console.log(sizes);
+    // console.log(sizes);
     
     return sizes;
   } catch (error) {

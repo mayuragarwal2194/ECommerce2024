@@ -47,6 +47,15 @@ const addProduct = async (req, res) => {
         })
       );
 
+      // Validate that sizeStock matches attributes.size
+      const sizeStockKeys = Object.keys(variant.sizeStock || {});
+      const sizeNames = sizeArray.map(size => size.toLowerCase());
+
+      const isValidStock = sizeNames.every(size => sizeStockKeys.includes(size));
+      if (!isValidStock || sizeStockKeys.length !== sizeNames.length) {
+        throw new Error(`Size stock does not match the sizes provided for variant with SKU: ${variant.sku}`);
+      }
+
       return {
         ...variant,
         attributes: {
@@ -239,7 +248,18 @@ const updateProduct = async (req, res) => {
         const variantFeaturedImage = req.files?.find(file => file.fieldname === variantFeaturedImageKey)?.filename || variant.variantFeaturedImage;
         const variantGalleryImages = req.files?.filter(file => file.fieldname === variantGalleryImagesKey).map(file => file.filename) || variant.variantGalleryImages;
 
-        const sizeIds = await getSizeIds(variant.attributes.size);
+        const sizeArray = Array.isArray(variant.attributes.size) ? variant.attributes.size : [variant.attributes.size];
+        const sizeIds = await getSizeIds(sizeArray);
+
+        // Validate that sizeStock matches attributes.size
+        const sizeStockKeys = Object.keys(variant.sizeStock || {});
+        const sizeNames = sizeArray.map(size => size.toLowerCase());
+
+        const isValidStock = sizeNames.every(size => sizeStockKeys.includes(size));
+        if (!isValidStock || sizeStockKeys.length !== sizeNames.length) {
+          throw new Error(`Size stock does not match the sizes provided for variant with SKU: ${variant.sku}`);
+        }
+
 
         // console.log(`Size IDs for variant ${index}:`, sizeIds);
 
@@ -258,7 +278,6 @@ const updateProduct = async (req, res) => {
 
       existingProduct.variants = updatedVariants;
     }
-
 
 
     await existingProduct.save();
@@ -301,13 +320,36 @@ const getSizeIds = async (sizeArray) => {
 // Get all Products
 const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate('category');
-    res.json(products);
+    const products = await Product.find()
+      .populate('category')  // Populate the category field
+      .populate({
+        path: 'variants',
+        populate: [
+          {
+            path: 'attributes.size',  // Populate sizes within variants
+            model: 'size'
+          }
+        ]
+      });
+
+    // Post-processing to ensure sizeStock is in correct format if needed
+    const processedProducts = products.map(product => {
+      product.variants = product.variants.map(variant => {
+        // Ensure sizeStock is correctly represented
+        variant.sizeStock = Object.fromEntries(variant.sizeStock);
+        return variant;
+      });
+      return product;
+    });
+
+    res.json(processedProducts);
   } catch (error) {
     console.error('Error in getAllProducts:', error);
     res.status(500).json({ message: 'Failed to fetch products' });
   }
 };
+
+
 
 // Get product by id
 const getProductById = async (req, res) => {

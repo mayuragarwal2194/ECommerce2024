@@ -1,32 +1,113 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import './ProductDisplay.css';
 import { ShopContext } from '../../Context/ShopContext';
 import DescriptionBox from '../DescriptionBox/DescriptionBox';
 import { API_URL } from '../../services/api';
+import SyncedSlider from '../SyncedSlider/SyncedSlider';
 
 const ProductDisplay = ({ product }) => {
   const { addToCart } = useContext(ShopContext);
+  const [selectedSize, setSelectedSize] = useState(null);
+  const [selectedColor, setSelectedColor] = useState(null);
+  const [quantity, setQuantity] = useState(0);
+  const [variantImages, setVariantImages] = useState({
+    featuredImage: '',
+    galleryImages: []
+  });
+  const [availableSizes, setAvailableSizes] = useState([]);
+  const [sizeIdMap, setSizeIdMap] = useState({});
+
+  useEffect(() => {
+    if (product.variants.length > 0) {
+      const initialColor = product.variants[0].attributes.color;
+      setSelectedColor(initialColor);
+      const initialVariant = product.variants.find(variant => variant.attributes.color === initialColor);
+
+      if (initialVariant) {
+        setVariantImages({
+          featuredImage: `${API_URL}/uploads/variants/featured/${initialVariant.variantFeaturedImage}`,
+          galleryImages: initialVariant.variantGalleryImages.map(image => `${API_URL}/uploads/variants/gallery/${image}`)
+        });
+
+        // Create a mapping of size IDs to size names
+        const sizeIdMap = {};
+        initialVariant.attributes.size.forEach(size => {
+          sizeIdMap[size._id.toString()] = size.sizeName;
+        });
+        setSizeIdMap(sizeIdMap);
+
+        const initialSizes = Object.keys(initialVariant.sizeStock).map(sizeId => sizeIdMap[sizeId] || sizeId);
+        setAvailableSizes([...new Set(initialSizes)]);
+
+        if (initialSizes.length > 0) {
+          setSelectedSize(initialSizes[0]);
+          setQuantity(initialVariant.sizeStock[Object.keys(initialVariant.sizeStock).find(sizeId => sizeIdMap[sizeId] === initialSizes[0])] || 0);
+        }
+      }
+    }
+  }, [product.variants]);
+
+  useEffect(() => {
+    if (selectedColor) {
+      const selectedVariant = product.variants.find(variant => variant.attributes.color === selectedColor);
+
+      if (selectedVariant) {
+        setVariantImages({
+          featuredImage: `${API_URL}/uploads/variants/featured/${selectedVariant.variantFeaturedImage}`,
+          galleryImages: selectedVariant.variantGalleryImages.map(image => `${API_URL}/uploads/variants/gallery/${image}`)
+        });
+
+        // Create a mapping of size IDs to size names
+        const sizeIdMap = {};
+        selectedVariant.attributes.size.forEach(size => {
+          sizeIdMap[size._id.toString()] = size.sizeName;
+        });
+        setSizeIdMap(sizeIdMap);
+
+        const newSizes = Object.keys(selectedVariant.sizeStock).map(sizeId => sizeIdMap[sizeId] || sizeId);
+        setAvailableSizes([...new Set(newSizes)]);
+
+        if (newSizes.length > 0) {
+          setSelectedSize(newSizes[0]);
+          setQuantity(selectedVariant.sizeStock[Object.keys(selectedVariant.sizeStock).find(sizeId => sizeIdMap[sizeId] === newSizes[0])] || 0);
+        }
+      }
+    }
+  }, [selectedColor, product.variants]);
+
+  useEffect(() => {
+    if (selectedSize && selectedColor) {
+      const selectedVariant = product.variants.find(variant => variant.attributes.color === selectedColor);
+      if (selectedVariant) {
+        const sizeId = Object.keys(selectedVariant.sizeStock).find(sizeId => sizeIdMap[sizeId] === selectedSize);
+        setQuantity(selectedVariant.sizeStock[sizeId] || 0);
+      }
+    }
+  }, [selectedSize, selectedColor, product.variants]);
 
   const handleAddToCart = () => {
-    addToCart(product.id);
+    if (selectedSize && selectedColor) {
+      addToCart(product.id, selectedSize, selectedColor);
+    } else {
+      alert('Please select both size and color');
+    }
   };
 
-  // Dynamic rendering for product images
-  const imageList = product.galleryImages.map((image, index) => (
-    <img key={index} src={`${API_URL}/uploads/gallery/${image}`} alt={`${index}`} />
-  ));
+  const images = [
+    variantImages.featuredImage,
+    ...Array.isArray(variantImages.galleryImages) ? variantImages.galleryImages : []
+  ].filter(image => image);
+
+  const colorOptions = product.variants.map((variant) => ({
+    color: variant.attributes.color,
+    image: variant.variantFeaturedImage,
+  }));
 
   return (
     <>
       <div className='productdisplay my-4 d-lg-flex align-items-start gap-5'>
-        <div className="productdisplay-left d-flex align-items-start gap-3">
-          <div className="productdisplay-img-list d-flex align-items-center justify-content-between flex-column gap-3">
-            <img src={`${API_URL}/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
-            {imageList}
-          </div>
-          <div className="productdisplay-img">
-            <img src={`${API_URL}/uploads/featured/${product.featuredImage}`} alt="Featured" className='productdisplay-main-img' />
-          </div>
+        <div className="productdisplay-left">
+          <SyncedSlider images={images} />
         </div>
         <div className="productdisplay-right d-flex flex-column gap-3">
           <h1 className='product-title mb-0 fw-600'>{product.itemName}</h1>
@@ -53,16 +134,44 @@ const ProductDisplay = ({ product }) => {
           <div className="productdisplay-size">
             <h1 className='text-uppercase fw-bold'>Select Size</h1>
             <ul className="product-sizes mb-0 list-unstyled d-flex align-items-center gap-3">
-              {product.availableSizes && product.availableSizes.map((size, index) => (
-                <li key={index} className='d-flex align-items-center justify-content-center cursor-pointer'>
+              {availableSizes.map((size, index) => (
+                <li
+                  key={index}
+                  className={`size-option ${selectedSize === size ? 'selected' : ''}`}
+                  onClick={() => setSelectedSize(size)}
+                >
                   {size}
                 </li>
               ))}
             </ul>
           </div>
+          <div className="productdisplay-color">
+            <h1 className='text-uppercase fw-bold'>Select Color</h1>
+            <ul className="color-options mb-0 list-unstyled d-flex align-items-center gap-3">
+              {colorOptions.map((colorOption, index) => (
+                <li
+                  key={index}
+                  className={`color-option ${selectedColor === colorOption.color ? 'selected' : ''}`}
+                  style={{ backgroundImage: `url(${API_URL}/uploads/variants/featured/${colorOption.image})` }}
+                  onClick={() => setSelectedColor(colorOption.color)}
+                >
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="product-quantity">
+            <h1 className='text-uppercase fw-bold'>Stock Quantity</h1>
+            <p>{quantity} items available</p>
+          </div>
+
           <div className='productdisplay-add-btn d-lg-flex align-items-center gap-3'>
-            {/* <BTN_FILL_RED btn_name={`Add To Cart`}  /> */}
-            <div role="button" className="ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center" onClick={handleAddToCart}>Add to cart</div>
+            <div
+              role="button"
+              className="ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center"
+              onClick={handleAddToCart}
+            >
+              Add to cart
+            </div>
             <div role="button" className="ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center">Wishlist</div>
           </div>
           <div className="product-buy-now-btn w-100">

@@ -96,6 +96,10 @@ body{
   cursor: pointer;
 }
 
+.cursor-grab{
+  cursor: grab;
+}
+
 .fw-500 {
   font-weight: 500;
 }
