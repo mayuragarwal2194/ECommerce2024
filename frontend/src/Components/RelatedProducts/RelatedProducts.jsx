@@ -12,10 +12,10 @@ const RelatedProducts = ({ category, currentProductId }) => {
     .slice(0, 4); // Limit to 4 products
 
   return (
-    <div className="related-products">
+    <div className="related-products mt-5">
       <h2>Related Products</h2>
       <div className="related-products-list">
-        <div className="row row-cols-1 row-cols-md-4 g-4">
+        <div className="row row-cols-2 row-cols-md-4 row-cols-lg-5 g-4">
           {relatedProducts.map((item, i) => (
             <ItemNew
               key={item._id}

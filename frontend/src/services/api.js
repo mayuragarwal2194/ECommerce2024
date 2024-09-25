@@ -1,7 +1,7 @@
-// export const API_URL = 'http://localhost:5000';
+export const API_URL = 'http://localhost:5000';
 
 // Only for Mobile Testing
-export const API_URL = 'http://192.168.1.4:5000';
+// export const API_URL = 'http://192.168.1.4:5000';
 
 export const getAllProducts = async () => {
   try {
@@ -120,6 +120,55 @@ export const fetchProductsByChildCategory = async (childId) => {
     throw error;
   }
 };
+
+// Login
+export const handleLogin = async (email, password) => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+
+    const data = await response.json();
+    return data.token; // Return the token
+  } catch (err) {
+    console.error('Error logging in:', err);
+    throw err;
+  }
+};
+
+// Signup
+export const handleSignUp = async (username, email, password) => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, email, password }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message);
+    }
+
+    const data = await response.json();
+    return data; // You can return any data received, such as a success message
+  } catch (err) {
+    console.error('Error signing up:', err);
+    throw err;
+  }
+};
+
 
 
 

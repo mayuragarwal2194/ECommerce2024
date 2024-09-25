@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './CartDrawer.css';
 import { ShopContext } from '../../../Context/ShopContext';
 import { API_URL } from '../../../services/api';

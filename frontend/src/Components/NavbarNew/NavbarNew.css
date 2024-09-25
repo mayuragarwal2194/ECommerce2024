@@ -73,8 +73,12 @@
 }
 
 /* Navbar Right Section */
-.navbar-section .navbar-right,
+/* .navbar-section .navbar-right,
 .navbar-section .navbar-right .nav-icons {
+  gap: 20px;
+} */
+
+.search-cart{
   gap: 20px;
 }
 
@@ -91,7 +95,7 @@
 .dropdown-hover .dropbtn {
   font-size: 16px;
   color: var(--white);
-  padding: 27px 0;
+  padding: 24px 0;
   transition: all ease 0.2s;
 }
 
@@ -108,22 +112,45 @@
   position: absolute;
   display: none;
   border-radius: 0 0 12px 12px;
-  left: 0;
   transition: all ease 0.2s;
   width: 90%;
+  right: -50%;
 }
 
-.dropdown-content a {
+.user-dropdown{
+  padding: 0 20px;
+}
+
+.user-dropdown .dropdown-content{
+  min-width: 20rem;
+}
+
+.dropdown-content{
+  color: var(--text-secondary);
+  text-decoration: none;
+  text-align: left;
+  transition: all ease 0.2s;
+  font-size: 12px;
+  fill: var(--text-secondary) !important;
+} 
+
+.dropdown-content a,
+.dropdown-content path
+{
   color: var(--text-secondary);
   text-decoration: none;
   display: block;
   text-align: left;
   transition: all ease 0.2s;
   font-size: 12px;
+  fill: var(--text-secondary) !important;
 }
 
-.dropdown-content a:hover {
+.dropdown-content a:hover, 
+.dropdown-content a:hover path
+{
   color: var(--primary);
+  fill: var(--primary) !important;
 }
 
 /* Mega Menu */

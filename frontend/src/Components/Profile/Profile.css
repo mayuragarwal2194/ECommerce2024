@@ -1,0 +1,31 @@
+.profile {
+  text-align: center;
+  margin: 2rem;
+}
+
+.profile-info {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  max-width: 400px;
+}
+
+.profile-picture {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  margin: 1rem 0;
+  color: #333;
+}
+
+p {
+  color: #666;
+  font-size: 1.1rem;
+}

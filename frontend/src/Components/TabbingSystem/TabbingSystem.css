@@ -1,0 +1,38 @@
+.tabbingSystem button {
+  padding: 10px 20px;
+  background-color: transparent;
+  border-width: 0 1px 1px 0;
+  border-style: solid;
+  border-color: #dddddd;
+  font-size: 18px;
+  color: var(--black-75);
+}
+
+.tabbingSystem button:last-child{
+  border-right: 0 !important;
+}
+
+.tabbingSystem button.active {
+  color: var(--black);
+  border-top: 1px solid #dddddd !important;
+  border-bottom: 0;
+  font-weight: bold;
+}
+
+.tab-content div {
+  margin-top: 10px;
+  color: #121212bf;
+}
+
+@media (max-width: 576px) {
+  .tabbingSystem button {
+    font-size: 16px;
+    padding: 5px 10px;
+  }
+
+  .descriptionbox-description{
+    width: 100% !important;
+    text-align: start;
+    padding: 0 8px;
+  }
+}

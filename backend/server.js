@@ -29,6 +29,9 @@ const childCategoryRoutes = require('./routes/childCategoryRoutes');
 const parentCategoryRoutes = require('./routes/parentCategoryRoutes');
 const productRoutes = require('./routes/productRoutes');
 const sizeRoutes = require('./routes/sizeRoutes');
+const reviewRoutes = require('./routes/reviewRoutes');
+const contactRoutes = require('./routes/contactRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Function to recreate indexes
 const recreateIndexes = async () => {
@@ -52,6 +55,9 @@ const startServer = async () => {
     app.use('/api/v1/childcategories', childCategoryRoutes);
     app.use('/products', productRoutes);
     app.use('/api/v1/size', sizeRoutes); 
+    app.use('/api/v1/reviews', reviewRoutes);
+    app.use('/api/v1/contact', contactRoutes);
+    app.use('/api/v1/user', userRoutes);
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

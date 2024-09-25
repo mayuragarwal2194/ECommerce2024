@@ -1,4 +1,5 @@
-// src/utils/utils.js
+import Cookies from 'js-cookie';
+
 export const getDefaultCart = (products) => {
   const cart = {};
   products.forEach(product => {
@@ -8,3 +9,12 @@ export const getDefaultCart = (products) => {
   });
   return cart;
 };
+
+export const isAuthenticated = () => !!Cookies.get('authToken');
+
+export const redirectToLoginIfNotAuthenticated = () => {
+  if (!isAuthenticated()) {
+    window.location.href = '/login'; // Redirect to login if not authenticated
+  }
+};
+

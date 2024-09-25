@@ -77,7 +77,7 @@ const FooterNew = () => {
                             </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
+                            <Link to={'/contact'} className="text-decoration-none mb-0 pb-0">
                               Contact Us
                             </Link>
                           </li>

@@ -13,7 +13,7 @@ const SyncedSlider = ({ images }) => {
     asNavFor: nav2,
     ref: (slider) => setNav1(slider),
     slidesToShow: 1,
-    arrows: true,
+    arrows: false,
     fade: true,
     dots: false,
   };
@@ -52,13 +52,15 @@ const SyncedSlider = ({ images }) => {
       </div>
 
       {/* Thumbnail Slider */}
-      <Slider {...thumbnailSliderSettings} className="thumbnail-slider">
-        {images.map((img, idx) => (
-          <div key={idx} className='productdisplay-img-list'>
-            <img src={img} alt={`Thumbnail ${idx}`} className='cursor-pointer' />
-          </div>
-        ))}
-      </Slider>
+      <div className="thumbnails">
+        <Slider {...thumbnailSliderSettings} className="thumbnail-slider">
+          {images.map((img, idx) => (
+            <div key={idx} className='productdisplay-img-list'>
+              <img src={img} alt={`Thumbnail ${idx}`} className='cursor-pointer w-100' />
+            </div>
+          ))}
+        </Slider>
+      </div>
     </div>
   );
 };

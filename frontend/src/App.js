@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Shop from './Pages/Shop';
 import ShopCategory from './Pages/ShopCategory';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
-import LoginSignup from './Pages/LoginSignup';
 import Announcement from './Components/Announcement/Announcement';
 import NavbarNew from './Components/NavbarNew/NavbarNew';
 import "slick-carousel/slick/slick.css";
@@ -16,6 +15,13 @@ import ProductsByParentCategory from './Pages/ProductsByParentCategory'; // New 
 import ProductsByChildCategory from './Pages/ProductsByChildCategory'; // New component
 import ShopContextProvider, { ShopContext } from './Context/ShopContext';
 import CartDrawer from './Components/NavbarNew/CartDrawer/CartDrawer';
+import Contact from './Pages/Contact/Contact';
+import Profile from './Components/Profile/Profile';
+import Login from './Components/Login/Login';
+import { isAuthenticated } from './Components/Utils/utils';
+import Signup from './Components/Signup/Signup';
+
+
 function App() {
   return (
     <div className="App">
@@ -50,17 +56,29 @@ function AppContent() {
     };
   }, []);
 
+  // Redirect to login page if not authenticated
+  const PrivateRoute = ({ element }) => {
+    if (!isAuthenticated()) {
+      return <Navigate to="/login" replace />;
+    }
+    return element;
+  };
+
   return (
     <>
       <Announcement />
       <NavbarNew isSticky={isSticky} />
+
       <Routes>
         <Route path='/' element={<Shop />} />
         <Route path='/:categoryId' element={<ShopCategory />} />
         <Route path='/product' element={<Product />} />
         <Route path='/product/:productId' element={<Product />} />
         <Route path='/cart' element={<Cart />} />
-        <Route path='/login' element={<LoginSignup />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/signup' element={<Signup />} />
+        <Route path='/contact' element={<Contact />} />
+        <Route path='/profile' element={<PrivateRoute element={<Profile />} />} />
         <Route path='/category/:categoryId' element={<ProductsByTopCategory />} />
         <Route path='/parentcat/:parentId' element={<ProductsByParentCategory />} />
         <Route path='/childcat/:childId' element={<ProductsByChildCategory />} />

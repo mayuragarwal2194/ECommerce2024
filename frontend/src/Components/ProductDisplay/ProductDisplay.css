@@ -6,12 +6,12 @@
   height: 480px;
 }
 
-.productdisplay-left{
+.productdisplay-left {
   width: 30%;
 }
 
 .productdisplay .product-title {
-  font-size: 34px;
+  font-size: clamp(26px, 4vw, 34px);
   line-height: normal;
 }
 
@@ -28,50 +28,79 @@
   color: var(--black-75);
 }
 
-.productdisplay-size h1 {
-  font-size: 16px;
-}
-
 .productdisplay-size li {
   border: 1px solid var(--black-75);
-  border-radius: 100%;
-  width: 29px;
-  height: 29px;
+  border-radius: 2px;
+  width: 35px;
+  height: 35px;
   font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.product-discount{
+.product-discount {
   font-size: 24px;
   color: var(--shopper-red);
 }
 
-.productdisplay-add-btn button{
+.productdisplay-add-btn button {
   border-radius: 4px !important;
   width: 50%;
 }
 
-.product-buy-now-btn button{
+.product-buy-now-btn button {
   border-radius: 4px !important;
   width: 100%;
 }
 
-.productdisplay-left{
+.productdisplay-left {
   position: sticky;
   top: 80px;
   align-self: start;
 }
 
-.product-sizes li.selected {
+.product-sizes li.selected,
+.color-option.selected {
   border: 2px solid #000;
-  background-color: #f0f0f0;
 }
 
-.product-colors li.selected{
-  border: 1px solid red;
+.color-option {
+  width: 60px;
+  height: 80px;
+  border-radius: 2px;
+  background-size: cover;
+  background-position: center;
 }
+
+.productdisplay .thumbnails .slick-initialized .slick-slide {
+  padding: 0 4px;
+}
+
+.size-option {
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.size-option.out-of-stock{
+  position: relative;
+}
+
+.size-option.out-of-stock::after {
+  border-left: 1px solid #bfbfbf;
+  /* width: 100%; */
+  bottom: 0;
+  content: "";
+  left: 50%;
+  position: absolute;
+  top: 0;
+  transform: rotate(45deg);
+}
+
+
+#addToCart[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 
 
 @media (max-width: 576px) {
@@ -79,40 +108,23 @@
     width: 100%;
     height: auto;
   }
-}
 
+  .productdisplay-left {
+    position: static;
+    width: 100%;
+  }
 
+  #addToCart {
+    width: 100% !important;
+    padding: 10px 24px;
+  }
 
+  .payment-info-image {
+    width: 100% !important;
+  }
 
-
-
-
-
-
-
-
-
-
-.color-options {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.color-option {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid transparent;
-  background-size: cover;
-  background-position: center;
-  cursor: pointer;
-  position: relative;
-}
-
-.color-option.selected {
-  border-color: #000; /* Or any color for the selected border */
-}
-
-.color-option.selected::after {
-  display: block; /* Show the indicator for selected option */
+  .color-option {
+    width: 45px;
+    height: 65px;
+  }
 }

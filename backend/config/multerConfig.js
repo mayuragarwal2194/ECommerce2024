@@ -19,6 +19,8 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/categories/parent_image');
     } else if (file.fieldname === 'childImage') {
       cb(null, 'uploads/categories/child_image');
+    } else if (file.fieldname === 'picture') {
+      cb(null, 'uploads/user/picture');
     } else {
       cb(new Error('Unexpected field'));
     }
