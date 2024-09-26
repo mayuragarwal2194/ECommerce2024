@@ -1,0 +1,13 @@
+.show-hide-icons svg{
+  width: 16px;
+}
+
+.show-hide-icons{
+  top: 50%;
+  transform: translateY(-50%);
+  right: 12px;
+}
+
+.login-form #password{
+  padding-right: 30px;
+}

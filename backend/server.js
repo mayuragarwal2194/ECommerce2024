@@ -31,7 +31,9 @@ const productRoutes = require('./routes/productRoutes');
 const sizeRoutes = require('./routes/sizeRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const contactRoutes = require('./routes/contactRoutes');
-const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userProfileRoutes = require('./routes/userProfileRoutes');
+const passwordRoutes = require('./routes/passwordRoutes');
 
 // Function to recreate indexes
 const recreateIndexes = async () => {
@@ -54,10 +56,12 @@ const startServer = async () => {
     app.use('/api/v1/parentcategories', parentCategoryRoutes);
     app.use('/api/v1/childcategories', childCategoryRoutes);
     app.use('/products', productRoutes);
-    app.use('/api/v1/size', sizeRoutes); 
+    app.use('/api/v1/size', sizeRoutes);
     app.use('/api/v1/reviews', reviewRoutes);
     app.use('/api/v1/contact', contactRoutes);
-    app.use('/api/v1/user', userRoutes);
+    app.use('/api/v1/auth', authRoutes);
+    app.use('/api/v1/user', userProfileRoutes);
+    app.use('/api/v1/user', passwordRoutes);  // Merging user profile and password under `/user`
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

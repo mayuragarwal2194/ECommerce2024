@@ -124,7 +124,7 @@ export const fetchProductsByChildCategory = async (childId) => {
 // Login
 export const handleLogin = async (email, password) => {
   try {
-    const response = await fetch(`${API_URL}/api/v1/user/login`, {
+    const response = await fetch(`${API_URL}/api/v1/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ export const handleLogin = async (email, password) => {
 // Signup
 export const handleSignUp = async (username, email, password) => {
   try {
-    const response = await fetch(`${API_URL}/api/v1/user/signup`, {
+    const response = await fetch(`${API_URL}/api/v1/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

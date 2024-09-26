@@ -1,9 +1,9 @@
 const User = require('../models/user');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const { validationResult, body } = require('express-validator');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const bcrypt = require('bcrypt');
 const sendEmail = require('../utils/sendEmail');
+const { validationResult, body } = require('express-validator');
+
 
 // Sign up logic with email confirmation
 exports.signUp = async (req, res) => {
@@ -36,7 +36,7 @@ exports.signUp = async (req, res) => {
     await user.save();
 
     // Prepare email content
-    const confirmationUrl = `${process.env.API_URL}/api/v1/user/confirm/${confirmationToken}`;
+    const confirmationUrl = `${process.env.API_URL}/api/v1/auth/confirm/${confirmationToken}`;
     const emailText = `Please confirm your email by clicking the link: ${confirmationUrl}`;
 
     // Send confirmation email
@@ -51,6 +51,7 @@ exports.signUp = async (req, res) => {
   }
 };
 
+// Email Confirmation
 exports.confirmEmail = async (req, res) => {
   const { token } = req.params;
   console.log('Received token:', token); // Log received token
@@ -130,75 +131,3 @@ exports.login = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
-
-// Profile
-exports.getUserProfile = async (req, res) => {
-  try {
-    // Assume that the user's ID is sent in the request (e.g., from the token)
-    const userId = req.user.id; // Adjust this based on how you set up authentication
-
-    // Find the user by ID
-    const user = await User.findById(userId).select('-password'); // Exclude the password
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.json(user);
-  } catch (error) {
-    console.error('Error fetching user profile:', error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-};
-
-// Controller to edit user details (username and email)
-exports.editUser = async (req, res) => {
-  const { username, email } = req.body;
-  const userId = req.user.id;  // Assuming the user ID comes from the JWT
-
-  try {
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    // Check if email has changed
-    if (email && email !== user.email) {
-      // Temporarily store new email, but mark as unverified
-      user.email = email;
-      user.isVerified = false;
-
-      // Generate email confirmation token
-      const confirmationToken = user.generateConfirmationToken();
-
-      // Save changes (including unverified email)
-      await user.save();
-
-      // Send email confirmation link
-      const confirmationUrl = `${process.env.API_URL}/api/v1/user/confirm/${confirmationToken}`;
-      const emailText = `Please confirm your new email by clicking the link: ${confirmationUrl}`;
-
-      await sendEmail(user.email, 'Email Confirmation', emailText);
-
-      return res.status(200).json({
-        message: 'User updated. Please verify your new email address.',
-      });
-    }
-
-    // Update username if provided
-    if (username) {
-      user.username = username;
-    }
-
-    // Save changes
-    await user.save();
-
-    res.status(200).json({ message: 'User updated successfully.' });
-  } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).json({ message: 'Error updating user details', error });
-  }
-};
-
-
