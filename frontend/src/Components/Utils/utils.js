@@ -1,4 +1,5 @@
 import Cookies from 'js-cookie';
+import { Navigate } from 'react-router-dom';
 
 export const getDefaultCart = (products) => {
   const cart = {};
@@ -10,11 +11,23 @@ export const getDefaultCart = (products) => {
   return cart;
 };
 
-export const isAuthenticated = () => !!Cookies.get('authToken');
+export const isAuthenticated = () => {
+  const token = Cookies.get('authToken');
+  console.log('Token:', token); // Check if the token is present
+  return !!token;
+};
 
 export const redirectToLoginIfNotAuthenticated = () => {
   if (!isAuthenticated()) {
-    window.location.href = '/login'; // Redirect to login if not authenticated
+    return <Navigate to="/login" replace />;
   }
+};
+
+// Redirect to login page if not authenticated
+export const PrivateRoute = ({ element }) => {
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+  return element;
 };
 

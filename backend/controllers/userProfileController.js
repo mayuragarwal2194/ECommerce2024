@@ -1,6 +1,8 @@
 const User = require('../models/user');
 const generateToken = require('../utils/generateToken');
 const sendEmail = require('../utils/sendEmail');
+const fs = require('fs');
+const path = require('path');
 
 
 // Profile
@@ -80,4 +82,63 @@ exports.editUser = async (req, res) => {
     res.status(500).json({ message: 'Error updating user details', error });
   }
 };
+
+// Update profile picture
+exports.updateProfilePicture = async (req, res) => {
+  try {
+    const userId = req.user.id; // Get user ID from token
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Handle profile picture upload
+    let profilePicturePath = '';
+    if (req.files && req.files.length > 0) {
+      const file = req.files.find(file => file.fieldname === 'profilePicture');
+      if (file) {
+        // Check if the user already has a profile picture and delete it
+        if (user.profilePicture) {
+          const oldImagePath = user.profilePicture;
+
+          // Check if the file exists before attempting to delete
+          fs.access(oldImagePath, fs.constants.F_OK, (err) => {
+            if (err) {
+              console.error('File does not exist:', oldImagePath);
+              return;
+            }
+
+            // Delete the old image
+            fs.unlink(oldImagePath, (err) => {
+              if (err) {
+                console.error('Failed to delete old image:', err);
+              } else {
+                console.log('Successfully deleted old image:', oldImagePath);
+              }
+            });
+          });
+        }
+
+        // Store the uploaded file path
+        profilePicturePath = file.path;
+      }
+    }
+
+    if (!profilePicturePath) {
+      return res.status(400).json({ message: 'No profile picture uploaded' });
+    }
+
+    // Update user profile picture path
+    user.profilePicture = profilePicturePath;
+    await user.save();
+
+    res.json({ message: 'Profile picture updated successfully', profilePicture: user.profilePicture });
+  } catch (error) {
+    console.error('Error updating profile picture:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+
 

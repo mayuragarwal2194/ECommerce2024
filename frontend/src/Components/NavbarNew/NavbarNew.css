@@ -438,3 +438,8 @@
     color: var(--black) !important;
   }
 }
+
+.nav-user-profile{
+  width: 32px;
+  height: 32px;
+}

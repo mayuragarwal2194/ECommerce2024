@@ -32,14 +32,19 @@ const NavbarNew = ({ isSticky }) => {
       })
         .then(response => response.json())
         .then(data => {
+          console.log(data);
+
           setUserData({
+            ...data,
             name: data.username,
             email: data.email,
+            profilePicture: data.profilePicture || 'images/default-profile.png'
           });
         })
         .catch(err => console.error('Error fetching user data:', err));
     }
   }, []);
+
 
   const fetchCategories = async () => {
     try {
@@ -233,13 +238,13 @@ const NavbarNew = ({ isSticky }) => {
                     {isAuthenticated() ? (
                       <div className='if-logged-in-only'>
                         <div className='d-flex align-items-center gap-3 mb-3'>
-                          <img
-                            src={userData.picture || 'images/default-profile.png'}
-                            alt="User Profile"
-                            width="32px"
-                            height="32px"
-                            className='rounded-circle'
-                          />
+                          <div className='nav-user-profile'>
+                            <img
+                              src={userData.profilePicture ? `${API_URL}/${userData.profilePicture}` : 'path/to/default/profile/picture.jpg'} // Fallback to default image
+                              alt="User Profile"
+                              className='rounded-circle w-100 h-100 object-cover object-position-top'
+                            />
+                          </div>
                           <div>
                             <div className='fw-bold fs-6'>{userData.name || 'User Name'}</div>
                             <div>{userData.email || 'User Email'}</div>
@@ -274,6 +279,7 @@ const NavbarNew = ({ isSticky }) => {
                         Login
                       </Link>
                     )}
+
                   </div>
                 </div>
               </li>

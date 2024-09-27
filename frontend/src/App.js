@@ -18,7 +18,7 @@ import CartDrawer from './Components/NavbarNew/CartDrawer/CartDrawer';
 import Contact from './Pages/Contact/Contact';
 import Profile from './Components/Profile/Profile';
 import Login from './Components/Login/Login';
-import { isAuthenticated } from './Components/Utils/utils';
+import { isAuthenticated, PrivateRoute } from './Components/Utils/utils';
 import Signup from './Components/Signup/Signup';
 
 
@@ -55,14 +55,6 @@ function AppContent() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
-  // Redirect to login page if not authenticated
-  const PrivateRoute = ({ element }) => {
-    if (!isAuthenticated()) {
-      return <Navigate to="/login" replace />;
-    }
-    return element;
-  };
 
   return (
     <>

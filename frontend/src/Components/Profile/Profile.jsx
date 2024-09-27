@@ -7,12 +7,14 @@ const Profile = () => {
   const [userProfile, setUserProfile] = useState({
     name: 'User Name',
     email: 'User Email',
-    picture: 'images/default-profile.png',
+    profilePicture: 'images/default-profile.png',
   });
-  const [editMode, setEditMode] = useState(false);
+  const [editProfileMode, setEditProfileMode] = useState(false); // For editing username and email
+  const [editPictureMode, setEditPictureMode] = useState(false); // For editing profile picture
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    profilePicture: null, // Added for file upload
   });
   const [message, setMessage] = useState('');
 
@@ -32,11 +34,14 @@ const Profile = () => {
           setUserProfile({
             name: data.username || 'User Name',
             email: data.email || 'User Email',
-            picture: data.picture || 'images/default-profile.png', // Use default picture if not provided
+            profilePicture: data.profilePicture
+              ? `${API_URL}/${data.profilePicture}`
+              : 'images/default-profile.png', // Use default picture if not provided
           });
           setFormData({
             name: data.username || 'User Name',
             email: data.email || 'User Email',
+            profilePicture: null,
           });
         })
         .catch((error) => {
@@ -53,9 +58,21 @@ const Profile = () => {
     });
   };
 
-  const handleFormSubmit = (e) => {
+  const handleFileChange = (e) => {
+    setFormData({
+      ...formData,
+      profilePicture: e.target.files[0], // Set the selected file
+    });
+  };
+
+  const handleProfileFormSubmit = (e) => {
     e.preventDefault();
     const token = Cookies.get('authToken');
+    const profileData = {
+      username: formData.name,
+      email: formData.email,
+    };
+
     if (token) {
       fetch(`${API_URL}/api/v1/user/edit`, {
         method: 'PUT',
@@ -63,21 +80,18 @@ const Profile = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          username: formData.name,
-          email: formData.email,
-        }),
+        body: JSON.stringify(profileData), // Send JSON data for username and email
       })
         .then((response) => response.json())
         .then((data) => {
           if (data.message) {
             setMessage(data.message);
             setUserProfile({
+              ...userProfile,
               name: formData.name,
               email: formData.email,
-              picture: userProfile.picture,
             });
-            setEditMode(false); // Exit edit mode after successful update
+            setEditProfileMode(false); // Exit edit mode after successful update
           }
         })
         .catch((error) => {
@@ -87,13 +101,72 @@ const Profile = () => {
     }
   };
 
+  const handlePictureFormSubmit = (e) => {
+    e.preventDefault();
+    const token = Cookies.get('authToken');
+    const formDataToSend = new FormData();
+    
+    // Append the profile picture if provided
+    if (formData.profilePicture) {
+      formDataToSend.append('profilePicture', formData.profilePicture);
+    }
+
+    if (token) {
+      fetch(`${API_URL}/api/v1/user/Profile-Picture`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formDataToSend, // Send the FormData
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message) {
+            setMessage(data.message);
+            setUserProfile({
+              ...userProfile,
+              profilePicture: data.profilePicture ? `${API_URL}/${data.profilePicture}` : userProfile.profilePicture,
+            });
+            setEditPictureMode(false); // Exit edit mode after successful update
+          }
+        })
+        .catch((error) => {
+          setMessage('Error updating profile picture.');
+          console.error('Error updating profile picture:', error);
+        });
+    }
+  };
+
   return (
     <div className="profile">
       <h1>Profile Page</h1>
       <div className="profile-info">
-        <img src={userProfile.picture} alt="Profile" className="profile-picture" />
-        {editMode ? (
-          <form onSubmit={handleFormSubmit} className="profile-edit-form">
+        <img src={userProfile.profilePicture} alt="Profile" className="profile-picture object-position-top" />
+        {editPictureMode ? (
+          <form onSubmit={handlePictureFormSubmit} className="profile-edit-form">
+            <div>
+              <label htmlFor='profilePicture' className='cursor-pointer'>Profile Picture:</label>
+              <input
+                type="file"
+                name="profilePicture"
+                id='profilePicture'
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+            </div>
+            <button type="submit">Save Profile Picture</button>
+          </form>
+        ) : (
+          <>
+            <h2>{userProfile.name}</h2>
+            <p>{userProfile.email}</p>
+            <button onClick={() => setEditProfileMode(true)}>
+              Edit Username/Email
+            </button>
+          </>
+        )}
+        {editProfileMode && (
+          <form onSubmit={handleProfileFormSubmit} className="profile-edit-form">
             <div>
               <label htmlFor='username' className='cursor-pointer'>Username:</label>
               <input
@@ -117,15 +190,11 @@ const Profile = () => {
               />
             </div>
             <button type="submit">Save Changes</button>
+            <button onClick={() => setEditProfileMode(false)}>Cancel</button>
           </form>
-        ) : (
-          <>
-            <h2>{userProfile.name}</h2>
-            <p>{userProfile.email}</p>
-          </>
         )}
-        <button onClick={() => setEditMode(!editMode)}>
-          {editMode ? 'Cancel' : 'Edit Profile'}
+        <button onClick={() => setEditPictureMode(!editPictureMode)}>
+          {editPictureMode ? 'Cancel Profile Picture Edit' : 'Edit Profile Picture'}
         </button>
         {message && <p>{message}</p>}
       </div>
