@@ -151,6 +151,7 @@
 {
   color: var(--primary);
   fill: var(--primary) !important;
+  background-color: #0000001d;
 }
 
 /* Mega Menu */

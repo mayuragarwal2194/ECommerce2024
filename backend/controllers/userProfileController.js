@@ -2,7 +2,7 @@ const User = require('../models/user');
 const generateToken = require('../utils/generateToken');
 const sendEmail = require('../utils/sendEmail');
 const fs = require('fs');
-const path = require('path');
+// const path = require('path');
 
 
 // Profile
@@ -12,13 +12,16 @@ exports.getUserProfile = async (req, res) => {
     const userId = req.user.id; // Adjust this based on how you set up authentication
 
     // Find the user by ID
-    const user = await User.findById(userId).select('-password'); // Exclude the password
+    const user = await User.findById(userId)
+      .select('-password') // Exclude the password
+      .populate('deliveryInfo');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
     res.json(user);
+    console.log(user.deliveryInfo);
   } catch (error) {
     console.error('Error fetching user profile:', error);
     res.status(500).json({ message: 'Internal server error' });
@@ -41,6 +44,13 @@ exports.editUser = async (req, res) => {
 
     // Check if email has changed
     if (email && email !== oldEmail) {
+      // Check if the new email is already in use by another user
+      const existingUser = await User.findOne({ email });
+
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already exists' });
+      }
+
       // Temporarily update email and mark as unverified
       user.email = email;
       user.isVerified = false;

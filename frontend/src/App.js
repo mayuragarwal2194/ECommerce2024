@@ -20,6 +20,8 @@ import Profile from './Components/Profile/Profile';
 import Login from './Components/Login/Login';
 import { isAuthenticated, PrivateRoute } from './Components/Utils/utils';
 import Signup from './Components/Signup/Signup';
+import PasswordReset from './Components/Profile/PasswordReset/PasswordReset';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -60,7 +62,7 @@ function AppContent() {
     <>
       <Announcement />
       <NavbarNew isSticky={isSticky} />
-
+      <ToastContainer />
       <Routes>
         <Route path='/' element={<Shop />} />
         <Route path='/:categoryId' element={<ShopCategory />} />
@@ -74,6 +76,7 @@ function AppContent() {
         <Route path='/category/:categoryId' element={<ProductsByTopCategory />} />
         <Route path='/parentcat/:parentId' element={<ProductsByParentCategory />} />
         <Route path='/childcat/:childId' element={<ProductsByChildCategory />} />
+        <Route path="/password-reset/:token" element={<PasswordReset />} />
       </Routes>
       <FooterNew />
       <CartDrawer isCartOpen={isCartOpen} onClose={closeCartDrawer} isSticky={isSticky} />

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Hamburger.css';
 import { fetchTopCategories } from '../../../services/api';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
 
@@ -53,7 +53,6 @@ const Hamburger = () => {
 
   return (
     <>
-      <ToastContainer />
       <div className="hamburger d-lg-none flex-1">
         <div className="hamburger-icon" onClick={toggleMenu}>
           <svg
@@ -122,6 +121,11 @@ const Hamburger = () => {
               <li className='ps-0 py-2'>Shop</li>
               <li className='ps-0 py-2'>About</li>
               <li className='ps-0 py-2'>Blog</li>
+              <li className='ps-0 py-2'>
+                <Link to={'/contact'} className='text-decoration-none' onClick={closeMenu}>
+                  <span className="position-relative">Contact</span>
+                </Link>
+              </li>
             </ul>
           </div>
         </div>

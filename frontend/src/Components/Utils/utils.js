@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { Navigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 export const getDefaultCart = (products) => {
   const cart = {};
@@ -11,10 +12,30 @@ export const getDefaultCart = (products) => {
   return cart;
 };
 
+// Check if the token exists and is still valid
 export const isAuthenticated = () => {
   const token = Cookies.get('authToken');
-  console.log('Token:', token); // Check if the token is present
-  return !!token;
+
+  if (!token) {
+    return false; // No token means the user is not authenticated
+  }
+
+  try {
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000; // Current time in seconds
+
+    // Check if the token has expired
+    if (decodedToken.exp < currentTime) {
+      Cookies.remove('authToken'); // Remove expired token from cookies
+      return false; // Token has expired, user is not authenticated
+    }
+
+    return true; // Token is valid, user is authenticated
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    Cookies.remove('authToken'); // Remove the token if there's an error decoding it
+    return false; // Token is invalid, user is not authenticated
+  }
 };
 
 export const redirectToLoginIfNotAuthenticated = () => {

@@ -68,7 +68,7 @@ const Reviews = ({ productId }) => {
       <h3>Customer Reviews</h3>
       <p>Average Rating: {averageRating}</p>
       {reviews.length > 0 ? (
-        <ul>
+        <ul className='list-unstyled'>
           {reviews.map((review) => (
             <li key={review._id}>
               <strong>{review.userName}</strong> ({review.rating} / 5)

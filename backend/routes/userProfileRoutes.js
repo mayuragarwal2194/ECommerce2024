@@ -4,8 +4,6 @@ const { uploadMiddleware, handleMulterError } = require('../config/multerConfig'
 const { getUserProfile, editUser, updateProfilePicture } = require('../controllers/userProfileController');
 const { authMiddleware } = require('../middleware/authMiddleware');
 
-
-
 router.get('/profile', authMiddleware, getUserProfile);
 
 // PUT request to edit user details (username and email)

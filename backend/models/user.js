@@ -16,7 +16,12 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () { return !this.googleId; }, // Only require password if googleId is not set
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true, // Allows null or undefined without enforcing uniqueness on non-Google users
   },
   isVerified: {
     type: Boolean,
@@ -39,6 +44,10 @@ const UserSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
     default: ''
+  },
+  deliveryInfo: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'DeliveryInfo', // Reference to the DeliveryInfo model
   },
   createdAt: {
     type: Date,

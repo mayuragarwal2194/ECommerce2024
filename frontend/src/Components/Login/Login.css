@@ -11,3 +11,17 @@
 .login-form #password{
   padding-right: 30px;
 }
+
+.google-login div{
+  height: auto !important;
+}
+
+.google-login div[role="button"]{
+  padding: 8px;
+}
+
+.google-login iframe{
+  display: none !important;
+  /* padding: unset !important; */
+  width: 100% !important;
+}

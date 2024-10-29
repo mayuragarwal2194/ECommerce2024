@@ -2,6 +2,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const sendEmail = require('../utils/sendEmail');
+const validator = require('validator');
 const { validationResult, body } = require('express-validator');
 
 
@@ -9,7 +10,7 @@ const { validationResult, body } = require('express-validator');
 exports.signUp = async (req, res) => {
   const { username, email, password } = req.body;
 
-  // Perform validation
+  // Perform validation for other fields
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -20,6 +21,19 @@ exports.signUp = async (req, res) => {
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // Check password strength
+    if (!validator.isStrongPassword(password, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1
+    })) {
+      return res.status(400).json({
+        message: 'Password is not strong enough. It should be at least 8 characters long, and contain at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character.'
+      });
     }
 
     // Create new user instance

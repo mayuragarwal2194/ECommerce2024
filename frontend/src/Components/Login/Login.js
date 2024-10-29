@@ -4,6 +4,9 @@ import './Login.css';
 import Cookies from 'js-cookie';
 import { handleLogin } from '../../services/api';
 import { Link } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { API_URL } from '../../services/api';
+import { toast, ToastContainer } from 'react-toastify';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -11,17 +14,22 @@ const Login = () => {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false); // New state for password visibility
 
+  // handleSubmit with error handling for unverified email
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const token = await handleLogin(email, password);
-      Cookies.set('authToken', token, { expires: 7 }); // Store token in cookies for 7 days
+      const { token } = await handleLogin(email, password);
+
+      // Store token in cookies for 7 days
+      Cookies.set('authToken', token, { expires: 7 });
       console.log('Login successful, token:', token);
 
-      // Redirect to a protected route, e.g., the profile page (In our case we are redirecting to home page first)
+      // Redirect to a protected route
       window.location.href = '/';
     } catch (err) {
-      setError('Invalid email or password');
+      // Set the specific error message (e.g., for unverified email)
+      setError(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -29,8 +37,52 @@ const Login = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleGoogleLoginSuccess = (credentialResponse) => {
+    console.log('Google Credential Response:', credentialResponse.credential); // Google ID Token
+
+    fetch(`${API_URL}/api/v1/auth/google-login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: credentialResponse.credential,
+      }),
+    })
+      .then((response) => {
+        console.log('Response Status:', response.status); // Log response status
+        return response.json(); // Attempt to parse JSON
+      })
+      .then((data) => {
+        console.log('Backend Response:', data); // Check the backend response
+
+        if (data.token) {
+          // If a token is returned, log in the user
+          Cookies.set('authToken', data.token, { expires: 7, secure: true });
+          window.location.href = '/'; // No toast for success
+        } else if (data.message) {
+          // Display error message using toast
+          toast.error(data.message);
+        } else {
+          console.error('No token or error message returned from backend:', data);
+        }
+      })
+      .catch((error) => {
+        console.error('Login error:', error);
+        toast.error(error.message);
+      });
+  };
+
+
+  const handleGoogleLoginFailure = (error) => {
+    console.error('Google login failed:', error);
+  };
+
   return (
     <div className="login-form my-5 border w-fit-content m-auto py-4 px-4 rounded">
+      <div className="ff-logo text-center mb-3">
+        <img src="/images/ff-small-icon.png" width={`40px`} alt="" />
+      </div>
       <h2 className='text-center mt-0'>Login</h2>
       <form onSubmit={handleSubmit}>
         <div className='d-flex flex-column gap-4 mb-5'>
@@ -71,14 +123,21 @@ const Login = () => {
               </div>
             </div>
           </div>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          <button type="submit" className='ff-btn ff-btn-small ff-btn-fill-dark blog-btn text-capitalize text-decoration-none d-inline-block w-fit-content m-auto'>Login</button>
+          <button type="submit" className='ff-btn ff-btn-small ff-btn-fill-dark blog-btn text-capitalize text-decoration-none d-inline-block w-fit-content m-auto user-select-none'>Login</button>
         </div>
       </form>
+      <div className="google-login pt-5 mb-5">
+        <GoogleLogin
+          onSuccess={handleGoogleLoginSuccess}
+          onError={handleGoogleLoginFailure}
+          className="w-100"
+        />
+      </div>
       <p className='text-center mb-0'>
         Don't have an account?
-        <Link to={'/signup'}> Sign up </Link>
+        <Link to={'/signup'} className='text-decoration-none user-select-none'> Sign up </Link>
       </p>
+      <ToastContainer />
     </div>
   );
 };

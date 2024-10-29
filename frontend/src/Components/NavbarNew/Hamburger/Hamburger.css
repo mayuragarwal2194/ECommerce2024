@@ -74,8 +74,14 @@ body.no-scroll {
   overflow-y: auto;
 }
 
-.hamburger-navs li {
+.hamburger-navs li a{
   color: var(--black);
+}
+
+.hamburger-navs li
+{
+  color: var(--black);
+  font-size: 18px;
   letter-spacing: normal !important;
   padding: 4px 8px;
 }
@@ -152,8 +158,7 @@ body.no-scroll {
   color: var(--black);
 }
 
-.hamburger-navs .topcat,
-.hamburger-navs li {
+.hamburger-navs .topcat{
   font-size: 18px;
   color: var(--black) !important;
 }

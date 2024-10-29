@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import './NavbarNew.css';
 import { Link, useLocation } from 'react-router-dom';
 import { fetchTopCategories, API_URL } from '../../services/api';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Hamburger from './Hamburger/Hamburger';
 import { ShopContext } from '../../Context/ShopContext';
@@ -32,7 +32,7 @@ const NavbarNew = ({ isSticky }) => {
       })
         .then(response => response.json())
         .then(data => {
-          console.log(data);
+          // console.log(data);
 
           setUserData({
             ...data,
@@ -233,14 +233,20 @@ const NavbarNew = ({ isSticky }) => {
                     />
                   </svg>
                 </button>
-                <div className="dropdown-content p-3">
+                <div className="dropdown-content py-3">
                   <div className='d-flex flex-column gap-2'>
                     {isAuthenticated() ? (
                       <div className='if-logged-in-only'>
-                        <div className='d-flex align-items-center gap-3 mb-3'>
+                        <div className='d-flex align-items-center gap-3 mb-3 px-3'>
                           <div className='nav-user-profile'>
                             <img
-                              src={userData.profilePicture ? `${API_URL}/${userData.profilePicture}` : 'path/to/default/profile/picture.jpg'} // Fallback to default image
+                              src={
+                                userData.profilePicture && userData.profilePicture.startsWith('http')
+                                  ? userData.profilePicture
+                                  : userData.profilePicture
+                                    ? `${API_URL}/${userData.profilePicture}`
+                                    : 'path/to/default/profile/picture.jpg'
+                              }
                               alt="User Profile"
                               className='rounded-circle w-100 h-100 object-cover object-position-top'
                             />
@@ -251,8 +257,8 @@ const NavbarNew = ({ isSticky }) => {
                           </div>
                         </div>
                         <Link
-                          to={'./profile'}
-                          className='fs-6 d-flex align-items-center gap-2 border-top py-2'
+                          to={'/profile'}
+                          className='fs-6 d-flex align-items-center gap-2 border-top py-2 px-3'
                         >
                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
                             <path d="M20 22H18V20C18 18.3431 16.6569 17 15 17H9C7.34315 17 6 18.3431 6 20V22H4V20C4 17.2386 6.23858 15 9 15H15C17.7614 15 20 17.2386 20 20V22ZM12 13C8.68629 13 6 10.3137 6 7C6 3.68629 8.68629 1 12 1C15.3137 1 18 3.68629 18 7C18 10.3137 15.3137 13 12 13ZM12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
@@ -261,11 +267,16 @@ const NavbarNew = ({ isSticky }) => {
                         </Link>
                         <a
                           href="#service2"
-                          className='fs-6 d-flex align-items-center gap-2 border-top pt-2'
+                          className='fs-6 d-flex align-items-center gap-2 border-top py-2 px-3'
                           onClick={() => {
                             Cookies.remove('authToken'); // Clear the auth token
+                            Cookies.remove('g_state'); // Clear the Google state cookie if it exists
                             window.location.reload(); // Refresh the page
+
+                            // Optional: Revoke the Google session
+                            window.open('https://accounts.google.com/Logout', '_blank');
                           }}
+
                         >
                           <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sc-bA-DUxO">
                             <path d="M2 1h8v2H4v18h6v2H2V1z" fill="currentColor"></path>
@@ -275,7 +286,7 @@ const NavbarNew = ({ isSticky }) => {
                         </a>
                       </div>
                     ) : (
-                      <Link to={'/login'} className='fs-6'>
+                      <Link to={'/login'} className='fs-6 px-3 py-2'>
                         Login
                       </Link>
                     )}
@@ -347,7 +358,7 @@ const NavbarNew = ({ isSticky }) => {
           <ul className="nav-icons d-flex align-items-center justify-content-end list-unstyled mb-0 flex-1 gap-3">
             <li className="user-login">
               <Link
-                to={'/'}
+                to={isAuthenticated() ? '/profile' : '/login'}
                 className="border-0 bg-transparent text-decoration-none"
                 aria-label="Login Here"
                 role="button"
@@ -398,7 +409,7 @@ const NavbarNew = ({ isSticky }) => {
           </ul>
         </nav>
       </div>
-      <ToastContainer />
+
     </div>
   );
 }
