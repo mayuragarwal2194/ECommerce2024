@@ -12,8 +12,9 @@ const Product = () => {
   const [product, setProduct] = useState(null);
 
   useEffect(() => {
-    console.log('All Products:', allProducts);
-    console.log('Product ID:', productId);
+
+    // console.log('All Products:', allProducts);
+    // console.log('Product ID:', productId);
 
     // Wait until allProducts is populated before attempting to find the product
     if (allProducts.length > 0) {

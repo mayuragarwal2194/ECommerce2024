@@ -87,7 +87,7 @@ const ShopContextProvider = ({ children }) => {
     isCartOpen,
     openCartDrawer,
     closeCartDrawer,
-    toggleCartDrawer
+    toggleCartDrawer,
   }), [allProducts, cartItems, getTotalCartItems, isCartOpen, addToCart, removeFromCart, deleteFromCart, openCartDrawer, closeCartDrawer]);
 
   return (

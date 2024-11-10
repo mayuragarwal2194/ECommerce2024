@@ -8,6 +8,7 @@
   background-color: #393738;
   border-radius: 11px 11px 0 0;
   color: #ffffffe6;
+  padding: 12px;
 }
 
 .profile-info p {
@@ -32,9 +33,15 @@
 }
 
 .sidebar-nav {
-  width: 400px;
-  background-color: #f7f7f7;
+  /* max-width: 320px; */
   /* border-right: 1px solid #ddd; */
+  position: sticky;
+  top: 80px;
+  align-self: self-start;
+}
+
+.sidebar-nav-inner{
+  background-color: #f7f7f7;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, .08);
 }
 
@@ -63,7 +70,6 @@
 
 .sidebar-content {
   flex-grow: 1;
-  padding: 0 20px;
 }
 
 .sub-content-css h3 {
@@ -73,4 +79,10 @@
 
 .sub-content-css p {
   font-size: 14px;
+}
+
+@media (max-width:576px) {
+  .profile-info {
+    width: 100%;
+  }
 }

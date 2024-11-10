@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { customFetch } from '../../Utils/apiClient';
 import { toast } from 'react-toastify';
-import Cookies from 'js-cookie';
 import 'react-toastify/dist/ReactToastify.css';
 import PhoneVerification from '../PhoneVerification/PhoneVerification';
-import { fetchCountries, fetchStatesByCountry, fetchCitiesByState, fetchDeliveryInfo } from '../../../services/api'; // Import API functions
+import { fetchCountries, fetchStatesByCountry, fetchCitiesByState } from '../../../services/api'; // Import API functions
 
-const DeliveryForm = () => {
+const DeliveryForm = ({ initialAddressData, onCancel }) => {
   const [formData, setFormData] = useState({
     country: '',
     state: '',
@@ -23,35 +22,14 @@ const DeliveryForm = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [addresses, setAddresses] = useState([]);
+  const [defaultAddressId, setDefaultAddressId] = useState(null);
 
-  const token = Cookies.get('authToken');
-
-  // Fetch delivery info and set it in formData
   useEffect(() => {
-    const loadDeliveryInfo = async () => {
-      try {
-        const info = await fetchDeliveryInfo(token);
-        // Set formData with fetched delivery info if it exists
-        if (info) {
-          setFormData({
-            country: info.country,
-            state: info.state,
-            townCity: info.townCity,
-            fullName: info.fullName,
-            mobileNumber: info.mobileNumber,
-            addressLine1: info.addressLine1,
-            addressLine2: info.addressLine2,
-            landmark: info.landmark,
-            pinCode: info.pinCode,
-          });
-        }
-      } catch (error) {
-        console.error('Error loading delivery info:', error);
-      }
-    };
-
-    loadDeliveryInfo(); // Call the function to fetch delivery info on component mount
-  }, [token]);
+    if (initialAddressData) {
+      setFormData(initialAddressData);
+    }
+  }, [initialAddressData]);
 
   // Fetch countries on component mount
   useEffect(() => {
@@ -105,31 +83,57 @@ const DeliveryForm = () => {
     }
 
     try {
-      const response = await customFetch('/api/v1/delivery-info', {
-        method: 'POST',
+      const endpoint = formData._id
+        ? `/api/v1/delivery-info/edit-address/${formData._id}` // Edit existing address
+        : '/api/v1/delivery-info'; // Create new address
+
+      const method = formData._id ? 'PUT' : 'POST'; // Use PUT for editing, POST for new
+
+      const response = await customFetch(endpoint, {
+        method: method,
         body: JSON.stringify({
           ...formData,
           isVerified: mobileVerified,
         }),
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`, // Ensure token is included
         },
       });
 
       if (response.ok) {
-        toast.success('Delivery information saved successfully!');
+        const updatedAddress = await response.json();
+        if (method === 'POST') {
+          toast.success('Delivery information saved successfully!');
+          setAddresses([...addresses, updatedAddress]);
+          if (addresses.length === 0) setDefaultAddressId(updatedAddress._id); // Set default if first address
+        } else {
+          toast.success('Delivery information updated successfully!');
+          // Update the specific address in the addresses list
+          setAddresses(
+            addresses.map((address) =>
+              address._id === updatedAddress._id ? updatedAddress : address
+            )
+          );
+        }
       } else {
-        toast.error('Failed to save delivery information.');
+        toast.error('Failed to save or update delivery information.');
       }
     } catch (error) {
-      console.error('Error submitting delivery information:', error);
+      console.error('Error submitting or updating delivery information:', error);
       toast.error('An error occurred while saving delivery info.');
     }
   };
 
+
   return (
     <div className="delivery-form">
       <form onSubmit={handleSubmit}>
+        <div className='w-100 '>
+          <button type="button" className="btn btn-secondary d-block ms-auto" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
         <div className="d-flex gap-4 mb-4">
           <div className='w-50'>
             <label htmlFor='country' className="cursor-pointer d-block mb-1">Country:</label>

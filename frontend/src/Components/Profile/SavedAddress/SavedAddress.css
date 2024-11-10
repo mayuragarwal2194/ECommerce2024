@@ -1,0 +1,15 @@
+.profile-delivery-info
+ {
+  background-color: #fff;
+  padding: 12px;
+  border-radius: 12px;
+  display: inline-block;
+  width: 400px;
+  box-shadow: 0 0 8px #221f2014;
+}
+
+@media (max-width:576px) {
+  .profile-delivery-info{
+    width: 100%;
+  }
+}

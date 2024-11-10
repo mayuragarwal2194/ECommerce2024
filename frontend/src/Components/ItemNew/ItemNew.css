@@ -1,12 +1,12 @@
 .itemnew img {
-  max-height: 330px;
+  height: 330px;
   object-fit: cover;
   object-position: top;
   transition: all ease 0.3s;
 }
 
 .item-image {
-  z-index: -1;
+  /* z-index: -1; */
 }
 
 .itemnew:hover img {

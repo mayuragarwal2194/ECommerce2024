@@ -18,21 +18,22 @@ import CartDrawer from './Components/NavbarNew/CartDrawer/CartDrawer';
 import Contact from './Pages/Contact/Contact';
 import Profile from './Components/Profile/Profile';
 import Login from './Components/Login/Login';
-import { isAuthenticated, PrivateRoute } from './Components/Utils/utils';
+import { PrivateRoute } from './Components/Utils/utils';
 import Signup from './Components/Signup/Signup';
 import PasswordReset from './Components/Profile/PasswordReset/PasswordReset';
 import { ToastContainer } from 'react-toastify';
-
+import { WishlistProvider } from './Context/WishlistContext';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <ShopContextProvider>
-          <AppContent />
+          <WishlistProvider>
+            <AppContent />
+          </WishlistProvider>
         </ShopContextProvider>
       </BrowserRouter>
-
     </div>
   );
 }

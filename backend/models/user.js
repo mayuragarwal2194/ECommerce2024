@@ -45,9 +45,20 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  deliveryInfo: {
+  deliveryInfo: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'DeliveryInfo',
+    }
+  ],
+  defaultAddress: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'DeliveryInfo', // Reference to the DeliveryInfo model
+    ref: 'DeliveryInfo',
+    default: null
+  },
+  wishlist: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Wishlist', // Reference to the Wishlist model
   },
   createdAt: {
     type: Date,

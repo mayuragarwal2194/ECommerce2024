@@ -9,25 +9,23 @@ const PhoneVerification = ({ mobileNumber, onVerificationComplete }) => {
   const [confirmationResult, setConfirmationResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Initialize ReCaptcha
+  // Initialize ReCaptcha only if not already initialized
   const setupRecaptcha = () => {
     if (!window.recaptchaVerifier) {
-      window.recaptchaVerifier = new RecaptchaVerifier(
-        auth,
-        'recaptcha-container',
-        {
-          size: 'invisible', // Use 'normal' if you want to display the ReCAPTCHA
-          'expired-callback': () => {
-            toast.error('ReCAPTCHA expired, please try again.');
-            if (window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth,'recaptcha-container', {
+        size: 'invisible',
+        'expired-callback': () => {
+          toast.error('ReCAPTCHA expired, please try again.');
+          if (window.recaptchaVerifier) {
+            try {
               window.recaptchaVerifier.clear();
-              window.recaptchaVerifier = null;
+            } catch (error) {
+              console.error('Error clearing RecaptchaVerifier:', error);
             }
-            setupRecaptcha();
-
-          },
-        }
-      );
+            window.recaptchaVerifier = null; // Reset reference
+          }
+        },
+      });
     }
   };
 
@@ -50,6 +48,14 @@ const PhoneVerification = ({ mobileNumber, onVerificationComplete }) => {
     } catch (error) {
       console.error('Error sending OTP:', error);
       toast.error('Failed to send OTP. Please try again.');
+      if (window.recaptchaVerifier) {
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (clearError) {
+          console.error('Error clearing RecaptchaVerifier after failed OTP:', clearError);
+        }
+        window.recaptchaVerifier = null;
+      }
     } finally {
       setLoading(false);
     }
@@ -70,8 +76,13 @@ const PhoneVerification = ({ mobileNumber, onVerificationComplete }) => {
 
       // Clear reCAPTCHA after successful OTP verification
       if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (clearError) {
+          console.error('Error clearing RecaptchaVerifier after verification:', clearError);
+        }
       }
+      window.recaptchaVerifier = null; // Reset reference
     } catch (error) {
       console.error('Error verifying OTP:', error);
       if (error.code === 'auth/invalid-verification-code') {
@@ -84,12 +95,16 @@ const PhoneVerification = ({ mobileNumber, onVerificationComplete }) => {
     }
   };
 
-
   // Cleanup ReCAPTCHA on component unmount
   useEffect(() => {
     return () => {
       if (window.recaptchaVerifier) {
-        window.recaptchaVerifier.clear();
+        try {
+          window.recaptchaVerifier.clear();
+        } catch (error) {
+          console.error('Error during component unmount cleanup:', error);
+        }
+        window.recaptchaVerifier = null;
       }
     };
   }, []);
@@ -103,7 +118,6 @@ const PhoneVerification = ({ mobileNumber, onVerificationComplete }) => {
             {loading ? 'Sending...' : 'Send OTP'}
           </button>
         </div>
-
       ) : (
         <div>
           <h3>Enter the OTP</h3>

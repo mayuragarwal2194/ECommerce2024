@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { toast } from 'react-toastify';
 import { API_URL } from '../../../services/api';
+import ProfilePictureForm from '../ProfilePictureForm/ProfilePictureForm';
 
 const ProfileEditForm = ({ userProfile, setUserProfile }) => {
   const [formData, setFormData] = useState({
@@ -75,54 +76,60 @@ const ProfileEditForm = ({ userProfile, setUserProfile }) => {
   };
 
   return (
-    <form onSubmit={handleProfileFormSubmit} className="profile-edit-form">
-      <div className='d-flex align-items-end justify-content-between gap-5'>
-        <div className='d-flex gap-4 flex-1'>
-          <div className='w-50'>
-            <label htmlFor="username" className="cursor-pointer d-block mb-1">
-              Username:
-            </label>
-            <input
-              type="text"
-              name="name"
-              id="username"
-              value={formData.name}
-              onChange={handleInputChange}
-              autoComplete="true"
-              className='px-2 py-1 w-100'
-            />
-          </div>
-          <div className='w-50'>
-            <label htmlFor="useremail" className="cursor-pointer d-block mb-1">
-              Email:
-            </label>
-            {userProfile.googleId ? (
+    <div className="profile-edit-container">
+      {/* Profile Picture Form */}
+      <ProfilePictureForm userProfile={userProfile} setUserProfile={setUserProfile} />
+
+      {/* Profile Information Form */}
+      <form onSubmit={handleProfileFormSubmit} className="profile-edit-form mt-4">
+        <div className='d-flex align-items-end justify-content-between gap-5'>
+          <div className='d-flex gap-4 flex-1'>
+            <div className='w-50'>
+              <label htmlFor="username" className="cursor-pointer d-block mb-1">
+                Username:
+              </label>
               <input
-                type="email"
-                name="email"
-                id="useremail"
-                value={formData.email}
-                readOnly
-                className='px-2 py-1 w-100 bg-light text-muted'
-              />
-            ) : (
-              <input
-                type="email"
-                name="email"
-                id="useremail"
-                value={formData.email}
+                type="text"
+                name="name"
+                id="username"
+                value={formData.name}
                 onChange={handleInputChange}
                 autoComplete="true"
                 className='px-2 py-1 w-100'
               />
-            )}
+            </div>
+            <div className='w-50'>
+              <label htmlFor="useremail" className="cursor-pointer d-block mb-1">
+                Email:
+              </label>
+              {userProfile.googleId ? (
+                <input
+                  type="email"
+                  name="email"
+                  id="useremail"
+                  value={formData.email}
+                  readOnly
+                  className='px-2 py-1 w-100 bg-light text-muted'
+                />
+              ) : (
+                <input
+                  type="email"
+                  name="email"
+                  id="useremail"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  autoComplete="true"
+                  className='px-2 py-1 w-100'
+                />
+              )}
+            </div>
           </div>
+          <button type="submit" className='ff-btn ff-btn-small ff-btn-fill-dark blog-btn text-capitalize text-decoration-none d-inline-block w-fit-content'>
+            Update
+          </button>
         </div>
-        <button type="submit" className='ff-btn ff-btn-small ff-btn-fill-dark blog-btn text-capitalize text-decoration-none d-inline-block w-fit-content'>
-          Update
-        </button>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 };
 

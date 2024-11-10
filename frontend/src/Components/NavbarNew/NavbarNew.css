@@ -402,6 +402,26 @@
   font-size: 12px;
 }
 
+.wishlist-count{
+  background-color: var(--white);
+  width: 19px;
+  height: 19px;
+  color: var(--black);
+  font-size: 11px;
+  line-height: normal;
+  top: 0;
+  right: -9px;
+  transition: all ease 0.2s;
+}
+
+.navbar-section.sticky .wishlist-count,
+.navbar-section:hover .wishlist-count,
+.navbar-section.inside-banner.notHomeCss .wishlist-count
+{
+  background-color: var(--black);
+  color: var(--white);
+}
+
 @media (min-width: 992px) {
 
   /* Logo Behavior on Hover */

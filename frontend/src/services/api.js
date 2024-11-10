@@ -1,7 +1,9 @@
-// export const API_URL = 'http://localhost:5000';
+import Cookies from 'js-cookie';
+import { isAuthenticated } from '../Components/Utils/utils';
+export const API_URL = 'http://localhost:5000';
 
 // Only for Mobile Testing
-export const API_URL = 'http://192.168.1.7:5000';
+// export const API_URL = 'http://192.168.1.7:5000';
 
 export const getAllProducts = async () => {
   try {
@@ -267,6 +269,142 @@ export const fetchDeliveryInfo = async (token) => {
     throw error; // Re-throw the error for further handling if needed
   }
 };
+
+// Function to fetch wishlist
+export const getWishlist = async () => {
+  const token = Cookies.get('authToken');
+
+  if (!token) {
+    throw new Error('User not authenticated');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/wishlist`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    // Handle the response status
+    if (!response.ok) {
+      throw new Error('Failed to fetch wishlist');
+    }
+
+    const data = await response.json();
+
+    // If the response is empty (no products in wishlist), return an empty array
+    if (Array.isArray(data) && data.length === 0) {
+      return [];  // Returning an empty array if no products
+    }
+
+    // Process and return the wishlist data, including variant-specific details
+    return data.products.map(item => ({
+      productId: item.productId,
+      variantId: item.variantId,
+      itemName: item.itemName,
+      newPrice: item.newPrice,
+      oldPrice: item.oldPrice,
+      featuredImage: item.featuredImage,
+      tag: item.tag,
+      color: item.color,
+      size: item.size,
+      addedAt: item.addedAt,
+    }));
+  } catch (error) {
+    console.error('Error fetching wishlist:', error);
+    throw error;
+  }
+};
+
+// Function to add a product to the wishlist
+export const addToWishlist = async (productId, variantId) => {
+  // Retrieve the auth token from cookies
+  const token = Cookies.get('authToken');
+  console.log("Auth token:", token); // Log the token to verify it's available
+
+  // Check if the user is authenticated
+  if (!isAuthenticated()) {
+    console.log('User not authenticated');
+    return;
+  }
+
+  // Log the data being sent to the API
+  const payload = { productId, variantId };
+  console.log('Sending payload to add product to wishlist:', payload);
+
+  try {
+    // Send the API request to add the product to the wishlist
+    const response = await fetch(`${API_URL}/api/v1/user/wishlist`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    // Log the API response status
+    console.log('API Response Status:', response.status);
+
+    // If the response is not OK, log the error details and throw an error
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error Response:', errorData);
+      throw new Error(`Failed to add product to wishlist: ${errorData.message || response.statusText}`);
+    }
+
+    // If successful, log the success message from the response
+    const data = await response.json();
+    console.log('Product added to wishlist:', data.message);
+
+    return data; // Optionally return the response data for further use
+
+  } catch (error) {
+    // Log the error and rethrow it
+    console.error('Error adding to wishlist:', error);
+    throw error;
+  }
+};
+
+// Function to remove a product variant from the wishlist
+export const removeFromWishlist = async (productId, variantId) => {
+  if (!isAuthenticated()) {
+    console.log('User not authenticated');
+    return null;
+  }
+
+  const token = Cookies.get('authToken');
+  if (!token) {
+    console.log('Authentication token not found');
+    return null;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/wishlist/${productId}/${variantId}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to remove product variant from wishlist');
+    }
+
+    const data = await response.json();
+    console.log(data.message); // Optional, for debugging
+    return data; // Optionally return data for further use
+  } catch (error) {
+    console.error('Error removing from wishlist:', error);
+    throw error;
+  }
+};
+
+
+
+
 
 
 

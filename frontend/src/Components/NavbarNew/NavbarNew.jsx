@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
 import './NavbarNew.css';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { fetchTopCategories, API_URL } from '../../services/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Hamburger from './Hamburger/Hamburger';
 import { ShopContext } from '../../Context/ShopContext';
 import { isAuthenticated } from '../Utils/utils';
-// import Login from '../Login/Login';
 import Cookies from 'js-cookie';
+import { useWishlist } from '../../Context/WishlistContext';
 
 
 const NavbarNew = ({ isSticky }) => {
@@ -17,7 +17,14 @@ const NavbarNew = ({ isSticky }) => {
   const location = useLocation();
   const [hoveredMenu, setHoveredMenu] = useState(null);
   const { getTotalCartItems, toggleCartDrawer } = useContext(ShopContext);
+  const { wishlistCount } = useWishlist();
   const [userData, setUserData] = useState({ name: '', email: '' });
+
+  const navigate = useNavigate();
+
+  const goToWishlist = () => {
+    navigate('/profile', { state: { openTab: 'Wishlist' } });
+  };
 
   useEffect(() => {
     // Assuming you have a token stored in cookies
@@ -38,7 +45,7 @@ const NavbarNew = ({ isSticky }) => {
             ...data,
             name: data.username,
             email: data.email,
-            profilePicture: data.profilePicture || 'images/default-profile.png'
+            profilePicture: data.profilePicture
           });
         })
         .catch(err => console.error('Error fetching user data:', err));
@@ -243,10 +250,13 @@ const NavbarNew = ({ isSticky }) => {
                               src={
                                 userData.profilePicture && userData.profilePicture.startsWith('http')
                                   ? userData.profilePicture
-                                  : userData.profilePicture
+                                  : userData.profilePicture && !userData.profilePicture.includes('default-profile.png')
                                     ? `${API_URL}/${userData.profilePicture}`
-                                    : 'path/to/default/profile/picture.jpg'
+                                    : 'images/default-profile.png'
                               }
+                              onError={(e) => {
+                                e.target.src = 'images/default-profile.png';
+                              }}
                               alt="User Profile"
                               className='rounded-circle w-100 h-100 object-cover object-position-top'
                             />
@@ -317,6 +327,22 @@ const NavbarNew = ({ isSticky }) => {
                     />
                   </svg>
                 </Link>
+              </li>
+              <li className="wishlist cursor-pointer position-relative" onClick={goToWishlist}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <title>icon-wishlist</title>
+                  <path
+                    d="M12 4.95276C9.55556 -0.930046 1 -0.303473 1 7.21544C1 14.7343 12 21 12 21C12 21 23 14.7343 23 7.21544C23 -0.303473 14.4444 -0.930046 12 4.95276Z"
+                    stroke="currentcolor"
+                    strokeOpacity="0.9"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  ></path>
+                </svg>
+                <div className="wishlist-count rounded-circle d-flex align-items-center justify-content-center position-absolute">
+                  {wishlistCount}
+                </div>
               </li>
               <li className="cart">
                 <Link className="text-decoration-none" onClick={toggleCartDrawer} aria-label="Close cart drawer">

@@ -120,6 +120,10 @@ body{
   width: fit-content;
 }
 
+.h-fit-content{
+  height: fit-content;
+}
+
 .line-height-normal{
   line-height: normal;
 }
