@@ -1,7 +1,7 @@
 import { useWishlist, } from '../../../Context/WishlistContext';
 
 const WishlistButton = ({ product, variantId }) => {
-  console.log("Received variantId in WishlistButton:", variantId);
+  // console.log("Received variantId in WishlistButton:", variantId);
 
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
 

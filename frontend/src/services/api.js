@@ -403,6 +403,163 @@ export const removeFromWishlist = async (productId, variantId) => {
 };
 
 
+// Function to add a product to Cart
+export const addToCart = async (payload) => {
+  const token = Cookies.get('authToken');
+  if (!token) {
+    alert('You need to log in to add products to your cart.');
+    return;
+  }
+
+  console.log('Prepared payload for API call:', payload); // Log the received payload
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload), // Send the entire payload here
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error adding product to cart:', errorData);
+      throw new Error(errorData.message || 'Failed to add to cart');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error occurred while adding to cart:', error);
+    throw error;
+  }
+};
+
+// Function to fetch the user's cart
+export const getCart = async () => {
+  const token = Cookies.get('authToken');
+
+  // Check if the user is authenticated
+  if (!token) {
+    console.error('User not authenticated');
+    throw new Error('User not authenticated');
+  }
+
+  try {
+    // Send the API request to get the cart
+    const response = await fetch(`${API_URL}/api/v1/user/cart`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    // If the response is not OK, handle errors
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Failed to fetch cart: ${errorData.message || 'Unknown error'}`);
+    }
+
+    // Parse and return the cart data
+    const data = await response.json();
+
+    // Ensure the frontend gracefully handles an empty cart
+    if (Array.isArray(data) && data.length === 0) {
+      console.info('Cart is empty');
+      return { items: [], totalPrice: 0 };
+    }
+
+    return data; // Return the cart data
+  } catch (error) {
+    console.error('Error fetching cart:', error.message);
+    throw error;
+  }
+};
+
+
+// Function to Remove Item From Cart
+export const removeFromCart = async ({ productId, variantId, selectedSize, selectedColor }) => {
+  const token = Cookies.get('authToken');
+
+  // Check if the user is authenticated
+  if (!token) {
+    console.error('User not authenticated');
+    throw new Error('User not authenticated');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/cart/remove`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        productId,
+        variantId,
+        selectedSize,
+        selectedColor,
+      }),
+    });
+
+    // Check response status
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Backend error:', errorData);
+      throw new Error(errorData.message || 'Failed to remove item from cart');
+    }
+
+    // Parse and return the updated cart
+    const data = await response.json();
+    console.log('Cart updated successfully:', data);
+    return data;
+  } catch (error) {
+    console.error('Error removing item from cart:', error.message);
+    throw error;
+  }
+};
+
+// Function to update the quantity of a cart item
+export const updateQuantityInCart = async (cartId, productId, variantId, newQuantity, selectedSize, selectedColor) => {
+  const token = Cookies.get('authToken');
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/user/cart/quantity`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        cartId,
+        productId,
+        variantId,
+        newQuantity,
+        selectedSize,
+        selectedColor,
+      }),
+    });
+
+    // Check if the response is OK (status 200-299)
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error updating quantity');
+    }
+
+    // Parse the response data (updated cart)
+    const data = await response.json();
+    return data; // Response will contain updated cart info
+  } catch (error) {
+    console.error('Error updating quantity:', error.message);
+    throw error;
+  }
+};
+
+
+
 
 
 

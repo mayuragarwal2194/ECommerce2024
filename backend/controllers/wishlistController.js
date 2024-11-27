@@ -119,7 +119,7 @@ exports.getWishlist = async (req, res) => {
         };
       }),
     });
-    console.log(wishlist);
+    // console.log(wishlist);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

@@ -37,6 +37,8 @@ const passwordRoutes = require('./routes/passwordRoutes');
 const googleRoutes = require('./routes/googleRoutes');
 const deliveryRoutes = require('./routes/deliveryRoutes');
 const wishlistRoutes = require('./routes/wishlistRoutes');
+const cartRoutes = require('./routes/cartRoutes');
+const shippingRoutes = require('./routes/shippingRoutes');
 
 // Function to recreate indexes
 const recreateIndexes = async () => {
@@ -68,6 +70,8 @@ const startServer = async () => {
     app.use('/api/v1/user', passwordRoutes);  // Merging user profile and password under `/user`
     app.use('/api/v1/delivery-info', deliveryRoutes);
     app.use('/api/v1/user', wishlistRoutes);
+    app.use('/api/v1/user', cartRoutes);
+    app.use('/api/v1/shipping', shippingRoutes);
 
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);

@@ -41,10 +41,10 @@
   color: var(--shopper-red);
 }
 
-.productdisplay-add-btn button {
+/* .productdisplay-add-btn button {
   border-radius: 4px !important;
   width: 50%;
-}
+} */
 
 .product-buy-now-btn button {
   border-radius: 4px !important;
