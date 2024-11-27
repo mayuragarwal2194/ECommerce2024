@@ -23,15 +23,18 @@ import Signup from './Components/Signup/Signup';
 import PasswordReset from './Components/Profile/PasswordReset/PasswordReset';
 import { ToastContainer } from 'react-toastify';
 import { WishlistProvider } from './Context/WishlistContext';
+import { CartProvider, useCart } from './Context/cartContext';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <ShopContextProvider>
-          <WishlistProvider>
-            <AppContent />
-          </WishlistProvider>
+          <CartProvider>
+            <WishlistProvider>
+              <AppContent />
+            </WishlistProvider>
+          </CartProvider>
         </ShopContextProvider>
       </BrowserRouter>
     </div>
@@ -39,7 +42,7 @@ function App() {
 }
 
 function AppContent() {
-  const { isCartOpen, closeCartDrawer } = useContext(ShopContext);
+  const { isCartOpen, closeCartDrawer } = useCart();
 
   const [isSticky, setIsSticky] = useState(false);
 

@@ -1,136 +1,185 @@
 const Cart = require('../../models/cart');
 const User = require('../../models/user');
 const Product = require('../../models/product');
+const Size = require('../../models/size');
 
-
-// Main addToCart function
+// Main Add To Cart Function
 exports.addToCart = async (req, res) => {
-  console.log('Request body:', req.body);
   const { productId, variantId, quantity, selectedSize, selectedColor } = req.body;
   const userId = req.user.id;
 
+  console.log("Incoming request:", { userId, productId, variantId, quantity, selectedSize, selectedColor });
+
   try {
-    // Validate product and variant
-    const product = await validateProduct(productId, variantId);
-    if (!product) {
-      return res.status(404).json({ message: "Product or variant not found." });
+    // Step 1: Validate product and variant
+    const { product, variant } = await getValidatedProduct(productId, variantId, selectedColor);
+    if (!product || !variant) {
+      console.warn(`Validation failed: Product or variant not found`, { productId, variantId, selectedColor });
+      return res.status(404).json({
+        message: `Product with ID ${productId}, variant ${variantId}, or color ${selectedColor} not found.`,
+      });
     }
 
-    // Validate color and size
-    const variant = product.variants.id(variantId);
-    if (!validateColor(variant, selectedColor) || !validateSize(variant, selectedSize)) {
-      return res.status(400).json({ message: "Selected color or size is not available for this variant." });
+    // Step 2: Validate quantity
+    const parsedQuantity = parseQuantity(quantity);
+    if (!parsedQuantity || parsedQuantity <= 0) {
+      console.warn("Invalid quantity received:", quantity);
+      return res.status(400).json({ message: "Invalid quantity. It must be greater than zero." });
     }
 
-    // Check stock for selected size
-    const sizeStock = getSizeStock(variant, selectedSize);
-    if (sizeStock === undefined) {
-      return res.status(400).json({ message: "Selected size does not have a stock entry." });
+    // Step 3: Resolve size and check stock
+    const resolvedSizeId = await resolveSizeId(selectedSize);
+    if (!resolvedSizeId) {
+      console.warn("Invalid size selected:", selectedSize);
+      return res.status(400).json({ message: "Invalid size selected." });
     }
 
-    // Validate and parse quantity
-    const requestedQuantity = parseQuantity(quantity);
-    if (requestedQuantity === null) {
-      return res.status(400).json({ message: "Invalid quantity." });
+    const stockAvailable = getSizeStock(variant, resolvedSizeId);
+    if (!stockAvailable || stockAvailable <= 0) {
+      console.warn("Size out of stock:", { resolvedSizeId, stockAvailable });
+      return res.status(400).json({ message: "Selected size is out of stock." });
     }
 
-    // Retrieve or create the cart
-    let cart = await findOrCreateCart(userId);
-
-    // Calculate total requested quantity and validate stock
-    const existingItemIndex = findExistingItemIndex(cart, productId, variantId, selectedSize, selectedColor);
-    const totalRequestedQuantity = calculateTotalRequestedQuantity(cart, existingItemIndex, requestedQuantity);
-    if (totalRequestedQuantity > sizeStock) {
-      return res.status(400).json({ message: `Not enough stock available for the selected size. Available stock: ${sizeStock}` });
+    if (parsedQuantity > stockAvailable) {
+      console.warn("Insufficient stock:", {
+        stockAvailable,
+        requested: parsedQuantity,
+      });
+      return res.status(400).json({
+        message: `Not enough stock. Available: ${stockAvailable}, Requested: ${parsedQuantity}.`,
+      });
     }
 
-    // Update cart items
-    updateCartItems(cart, existingItemIndex, productId, variantId, requestedQuantity, totalRequestedQuantity, variant, selectedSize, selectedColor);
+    // Step 4: Update or create the cart
+    const cart = await findOrCreateCart(userId);
 
-    // Calculate the total price and update the timestamp
-    updateCartTotal(cart);
+    // Add weight from variant
+    const weight = variant.attributes.weight;
 
-    await cart.save();
+    if (!weight || typeof weight !== 'number') {
+      throw new Error(`Invalid weight for the item. Received: ${weight}`);
+    }
 
-    res.status(201).json({ message: 'Product added to cart', cart });
+    const updatedCart = await updateCart(cart, {
+      productId,
+      variantId,
+      resolvedSizeId,
+      selectedColor,
+      parsedQuantity,
+      product,
+      weight, // Include weight for each cart item
+    });
+
+    res.status(201).json({ message: "Product added to cart", cart: updatedCart });
   } catch (error) {
-    console.error('Error adding to cart:', error.stack);
+    console.error("Error adding to cart:", error.stack);
     res.status(500).json({ error: error.message });
   }
 };
 
-// Helper function to validate the product and variant
-async function validateProduct(productId, variantId) {
-  return Product.findOne({ _id: productId, "variants._id": variantId });
+/* ==================== Helper Functions ==================== */
+
+// Validate product, variant, and color
+async function getValidatedProduct(productId, variantId, selectedColor) {
+  const product = await Product.findOne({ _id: productId, "variants._id": variantId });
+  if (!product) return null;
+
+  const variant = product.variants.id(variantId);
+  if (!variant || variant.attributes.color !== selectedColor) return null;
+
+  return { product, variant };
 }
 
-// Helper function to validate the color
-function validateColor(variant, selectedColor) {
-  return variant.attributes.color === selectedColor;
+// Resolve size to ObjectId
+async function resolveSizeId(size) {
+  if (isObjectId(size)) return size;
+  const sizeDoc = await Size.findOne({ sizeName: size.toLowerCase() });
+  return sizeDoc ? sizeDoc._id : null;
 }
 
-// Helper function to validate the size
-function validateSize(variant, selectedSize) {
-  return variant.attributes.size.some(size => size.toString() === selectedSize);
+// Check if value is a valid ObjectId
+function isObjectId(value) {
+  return /^[0-9a-fA-F]{24}$/.test(value);
 }
 
-// Helper function to get the stock for a specific size
-function getSizeStock(variant, selectedSize) {
-  return variant.sizeStock.get(selectedSize.toString());
+// Get stock for a specific size
+function getSizeStock(variant, sizeId) {
+  return variant.sizeStock?.get(sizeId.toString()) || 0;
 }
 
-// Helper function to parse and validate quantity
+// Parse and validate quantity
 function parseQuantity(quantity) {
-  const parsedQuantity = parseInt(quantity, 10);
-  return isNaN(parsedQuantity) || parsedQuantity <= 0 ? null : parsedQuantity;
+  const parsed = parseInt(quantity, 10);
+  return isNaN(parsed) || parsed <= 0 ? null : parsed;
 }
 
-// Helper function to find or create a cart for a user
+// Find or create a cart for the user
 async function findOrCreateCart(userId) {
   let cart = await Cart.findOne({ userId });
   if (!cart) {
     cart = new Cart({ userId, items: [] });
-    await User.findByIdAndUpdate(userId, { cart: cart._id }, { new: true });
+    await User.findByIdAndUpdate(userId, { cart: cart._id });
   }
   return cart;
 }
 
-// Helper function to find if the item already exists in the cart
-function findExistingItemIndex(cart, productId, variantId, selectedSize, selectedColor) {
-  return cart.items.findIndex(item =>
-    item.productId.equals(productId) &&
-    item.variantId.equals(variantId) &&
-    item.size === selectedSize &&
-    item.color === selectedColor
+// Update the cart with the new item
+async function updateCart(cart, { productId, variantId, resolvedSizeId, selectedColor, parsedQuantity, product, weight }) {
+  const variant = product.variants.find(v => v._id.toString() === variantId);
+  if (!variant) {
+    throw new Error("Variant not found for the given product.");
+  }
+
+  // Check stock availability once
+  const stockAvailable = getSizeStock(variant, resolvedSizeId);
+  const existingItemIndex = cart.items.findIndex(
+    (item) =>
+      item.productId.equals(productId) &&
+      item.variantId.equals(variantId) &&
+      item.size.toString() === resolvedSizeId.toString() &&
+      item.color === selectedColor
   );
-}
 
-// Helper function to calculate the total requested quantity
-function calculateTotalRequestedQuantity(cart, existingItemIndex, requestedQuantity) {
-  return existingItemIndex > -1 ? cart.items[existingItemIndex].quantity + requestedQuantity : requestedQuantity;
-}
+  const totalRequestedQuantity =
+    existingItemIndex > -1
+      ? cart.items[existingItemIndex].quantity + parsedQuantity
+      : parsedQuantity;
 
-// Helper function to update cart items
-function updateCartItems(cart, existingItemIndex, productId, variantId, requestedQuantity, totalRequestedQuantity, variant, selectedSize, selectedColor) {
-  if (existingItemIndex > -1) {
-    // If item exists, update quantity
+  if (totalRequestedQuantity > stockAvailable) {
+    throw new Error(`Not enough stock. Available: ${stockAvailable}`);
+  }
+
+  // Update or add item to the cart
+  if (existingItemIndex !== -1) {
     cart.items[existingItemIndex].quantity = totalRequestedQuantity;
   } else {
-    // Add new item to the cart
     cart.items.push({
       productId,
       variantId,
-      quantity: requestedQuantity,
+      quantity: parsedQuantity,
+      size: resolvedSizeId,
+      color: selectedColor,
       newPrice: variant.newPrice,
       oldPrice: variant.oldPrice,
-      size: selectedSize,
-      color: selectedColor
+      weight,
     });
   }
-}
 
-// Helper function to update the total price of the cart
-function updateCartTotal(cart) {
-  cart.totalPrice = cart.items.reduce((total, item) => total + item.newPrice * item.quantity, 0);
+  // Consolidate price and weight calculations
+  const { totalPrice, totalWeight } = cart.items.reduce(
+    (totals, item) => {
+      const itemWeight = item.weight || 0; // Default to 0 if weight is undefined
+      return {
+        totalPrice: totals.totalPrice + item.newPrice * item.quantity,
+        totalWeight: totals.totalWeight + itemWeight * item.quantity,
+      };
+    },
+    { totalPrice: 0, totalWeight: 0 }
+  );
+
+  cart.totalPrice = totalPrice;
+  cart.totalWeight = totalWeight;
   cart.updatedAt = Date.now();
+
+  return await cart.save();
 }

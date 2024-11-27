@@ -38,6 +38,11 @@ const cartSchema = new mongoose.Schema({
         type: String,
         required: true
       },
+      weight: {
+        type: Number, // Weight in kilograms (or grams if your platform prefers)
+        required: true,
+        default: 0,
+      }
     }
   ],
   totalPrice: {
@@ -45,14 +50,13 @@ const cartSchema = new mongoose.Schema({
     required: true,
     default: 0
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  totalWeight: {
+    type: Number,
+    required: true,
+    default: 0,
+    min: 0,
   },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
-});
+
+}, { timestamps: true });
 
 module.exports = mongoose.model('Cart', cartSchema);

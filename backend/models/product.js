@@ -25,6 +25,11 @@ const variantSchema = new mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
       ref: 'size',
     }],
+    weight: {
+      type: Number, // Weight in kilograms (or grams if your platform prefers)
+      required: true,
+      min: [0, 'Weight cannot be negative'], // Validation to ensure positive values
+    },
   },
   variantFeaturedImage: {
     type: String,
