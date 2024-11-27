@@ -531,7 +531,6 @@ module.exports = {
   addProduct,
   getAllProducts,
   getProductById,
-  // addVariant,
   deleteProduct,
   updateProduct,
   getProductsByTopCategory,

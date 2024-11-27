@@ -60,6 +60,10 @@ const UserSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Wishlist', // Reference to the Wishlist model
   },
+  cart: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Cart' // Reference to the Cart model
+  },
   createdAt: {
     type: Date,
     default: Date.now,

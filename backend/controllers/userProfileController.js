@@ -21,7 +21,7 @@ exports.getUserProfile = async (req, res) => {
     }
 
     res.json(user);
-    console.log(user.deliveryInfo);
+    // console.log(user.deliveryInfo);
   } catch (error) {
     console.error('Error fetching user profile:', error);
     res.status(500).json({ message: 'Internal server error' });

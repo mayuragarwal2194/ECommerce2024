@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import './NavbarNew.css';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { fetchTopCategories, API_URL } from '../../services/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Hamburger from './Hamburger/Hamburger';
-import { ShopContext } from '../../Context/ShopContext';
+import { useCart } from '../../Context/cartContext';
 import { isAuthenticated } from '../Utils/utils';
 import Cookies from 'js-cookie';
 import { useWishlist } from '../../Context/WishlistContext';
@@ -16,7 +16,7 @@ const NavbarNew = ({ isSticky }) => {
   const [topCategories, setTopCategories] = useState([]);
   const location = useLocation();
   const [hoveredMenu, setHoveredMenu] = useState(null);
-  const { getTotalCartItems, toggleCartDrawer } = useContext(ShopContext);
+  const { getTotalCartItems, toggleCartDrawer, cart } = useCart();
   const { wishlistCount } = useWishlist();
   const [userData, setUserData] = useState({ name: '', email: '' });
 
@@ -345,27 +345,47 @@ const NavbarNew = ({ isSticky }) => {
                 </div>
               </li>
               <li className="cart">
-                <Link className="text-decoration-none" onClick={toggleCartDrawer} aria-label="Close cart drawer">
+                <button
+                  className="text-decoration-none cart-button"
+                  onClick={toggleCartDrawer}
+                  aria-label="Toggle cart drawer"
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, position: 'relative' }}
+                >
                   <svg
                     aria-hidden="true"
                     focusable="false"
                     role="presentation"
                     className="icon icon-bag-minimal"
-                    id='cart-icon'
+                    id="cart-icon"
                     viewBox="0 0 64 64"
                     xmlns="http://www.w3.org/2000/svg"
                     width="28"
                     height="28"
                   >
                     <title>icon-bag-minimal</title>
-                    <path stroke="currentColor" fill="none" strokeWidth="3" d="M11.375 17.863h41.25v36.75h-41.25z" />
-                    <path stroke="currentColor" fill="none" strokeWidth="3" d="M22.25 18c0-7.105 4.35-9 9.75-9s9.75 1.895 9.75 9" />
+                    <path
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="3"
+                      d="M11.375 17.863h41.25v36.75h-41.25z"
+                    />
+                    <path
+                      stroke="currentColor"
+                      fill="none"
+                      strokeWidth="3"
+                      d="M22.25 18c0-7.105 4.35-9 9.75-9s9.75 1.895 9.75 9"
+                    />
                   </svg>
 
-                  {getTotalCartItems > 0 && (
-                    <span className="cart-count"></span> // Display cart item count
+                  {/* Display cart item count badge */}
+                  {Array.isArray(cart.items) && cart.items.length > 0 && (
+                    <span
+                      className="cart-count rounded-circle d-flex align-items-center justify-content-center position-absolute"
+                    >
+                      {cart.items.reduce((total, item) => total + item.quantity, 0)}
+                    </span>
                   )}
-                </Link>
+                </button>
               </li>
             </ul>
           </div>
@@ -410,28 +430,49 @@ const NavbarNew = ({ isSticky }) => {
               </Link>
             </li>
             <li className="cart">
-              <Link className="text-decoration-none" onClick={toggleCartDrawer} aria-label="Close cart drawer">
+              <button
+                className="text-decoration-none cart-button"
+                onClick={toggleCartDrawer}
+                aria-label="Toggle cart drawer"
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, position: 'relative' }}
+              >
                 <svg
                   aria-hidden="true"
                   focusable="false"
                   role="presentation"
                   className="icon icon-bag-minimal"
-                  id='cart-icon'
+                  id="cart-icon"
                   viewBox="0 0 64 64"
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"
                   height="28"
                 >
                   <title>icon-bag-minimal</title>
-                  <path stroke="currentColor" fill="none" strokeWidth="3" d="M11.375 17.863h41.25v36.75h-41.25z" />
-                  <path stroke="currentColor" fill="none" strokeWidth="3" d="M22.25 18c0-7.105 4.35-9 9.75-9s9.75 1.895 9.75 9" />
+                  <path
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="3"
+                    d="M11.375 17.863h41.25v36.75h-41.25z"
+                  />
+                  <path
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="3"
+                    d="M22.25 18c0-7.105 4.35-9 9.75-9s9.75 1.895 9.75 9"
+                  />
                 </svg>
 
-                {getTotalCartItems > 0 && (
-                  <span className="cart-count"></span> // Display cart item count
+                {/* Display cart item count badge */}
+                {Array.isArray(cart.items) && cart.items.length > 0 && (
+                  <span
+                    className="cart-count rounded-circle d-flex align-items-center justify-content-center position-absolute"
+                  >
+                    {cart.items.reduce((total, item) => total + item.quantity, 0)}
+                  </span>
                 )}
-              </Link>
+              </button>
             </li>
+
           </ul>
         </nav>
       </div>

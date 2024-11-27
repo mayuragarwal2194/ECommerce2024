@@ -1,0 +1,12 @@
+.cart-quantity-controls button:disabled {
+  cursor: not-allowed;
+  color: #ccc;
+}
+
+.cart-quantity-controls button.decrease-qty-btn:disabled,
+.cart-quantity-controls button.increase-qty-btn:disabled { 
+  background-color: transparent;
+  /* color: #ccc; */
+  /* border-color: #ccc; */
+  /* opacity: 0.5; */
+}
