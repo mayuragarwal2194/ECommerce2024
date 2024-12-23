@@ -24,17 +24,24 @@ import PasswordReset from './Components/Profile/PasswordReset/PasswordReset';
 import { ToastContainer } from 'react-toastify';
 import { WishlistProvider } from './Context/WishlistContext';
 import { CartProvider, useCart } from './Context/cartContext';
+import { UserProvider } from './Context/UserContext';
+import ScrollToTop from './Components/ScrollToTop/ScrollToTop';
+import ScrollToTopBtn from './Components/ScrollToTopBtn/ScrollToTopBtn';
+import LiveSearch from './Components/LiveSearch/LiveSearch';
+import FloatingWhatsapp from './Components/FloatingWhatsapp/FloatingWhatsapp';
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
         <ShopContextProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <AppContent />
-            </WishlistProvider>
-          </CartProvider>
+          <UserProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <AppContent />
+              </WishlistProvider>
+            </CartProvider>
+          </UserProvider>
         </ShopContextProvider>
       </BrowserRouter>
     </div>
@@ -64,6 +71,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       <Announcement />
       <NavbarNew isSticky={isSticky} />
       <ToastContainer />
@@ -84,6 +92,9 @@ function AppContent() {
       </Routes>
       <FooterNew />
       <CartDrawer isCartOpen={isCartOpen} onClose={closeCartDrawer} isSticky={isSticky} />
+      <ScrollToTopBtn />
+      <LiveSearch />
+      <FloatingWhatsapp />
     </>
   );
 }

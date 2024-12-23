@@ -67,7 +67,7 @@ exports.removeFromWishlist = async (req, res) => {
     }
 
     res.status(200).json({ message: 'Product variant removed from wishlist', wishlist });
-    
+
   } catch (error) {
     console.error('Error removing from wishlist:', error.stack);
     res.status(500).json({ error: error.message });
@@ -89,11 +89,12 @@ exports.getWishlist = async (req, res) => {
         },
       });
 
+    // If no wishlist exists for the user, return an empty array
     if (!wishlist) {
-      return res.status(404).json({ message: 'Wishlist not found' });
+      return res.status(200).json([]); // Return an empty array
     }
 
-    // If the wishlist is empty (products array is empty), return an empty array with status 200
+    // If the wishlist exists but has no products, also return an empty array
     if (wishlist.products.length === 0) {
       return res.status(200).json([]); // Return an empty array
     }
@@ -119,10 +120,10 @@ exports.getWishlist = async (req, res) => {
         };
       }),
     });
-    // console.log(wishlist);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 

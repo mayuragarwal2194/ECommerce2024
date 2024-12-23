@@ -6,14 +6,16 @@ exports.getCart = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const cart = await fetchUserCart(userId);
+    let cart = await fetchUserCart(userId);
 
+    // If no cart exists, initialize an empty cart
     if (!cart) {
-      return res.status(404).json({ message: 'Cart not found' });
+      cart = { userId, items: [], totalPrice: 0 }; // Default empty cart structure
     }
 
+    // If the cart exists but is empty, return an empty array
     if (cart.items.length === 0) {
-      return res.status(200).json([]); // Return an empty array if cart is empty
+      return res.status(200).json({ items: [], totalPrice: 0 }); // Frontend-friendly response
     }
 
     // Format and send the cart response
@@ -64,15 +66,15 @@ function formatCartItem(item) {
 
   if (variant) {
     // Debugging logs for Map handling
-    console.log("Cart Size ID:", item.size);
-    console.log("Variant Size Stock Object:", variant.sizeStock);
+    // console.log("Cart Size ID:", item.size);
+    // console.log("Variant Size Stock Object:", variant.sizeStock);
 
     // Check if sizeStock is a Map and use appropriate method
     const stockValue = variant.sizeStock instanceof Map
       ? variant.sizeStock.get(item.size.toString()) // Use .get() for Map
       : variant.sizeStock ? variant.sizeStock[item.size.toString()] : null; // Default to object access
 
-    console.log("Stock for Size ID:", stockValue);
+    // console.log("Stock for Size ID:", stockValue);
 
     // Find the size object using the size ID stored in the cart
     const size = variant.attributes.size.find(

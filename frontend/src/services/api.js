@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import { isAuthenticated } from '../Components/Utils/utils';
+import { customFetch } from '../Components/Utils/apiClient';
 export const API_URL = 'http://localhost:5000';
 
 // Only for Mobile Testing
@@ -37,7 +38,7 @@ export const fetchChildCategories = async () => {
     throw new Error('Failed to fetch categories');
   }
   const data = await response.json();
-  console.log(data);
+  // console.log(data);
   return data;
 };
 
@@ -294,24 +295,29 @@ export const getWishlist = async () => {
 
     const data = await response.json();
 
-    // If the response is empty (no products in wishlist), return an empty array
+    // If the response is an empty array, return it directly
     if (Array.isArray(data) && data.length === 0) {
-      return [];  // Returning an empty array if no products
+      return []; // No products in wishlist
     }
 
-    // Process and return the wishlist data, including variant-specific details
-    return data.products.map(item => ({
-      productId: item.productId,
-      variantId: item.variantId,
-      itemName: item.itemName,
-      newPrice: item.newPrice,
-      oldPrice: item.oldPrice,
-      featuredImage: item.featuredImage,
-      tag: item.tag,
-      color: item.color,
-      size: item.size,
-      addedAt: item.addedAt,
-    }));
+    // Ensure the response has a `products` field before mapping
+    if (data && data.products) {
+      return data.products.map(item => ({
+        productId: item.productId,
+        variantId: item.variantId,
+        itemName: item.itemName,
+        newPrice: item.newPrice,
+        oldPrice: item.oldPrice,
+        featuredImage: item.featuredImage,
+        tag: item.tag,
+        color: item.color,
+        size: item.size,
+        addedAt: item.addedAt,
+      }));
+    }
+
+    // Fallback: If `data` doesn't contain `products`, return an empty array
+    return [];
   } catch (error) {
     console.error('Error fetching wishlist:', error);
     throw error;
@@ -457,7 +463,13 @@ export const getCart = async () => {
       },
     });
 
-    // If the response is not OK, handle errors
+    // If the cart does not exist, initialize an empty cart
+    if (response.status === 404) {
+      console.info('Cart not found, initializing an empty cart.');
+      return { items: [], totalPrice: 0 }; // Return an empty cart object
+    }
+
+    // Handle other errors
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(`Failed to fetch cart: ${errorData.message || 'Unknown error'}`);
@@ -465,19 +477,13 @@ export const getCart = async () => {
 
     // Parse and return the cart data
     const data = await response.json();
-
-    // Ensure the frontend gracefully handles an empty cart
-    if (Array.isArray(data) && data.length === 0) {
-      console.info('Cart is empty');
-      return { items: [], totalPrice: 0 };
-    }
-
-    return data; // Return the cart data
+    return data;
   } catch (error) {
     console.error('Error fetching cart:', error.message);
     throw error;
   }
 };
+
 
 
 // Function to Remove Item From Cart
@@ -563,7 +569,190 @@ export const updateQuantityInCart = async (cartId, productId, variantId, newQuan
 
 
 
+// Function to submit a product review
+export const addReview = async (reviewData, reviewFiles, setUserProfile) => {
+  console.log("Auth token:", Cookies.get('authToken')); // Log the token for debugging
 
+  // Check if the user is authenticated (optional, if customFetch handles token checks)
+  if (!isAuthenticated()) {
+    console.log('User not authenticated');
+    return;
+  }
 
+  const formData = new FormData();
+  formData.append('productId', reviewData.productId);
+  formData.append('rating', reviewData.rating);
+  formData.append('reviewTitle', reviewData.reviewTitle);
+  formData.append('comment', reviewData.comment);
 
+  if (reviewFiles.images) {
+    reviewFiles.images.forEach((file) => formData.append('reviewImages', file));
+  }
+  if (reviewFiles.videos) {
+    reviewFiles.videos.forEach((file) => formData.append('reviewVideos', file));
+  }
+
+  // Debugging: Log FormData
+  for (let [key, value] of formData.entries()) {
+    console.log(`${key}:`, value);
+  }
+
+  try {
+    const response = await customFetch('/api/v1/reviews', {
+      method: 'POST',
+      body: formData,
+    }, setUserProfile); // Pass setUserProfile to handle token expiration
+
+    console.log('API Response Status:', response.status);
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error Response:', errorData);
+      throw new Error(`Failed to submit review: ${errorData.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    console.log('Review submitted successfully:', data);
+    return data;
+
+  } catch (error) {
+    console.error('Error submitting review:', error);
+    throw error;
+  }
+};
+
+// Function to fetch reviews for a specific product
+export const getProductReviews = async (productId, page = 1, limit = 10) => {
+  try {
+    // Construct the URL with query parameters for pagination
+    const url = `${API_URL}/api/v1/reviews/${productId}?page=${page}&limit=${limit}`;
+
+    // Send the API request
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Log the API response status
+    // console.log('API Response Status:', response.status);
+
+    // If the response is not OK, log the error details and throw an error
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error('Error Response:', errorData);
+      throw new Error(`Failed to fetch reviews: ${errorData.message || response.statusText}`);
+    }
+
+    // If successful, parse and return the JSON response
+    const data = await response.json();
+    // console.log('Fetched reviews:', data);
+
+    return data; // Optionally return the response data for further use
+
+  } catch (error) {
+    // Log the error and rethrow it
+    console.error('Error fetching reviews:', error);
+    throw error;
+  }
+};
+
+// Function to delete review
+export const deleteReview = async (reviewId) => {
+  try {
+    const authToken = Cookies.get('authToken');
+    const response = await fetch(`${API_URL}/api/v1/reviews/${reviewId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to delete review');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error deleting review:', error);
+    throw error;
+  }
+};
+
+// Function to edit Review
+export const editReview = async (reviewId, reviewData, reviewFiles) => {
+  const formData = new FormData();
+
+  // Log the reviewId to check its value
+  console.log('Review ID:', reviewId);
+  if (!reviewId || typeof reviewId !== 'string') {
+    throw new Error('Invalid reviewId');
+  }
+
+  // formData.append('reviewId', reviewId); // Ensure it's the correct string
+
+  // Append review data
+  Object.keys(reviewData).forEach((key) => {
+    if (reviewData[key]) {
+      if (Array.isArray(reviewData[key])) {
+        // Handle arrays (like existing images and videos)
+        appendArrayToFormData(formData, key, reviewData[key]);
+      } else {
+        formData.append(key, reviewData[key]);
+      }
+    }
+  });
+
+  // Append new review images and videos if they exist
+  appendFilesToFormData(formData, 'reviewImages', reviewFiles?.images);
+  appendFilesToFormData(formData, 'reviewVideos', reviewFiles?.videos);
+
+  // Log the formData contents for debugging (only for development, remove for production)
+  if (process.env.NODE_ENV === 'development') {
+    for (let pair of formData.entries()) {
+      console.log(pair[0] + ': ' + pair[1]);
+    }
+  }
+
+  // Retrieve the token from cookies
+  const authToken = Cookies.get('authToken');
+  if (!authToken) {
+    throw new Error('Authentication token is missing');
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/reviews/editReview`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${authToken}`, // Using the token from cookies
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error updating review');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error submitting review:', error);
+    throw new Error('Error updating review: ' + error.message);
+  }
+};
+
+// Helper function to append array data to FormData
+const appendArrayToFormData = (formData, key, array) => {
+  array.forEach((item) => formData.append(key, item));
+};
+
+// Helper function to append files to FormData
+const appendFilesToFormData = (formData, fieldName, files) => {
+  if (files?.length) {
+    files.forEach((file) => formData.append(fieldName, file));
+  }
+};
 

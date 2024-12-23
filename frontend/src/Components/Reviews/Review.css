@@ -30,3 +30,46 @@
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+.review-videos{
+  width: 235px;
+  height: 160px;
+}
+
+.review-actions {
+  position: relative;
+}
+
+.three-dots-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.actions-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 15px;
+  display: none;
+  flex-direction: column;
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.review-actions:hover .actions-dropdown {
+  display: flex;
+}
+
+.action-btn {
+  /* padding: 10px 15px; */
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.action-btn:hover {
+  background: #f0f0f0;
+}

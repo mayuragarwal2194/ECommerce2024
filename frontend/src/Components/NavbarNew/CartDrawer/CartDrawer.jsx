@@ -85,13 +85,13 @@ const CartDrawer = ({ isCartOpen, onClose, isSticky }) => {
           </div>
         </div>
 
-        <div className="cart-drawer-body">
+        <div className="cart-drawer-body pb-5">
           {Array.isArray(cart.items) && cart.items.length > 0 ? (
             cart.items.map((item) => {
-              console.log('Item Size Stock:', item.sizeStock); // Debugging stock availability
+              {/* console.log('Item Size Stock:', item.sizeStock); // Debugging stock availability */}
 
               return (
-                <div key={item.variantId} className="cart-item align-items-start">
+                <div key={item.variantId} className="cart-item align-items-start w-100">
                   {/* Product Image */}
                   <Link to={`/product/${item.productId}`} onClick={closeCartDrawer}>
                     <div className="cart-item-image">
@@ -103,67 +103,73 @@ const CartDrawer = ({ isCartOpen, onClose, isSticky }) => {
                     </div>
                   </Link>
 
-                  {/* Product Details */}
-                  <div className="cart-item-details">
-                    {/* Product Name */}
-                    <h6 className="mb-2">{item.itemName}</h6>
-                    <p className="text-muted mb-1">Color: {item.color}</p>
-                    <p className="text-muted mb-1">Size: {item.size}</p>
-                  </div>
+                  <div className='ms-3 flex-1'>
+                    <div className='d-flex align-items-start w-100'>
+                      {/* Product Details */}
+                      <div className="cart-item-details d-flex flex-column gap-1 mb-2">
+                        {/* Product Name */}
+                        <h6 className="">{item.itemName}</h6>
+                        <p className="text-muted mb-0">Color: {item.color}</p>
+                        <p className="text-muted mb-0">Size: {item.size}</p>
+                      </div>
+                      {/* Remove Item Button */}
+                      <button
+                        onClick={() =>
+                          removeItemFromCart(item.productId, item.variantId, item.size, item.color)
+                        }
+                        className="delete-btn ms-3 line-height-normal ms-auto ps-5"
+                      >
+                        <i className="ri-close-line"></i>
+                      </button>
+                    </div>
+                    <div className="d-flex align-items-center justify-content-between">
 
-                  {/* Quantity Control */}
-                  <div className="cart-quantity-controls d-flex align-items-center mb-3">
-                    <button
-                      onClick={() =>
-                        decreaseQuantity(
-                          item.cartId,
-                          item.productId,
-                          item.variantId,
-                          item.quantity,
-                          item.size,
-                          item.color
-                        )
-                      }
-                      className="decrease-qty-btn bg-transparent border border-end-0"
-                      aria-label="Decrease Quantity"
-                      disabled={item.quantity <= 1} // Disable when quantity is 1
-                    >
-                      -
-                    </button>
-                    <span
-                      className="cartitems-quantity border-top border-bottom border-start-0 border-end-0"
-                      aria-label="Selected Quantity"
-                    >
-                      {item.quantity}
-                    </span>
-                    <button
-                      onClick={() =>
-                        increaseQuantity(
-                          item.cartId,
-                          item.productId,
-                          item.variantId,
-                          item.quantity,
-                          item.size,
-                          item.color
-                        )
-                      }
-                      className="increase-qty-btn bg-transparent border border-start-0"
-                      aria-label="Increase Quantity"
-                      disabled={item.quantity >= item.sizeStock} // Disable when quantity reaches stock
-                    >
-                      +
-                    </button>
+                      {/* Quantity Control */}
+                      <div className="cart-quantity-controls d-flex align-items-center">
+                        <button
+                          onClick={() =>
+                            decreaseQuantity(
+                              item.cartId,
+                              item.productId,
+                              item.variantId,
+                              item.quantity,
+                              item.size,
+                              item.color
+                            )
+                          }
+                          className="decrease-qty-btn bg-transparent border border-end-0"
+                          aria-label="Decrease Quantity"
+                          disabled={item.quantity <= 1} // Disable when quantity is 1
+                        >
+                          -
+                        </button>
+                        <span
+                          className="cartitems-quantity border-top border-bottom border-start-0 border-end-0"
+                          aria-label="Selected Quantity"
+                        >
+                          {item.quantity}
+                        </span>
+                        <button
+                          onClick={() =>
+                            increaseQuantity(
+                              item.cartId,
+                              item.productId,
+                              item.variantId,
+                              item.quantity,
+                              item.size,
+                              item.color
+                            )
+                          }
+                          className="increase-qty-btn bg-transparent border border-start-0"
+                          aria-label="Increase Quantity"
+                          disabled={item.quantity >= item.sizeStock} // Disable when quantity reaches stock
+                        >
+                          +
+                        </button>
+                      </div>
+                      <strong className="mb-1">${item.newPrice}</strong>
+                    </div>
                   </div>
-
-                  {/* Remove Item Button */}
-                  <button
-                    onClick={() =>
-                      removeItemFromCart(item.productId, item.variantId, item.size, item.color)
-                    }
-                    className="delete-btn ms-3 line-height-normal"
-                  >
-                    <i className="ri-close-line"></i>
-                  </button>
                 </div>
               );
             })

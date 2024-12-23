@@ -1,0 +1,11 @@
+.floating-wtsapp-wrapper .styles-module_whatsappButton__tVits{
+  right: 20px;
+  bottom: 5rem;
+  width: 50px;
+  height: 50px;
+}
+
+.floating-wtsapp-wrapper .styles-module_whatsappButton__tVits:after{
+  width: 50px;
+  height: 50px;
+}

@@ -23,7 +23,13 @@ const NavbarNew = ({ isSticky }) => {
   const navigate = useNavigate();
 
   const goToWishlist = () => {
-    navigate('/profile', { state: { openTab: 'Wishlist' } });
+    if (window.location.pathname === '/profile') {
+      // Update the tab without navigating
+      window.updateActiveTab && window.updateActiveTab('Wishlist');
+    } else {
+      // Navigate to the profile page
+      navigate('/profile', { state: { openTab: 'Wishlist' } });
+    }
   };
 
   useEffect(() => {
@@ -306,27 +312,25 @@ const NavbarNew = ({ isSticky }) => {
               </li>
             </ul>
             <ul className="nav-icons search-cart d-flex align-items-center justify-content-between list-unstyled mb-0">
-              <li className="search desktop-search">
-                <Link to={'/'}>
-                  <svg
-                    aria-hidden="true"
-                    focusable="false"
-                    role="presentation"
-                    className="icon icon-search search-icon"
-                    viewBox="0 0 64 64"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="28"
-                    height="28"
-                  >
-                    <title>icon-search</title>
-                    <path
-                      d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58ZM54 54 41.94 42"
-                      stroke="currentColor"
-                      fill="none"
-                      strokeWidth="4"
-                    />
-                  </svg>
-                </Link>
+              <li className="search desktop-search cursor-pointer" data-bs-toggle="modal" data-bs-target="#searchModal">
+                <svg
+                  aria-hidden="true"
+                  focusable="false"
+                  role="presentation"
+                  className="icon icon-search search-icon"
+                  viewBox="0 0 64 64"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="28"
+                  height="28"
+                >
+                  <title>icon-search</title>
+                  <path
+                    d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58ZM54 54 41.94 42"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeWidth="4"
+                  />
+                </svg>
               </li>
               <li className="wishlist cursor-pointer position-relative" onClick={goToWishlist}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -402,32 +406,25 @@ const NavbarNew = ({ isSticky }) => {
             </Link>
           </div>
           <ul className="nav-icons d-flex align-items-center justify-content-end list-unstyled mb-0 flex-1 gap-3">
-            <li className="user-login">
-              <Link
-                to={isAuthenticated() ? '/profile' : '/login'}
-                className="border-0 bg-transparent text-decoration-none"
-                aria-label="Login Here"
-                role="button"
+            <li className="search" data-bs-toggle="modal" data-bs-target="#searchModal">
+              <svg
+                aria-hidden="true"
+                focusable="false"
+                role="presentation"
+                className="icon icon-search search-icon"
+                viewBox="0 0 64 64"
+                xmlns="http://www.w3.org/2000/svg"
+                width="28"
+                height="28"
               >
-                <svg
-                  aria-hidden="true"
-                  focusable="false"
-                  role="presentation"
-                  className="icon icon-user user-icon"
-                  viewBox="0 0 64 64"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="28"
-                >
-                  <title>account</title>
-                  <path
-                    d="M35 39.84v-2.53c3.3-1.91 6-6.66 6-11.41 0-7.63 0-13.82-9-13.82s-9 6.19-9 13.82c0 4.75 2.7 9.51 6 11.41v2.53c-10.18.85-18 6-18 12.16h42c0-6.19-7.82-11.31-18-12.16Z"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeWidth="3"
-                  />
-                </svg>
-              </Link>
+                <title>icon-search</title>
+                <path
+                  d="M47.16 28.58A18.58 18.58 0 1 1 28.58 10a18.58 18.58 0 0 1 18.58 18.58ZM54 54 41.94 42"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeWidth="4"
+                />
+              </svg>
             </li>
             <li className="cart">
               <button
