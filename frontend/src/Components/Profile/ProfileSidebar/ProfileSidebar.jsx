@@ -5,7 +5,7 @@ import { API_URL } from '../../../services/api';
 import ProfileEditForm from '../ProfileEditForm/ProfileEditForm';
 import { useLocation } from 'react-router-dom';
 
-const ProfileSidebar = ({ tabData, initialTab }) => {
+const ProfileSidebar = ({ tabData, initialTab, setExternalActiveTab }) => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState(null);
   const [initialRender, setInitialRender] = useState(true);
@@ -18,6 +18,11 @@ const ProfileSidebar = ({ tabData, initialTab }) => {
       setInitialRender(false); // Prevent further updates from this effect
     }
   }, [initialRender, initialTab, location.state, tabData]);
+
+  // Sync external activeTab updates
+  useEffect(() => {
+    if (setExternalActiveTab) setExternalActiveTab(setActiveTab);
+  }, [setExternalActiveTab]);
 
   const [userProfile, setUserProfile] = useState({
     name: 'User Name',
@@ -109,6 +114,7 @@ const ProfileSidebar = ({ tabData, initialTab }) => {
               onClick={() => {
                 setActiveTab(tab.label.title);
                 setIsEditing(false); // Reset edit mode on tab click
+                window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
               <div className="sub-content-flex d-flex align-items-start gap-3">

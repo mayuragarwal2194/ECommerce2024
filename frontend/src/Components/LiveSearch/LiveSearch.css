@@ -1,0 +1,29 @@
+.search-box-wrapper i{
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+}
+
+.search-box-wrapper .search-input{
+  padding-right: 30px;
+}
+
+.search-product-section .item-image img{
+  height: 250px;
+}
+
+.search-category-section .search-result-item a .cat-name{
+  color: var(--black);
+  transition: all ease 0.05s;
+  border-bottom: 2px solid transparent;
+  padding-bottom: 4px;
+  display: inline-block;
+}
+
+.search-category-section .search-result-item a .cat-name:first-child{
+  padding-left: 0 !important;
+}
+
+.search-category-section .search-result-item a .cat-name:hover{
+  border-bottom: 2px solid var(--black);
+}

@@ -134,7 +134,9 @@ export const CartProvider = ({ children }) => {
       const response = await removeFromCartAPI(payload);
 
       if (response && response.cart) {
-        setCart(response.cart); // Update the cart after item is removed
+        // Refetch the updated cart to get full product details and update the state
+        const updatedCart = await getCart();
+        setCart(updatedCart); // Update the cart after item is removed
       }
 
     } catch (error) {

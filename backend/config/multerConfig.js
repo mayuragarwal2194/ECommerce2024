@@ -21,6 +21,10 @@ const storage = multer.diskStorage({
       cb(null, 'uploads/categories/child_image');
     } else if (file.fieldname === 'profilePicture') {
       cb(null, 'uploads/user/profilePicture');
+    } else if (file.fieldname === 'reviewImages') {
+      cb(null, 'uploads/reviews/review_images');
+    } else if (file.fieldname === 'reviewVideos') {
+      cb(null, 'uploads/reviews/review_videos');
     } else {
       cb(new Error('Unexpected field'));
     }
@@ -43,7 +47,7 @@ const uploadMiddleware = multer({
 // Check file type
 function checkFileType(file, cb) {
   // Allowed file types
-  const filetypes = /jpeg|jpg|png|webp|gif/;
+  const filetypes = /jpeg|jpg|png|webp|gif|mp4|webm|mkv/;
   // Check the file extension
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
   // Check the MIME type

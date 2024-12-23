@@ -1,75 +1,91 @@
 import React, { useState, useEffect } from 'react';
-import { API_URL } from '../../services/api';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { getProductReviews, addReview, editReview, deleteReview } from '../../services/api';
+import { toast } from 'react-toastify';
+import Cookies from 'js-cookie';
+import { useUser } from '../../Context/UserContext';
+import ReviewForm from './ReviewForm/ReviewForm';
+import ReviewList from './ReviewList/ReviewList';
 import './Review.css';
 
-const Reviews = ({ productId }) => {
+const Reviews = ({ productId, setUserProfile }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [reviews, setReviews] = useState([]);
-  const [userName, setUserName] = useState('');
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
   const [averageRating, setAverageRating] = useState('No ratings yet');
-  const [hoveredStar, setHoveredStar] = useState(null);
+  const [totalReviews, setTotalReviews] = useState(0);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewToEdit, setReviewToEdit] = useState(null);
+  const { userInfo } = useUser();
 
+  // Fetch reviews on component mount or when productId changes
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/v1/reviews/${productId}`);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-        const data = await response.json();
+        const data = await getProductReviews(productId);
         setReviews(data.reviews);
-        setAverageRating(data.averageRating);
+        setAverageRating(data.averageRating || 'No ratings yet');
+        setTotalReviews(data.totalReviews || 0);
       } catch (error) {
         console.error('Error fetching reviews:', error);
+        toast.error('Failed to load reviews.');
       }
     };
     fetchReviews();
   }, [productId]);
 
-  const submitReview = async (e) => {
-    e.preventDefault();
-    if (rating === 0) {
-      alert('Please select a rating.');
+  const handleWriteReviewClick = () => {
+    const token = Cookies.get('authToken');
+    if (!token) {
+      navigate('/login', { state: { from: location.pathname } });
       return;
     }
-    try {
-      const response = await fetch(`${API_URL}/api/v1/reviews`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productId, userName, rating, comment }),
-      });
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+    setReviewToEdit(null); // Reset editing state
+    setShowReviewForm(true); // Show form for new review
+  };
 
-      setUserName('');
-      setRating(0);
-      setComment('');
-      setHoveredStar(null);
-      // Refresh reviews
-      const reviewsResponse = await fetch(`${API_URL}/api/v1/reviews/${productId}`);
-      if (!reviewsResponse.ok) throw new Error(`HTTP error! Status: ${reviewsResponse.status}`);
-      const data = await reviewsResponse.json();
-      setReviews(data.reviews);
-      setAverageRating(data.averageRating);
+  const handleEditReviewClick = (review) => {
+    setReviewToEdit(review); // Set review to edit
+    setShowReviewForm(true); // Show the form
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      const confirmDelete = window.confirm('Are you sure you want to delete this review?');
+      if (!confirmDelete) return;
+
+      await deleteReview(reviewId);
+      setReviews((prev) => prev.filter((review) => review._id !== reviewId));
+      toast.success('Review deleted successfully');
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('Error deleting review:', error);
+      toast.error(error.message || 'Failed to delete review.');
     }
   };
 
-  const renderStars = (currentRating) => {
-    return [...Array(5)].map((_, index) => {
-      const starValue = index + 1;
-      return (
-        <i
-          key={starValue}
-          className={`ri-star-${starValue <= (hoveredStar || currentRating) ? 'fill' : 'line'}`}
-          style={{ color: starValue <= (hoveredStar || currentRating) ? '#ffc107' : '#ccc', cursor: 'pointer' }}
-          onMouseEnter={() => setHoveredStar(starValue)}
-          onMouseLeave={() => setHoveredStar(null)}
-          onClick={() => setRating(starValue)}
-          aria-label={`Rate ${starValue} star`}
-        ></i>
-      );
-    });
+  const handleReviewSubmit = async (reviewData, reviewFiles, setUserProfile, action = 'add') => {
+    try {
+      if (action === 'add') {
+        await addReview(reviewData, reviewFiles, setUserProfile);
+        toast.success('Review submitted successfully!');
+      } else if (action === 'edit') {
+        await editReview(reviewData.reviewId,reviewData,reviewFiles);
+        toast.success('Review updated successfully!');
+      }
+
+      // Refetch updated reviews
+      const data = await getProductReviews(productId);
+      setReviews(data.reviews);
+      setAverageRating(data.averageRating || 'No ratings yet');
+      setTotalReviews(data.totalReviews || 0);
+
+      setShowReviewForm(false); // Close the form
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      toast.error(error.message || 'Error submitting review.');
+    }
   };
+
 
   const renderReviewStars = (reviewRating) => {
     return [...Array(5)].map((_, index) => (
@@ -84,47 +100,38 @@ const Reviews = ({ productId }) => {
   return (
     <div className="reviews-section">
       <h3>Customer Reviews</h3>
-      <p>Average Rating: {averageRating} / 5</p>
+      <p>
+        Average Rating: {averageRating} / 5 ({totalReviews} reviews)
+      </p>
+
       {reviews.length > 0 ? (
-        <ul className="reviews-list">
-          {reviews.map((review) => (
-            <li key={review._id} className="review-item">
-              <div className="review-header">
-                <strong>{review.userName}</strong>
-                <div className="review-stars">{renderReviewStars(review.rating)}</div>
-              </div>
-              <p>{review.comment}</p>
-            </li>
-          ))}
-        </ul>
+        <ReviewList
+          reviews={reviews}
+          renderReviewStars={renderReviewStars}
+          handleDeleteReview={handleDeleteReview}
+          handleEditReview={handleEditReviewClick}
+          userInfo={userInfo}
+        />
       ) : (
         <p>No reviews yet.</p>
       )}
 
-      <h4>Submit Your Review</h4>
-      <form onSubmit={submitReview} className="review-form">
-        <label htmlFor="userName" className="cursor-pointer">Your Name</label>
-        <input
-          id="userName"
-          type="text"
-          placeholder="Your Name"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-          required
-          autoComplete='true'
+      <button
+        onClick={handleWriteReviewClick}
+        className="write-review-button ff-btn ff-btn-outline-dark text-uppercase text-decoration-none d-inline-block w-75 text-center mb-3"
+      >
+        Write a Product Review
+      </button>
+
+      {showReviewForm && (
+        <ReviewForm
+          productId={productId}
+          onSubmitSuccess={handleReviewSubmit}
+          setUserProfile={setUserProfile}
+          closeForm={() => setShowReviewForm(false)}
+          reviewToEdit={reviewToEdit}
         />
-        <span>Rating</span>
-        <div className="rating-stars">{renderStars(rating)}</div>
-        <label htmlFor="comment" className="cursor-pointer">Your Review</label>
-        <textarea
-          id="comment"
-          placeholder="Write your review here"
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          required
-        ></textarea>
-        <button type="submit" className="submit-button">Submit Review</button>
-      </form>
+      )}
     </div>
   );
 };

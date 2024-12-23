@@ -4,6 +4,7 @@ import { fetchTopCategories } from '../../../services/api';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Link } from 'react-router-dom';
+import { isAuthenticated } from '../../Utils/utils';
 
 const Hamburger = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,6 +125,11 @@ const Hamburger = () => {
               <li className='ps-0 py-2'>
                 <Link to={'/contact'} className='text-decoration-none' onClick={closeMenu}>
                   <span className="position-relative">Contact</span>
+                </Link>
+              </li>
+              <li className='ps-0 py-2'>
+                <Link to={isAuthenticated() ? '/profile' : '/login'} className='text-decoration-none' onClick={closeMenu}>
+                  <span className="position-relative">Login</span>
                 </Link>
               </li>
             </ul>

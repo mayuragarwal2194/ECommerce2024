@@ -138,7 +138,9 @@ const Profile = () => {
     <div className='py-5 profile-main'>
       <div className="container">
         <div className="edit-profile w-100 mt-3 mt-lg-0">
-          <ProfileSidebar tabData={tabData} initialTab={openTab} />
+          <ProfileSidebar tabData={tabData} initialTab={openTab} setExternalActiveTab={(setActiveTab) => {
+            window.updateActiveTab = setActiveTab;
+          }} />
         </div>
       </div>
     </div>

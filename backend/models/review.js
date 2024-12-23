@@ -6,8 +6,9 @@ const reviewSchema = new mongoose.Schema({
     ref: 'Product',
     required: true,
   },
-  userName: {
-    type: String,
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
     required: true,
   },
   rating: {
@@ -16,14 +17,27 @@ const reviewSchema = new mongoose.Schema({
     min: 1,
     max: 5,
   },
+  reviewTitle: {
+    type: String,
+    required: true,
+    maxlength: 100, // Optional: Set a character limit
+  },
   comment: {
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  reviewImages: [
+    {
+      type: String, // Storing image URLs or paths
+      default: [],
+    },
+  ],
+  reviewVideos: [
+    {
+      type: String, // Storing video URLs or paths
+      default: [],
+    },
+  ],
+}, { timestamps: true });
 
 module.exports = mongoose.model('Review', reviewSchema);
