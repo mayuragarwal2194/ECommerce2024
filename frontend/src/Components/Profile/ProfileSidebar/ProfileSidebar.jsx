@@ -30,6 +30,8 @@ const ProfileSidebar = ({ tabData, initialTab, setExternalActiveTab }) => {
     profilePicture: 'images/default-profile.png',
   });
 
+
+  // Fetch user profile data on component mount
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {

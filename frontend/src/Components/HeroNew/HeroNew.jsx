@@ -30,9 +30,9 @@ const HeroNew = () => {
             </div>
           </div>
         </slider-container>
-        <a href="#value-sliderContainer" className="scroll-next-button text-decoration-none text-white bg-white rounded-circle d-flex align-items-center justify-content-center position-absolute" role="button">
+        <a href="#value-sliderContainer" className="scroll-next-button text-decoration-none bg-dark rounded-circle d-flex align-items-center justify-content-center position-absolute" role="button">
           <svg width="16" height="15" viewBox="0 0 16 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0.893555 3.9425L7.9998 11.0475L15.1061 3.9425" stroke="#070D10" strokeWidth="0.888281" strokeLinecap="square" />
+            <path d="M0.893555 3.9425L7.9998 11.0475L15.1061 3.9425" stroke="#ffffff" strokeWidth="0.888281" strokeLinecap="square" />
           </svg>
         </a>
       </section>

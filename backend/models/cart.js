@@ -56,7 +56,27 @@ const cartSchema = new mongoose.Schema({
     default: 0,
     min: 0,
   },
+  coupon: {
+    code: { type: String },
+    discountAmount: { type: Number, default: 0 }, // Amount discounted
+  },
+  finalTotal: {
+    type: Number,
+    required: true,
+    default: 0, // Final total after applying discounts
+  }
 
-}, { timestamps: true });
+},
+  { timestamps: true }
+);
+// Middleware to initialize or update finalTotal based on totalPrice
+cartSchema.pre('save', function (next) {
+  if (this.isNew || this.isModified('totalPrice') || this.isModified('coupon')) {
+    // Ensure finalTotal reflects the updated totalPrice or applied discount
+    this.finalTotal = this.totalPrice - (this.coupon?.discountAmount || 0);
+  }
+  next();
+});
+
 
 module.exports = mongoose.model('Cart', cartSchema);

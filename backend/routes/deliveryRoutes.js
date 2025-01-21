@@ -1,6 +1,6 @@
 // routes/deliveryRoutes.js
 const express = require('express');
-const { saveDeliveryInfo, getCountries, getStatesByCountry, getCitiesByState, getDeliveryInfo, setDefaultAddress, deleteAddress, editDeliveryInfo } = require('../controllers/deliveryController');
+const { saveDeliveryInfo, getCountries, getStatesByCountry, getCitiesByState, getDeliveryInfo, setDefaultAddress, deleteAddress, editDeliveryInfo, getDeliveryAddressById } = require('../controllers/deliveryController');
 const { authMiddleware } = require('../middleware/authMiddleware'); // Assuming you have an auth middleware to protect routes
 
 const router = express.Router();
@@ -19,6 +19,9 @@ router.delete('/delete-address', authMiddleware, deleteAddress);
 
 // Get delivery infos
 router.get('/', authMiddleware, getDeliveryInfo);
+
+// Route to get delivery address by ID
+router.get('/:addressId', getDeliveryAddressById);
 
 // Fetch countries
 router.get('/countries', getCountries);

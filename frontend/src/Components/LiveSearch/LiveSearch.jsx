@@ -134,6 +134,7 @@ const LiveSearch = () => {
                                 value={searchTerm}
                                 onChange={handleSearchChange}
                                 ref={searchInputRef}
+                                name='searchBox'
                             />
                             {searchTerm && (
                                 <i

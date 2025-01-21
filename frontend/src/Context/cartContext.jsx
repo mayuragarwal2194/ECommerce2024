@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
-import { addToCart as addToCartAPI, getCart, removeFromCart as removeFromCartAPI, updateQuantityInCart } from '../services/api';
+import { addToCart as addToCartAPI, getCart, removeFromCart as removeFromCartAPI, updateQuantityInCart, applyCoupon as applyCouponAPI } from '../services/api';
 import Cookies from 'js-cookie';
 
 // Create the CartContext
@@ -7,10 +7,12 @@ const CartContext = createContext();
 
 // Create a provider component
 export const CartProvider = ({ children }) => {
-  const [cart, setCart] = useState({ items: [], totalPrice: 0, totalWeight: 0 });
+  const [cart, setCart] = useState({ items: [], totalPrice: 0, totalWeight: 0, finalTotal: 0, coupon: null });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [couponDiscount, setCouponDiscount] = useState(0);
+
 
   // Hardcoded shipping charge
   const shippingCharges = 100; // 100 Rs
@@ -152,6 +154,36 @@ export const CartProvider = ({ children }) => {
     fetchCart();
   }, []);
 
+
+  const applyCoupon = useCallback(async (code) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await applyCouponAPI(code);
+      const discountAmount = data.discountAmount;
+
+      setCouponDiscount(discountAmount);
+
+      setCart(prevCart => ({
+        ...prevCart,
+        coupon: { code, discountAmount },
+        finalTotal: prevCart.totalPrice - discountAmount + shippingCharges, // Calculate final total
+      }));
+
+      return { success: true, discountAmount };
+    } catch (error) {
+      console.error('Error applying coupon:', error.message);
+      setError(error.message || 'Failed to apply coupon.');
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  }, [shippingCharges]);
+
+
+
+
   // Function to get the total number of items in the cart
   const getTotalCartItems = useMemo(() => {
     return cart.items.reduce((total, item) => total + item.quantity, 0);
@@ -164,8 +196,12 @@ export const CartProvider = ({ children }) => {
 
   // Calculate the total price including shipping
   const getFinalPrice = useMemo(() => {
-    return getTotalPrice + shippingCharges;
-  }, [getTotalPrice]);
+    return cart.finalTotal || getTotalPrice - couponDiscount + shippingCharges; // Use cart.finalTotal if available
+  }, [cart.finalTotal, getTotalPrice, couponDiscount, shippingCharges]);
+
+  const updateCart = (updatedCartData) => {
+    setCart((prevCart) => ({ ...prevCart, ...updatedCartData }));
+  };
 
   const getTotalWeight = useMemo(() => {
     return cart.items.reduce((total, item) => total + item.weight * item.quantity, 0);
@@ -176,6 +212,8 @@ export const CartProvider = ({ children }) => {
     updateItemQuantity,
     addItemToCart,
     removeItemFromCart,
+    applyCoupon,
+    couponDiscount,
     loading,
     error,
     shippingCharges,
@@ -187,7 +225,8 @@ export const CartProvider = ({ children }) => {
     getTotalPrice,
     getFinalPrice,
     getTotalWeight,
-  }), [cart, updateItemQuantity, addItemToCart, removeItemFromCart, loading, error, shippingCharges, isCartOpen, openCartDrawer, closeCartDrawer, toggleCartDrawer, getTotalCartItems, getTotalPrice, getFinalPrice, getTotalWeight]);
+    updateCart,
+  }), [cart, updateItemQuantity, addItemToCart, removeItemFromCart, applyCoupon, couponDiscount, loading, error, shippingCharges, isCartOpen, openCartDrawer, closeCartDrawer, toggleCartDrawer, getTotalCartItems, getTotalPrice, getFinalPrice, getTotalWeight]);
 
   return (
     <CartContext.Provider value={contextValue}>

@@ -185,30 +185,20 @@ const NavbarNew = ({ isSticky }) => {
                 );
               })}
             <li className="nav-item cursor-pointer position-relative">
-              <Link to={'/'} className='text-decoration-none'>
+              <Link to={'/shop'} className='text-decoration-none'>
                 <span className="position-relative">Shop</span>
               </Link>
             </li>
-            <li className="nav-item cursor-pointer position-relative">
-              <Link to={'/'} className='text-decoration-none'>
-                <span className="position-relative">About</span>
-              </Link>
-            </li>
-            <li className="nav-item cursor-pointer position-relative">
-              <Link to={'/'} className='text-decoration-none'>
-                <span className="position-relative">Blog</span>
-              </Link>
-            </li>
-            <li className="nav-item cursor-pointer position-relative">
+            {/* <li className="nav-item cursor-pointer position-relative">
               <Link to={'/contact'} className='text-decoration-none'>
                 <span className="position-relative">Contact</span>
               </Link>
-            </li>
+            </li> */}
           </ul>
           <div className="navbar-right d-flex align-items-center justify-content-end flex-1">
             <div className="dropdown dropdown-hover country-dropdown desktop-dropdown position-relative">
               <button className="dropbtn border-0 bg-transparent">
-                Country
+                Location
                 <i className="ri-arrow-down-s-line"></i>
               </button>
               <div className="dropdown-content ps-3 py-3">

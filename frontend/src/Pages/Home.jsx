@@ -11,11 +11,11 @@ import VideoSection from '../Components/VideoSection/VideoSection'
 import AboutSection from '../Components/AboutSection/AboutSection'
 import BlogSection from '../Components/BlogSection/BlogSection'
 
-const Shop = () => {
+const Home = () => {
   return (
     <div>
       <HeroNew />
-      <ValueSection />
+      {/* <ValueSection /> */}
       <BestProducts />
       <CategorySection />
       <PopularNew />
@@ -29,4 +29,4 @@ const Shop = () => {
   )
 }
 
-export default Shop
+export default Home

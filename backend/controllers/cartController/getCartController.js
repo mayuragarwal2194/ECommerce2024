@@ -52,7 +52,9 @@ function formatCartResponse(cart) {
     items: cart.items.map(formatCartItem),
     totalPrice: cart.totalPrice,
     totalWeight: calculateCartWeight(cart.items), // Include total weight
+    coupon: cart.coupon || null, // Include coupon details if applied
     createdAt: cart.createdAt,
+    finalTotal: cart.finalTotal,
     updatedAt: cart.updatedAt,
   };
 }

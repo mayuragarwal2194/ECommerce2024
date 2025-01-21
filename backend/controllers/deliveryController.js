@@ -139,6 +139,29 @@ exports.getDeliveryInfo = async (req, res) => {
   }
 };
 
+// Get Delivery Address By ID
+exports.getDeliveryAddressById = async (req, res) => {
+  try {
+    const { addressId } = req.params; // Extract address ID from request parameters
+
+    if (!addressId) {
+      return res.status(400).json({ message: 'Address ID is required' });
+    }
+
+    // Find the delivery address by its ID
+    const deliveryAddress = await DeliveryInfo.findById(addressId);
+
+    if (!deliveryAddress) {
+      return res.status(404).json({ message: 'Delivery address not found' });
+    }
+
+    res.status(200).json(deliveryAddress);
+  } catch (error) {
+    console.error('Error fetching delivery address by ID:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 // Delete an address for a user
 exports.deleteAddress = async (req, res) => {
   const { addressId } = req.body;

@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Shop from './Pages/Shop';
+import Shop from './Pages/Shop/Shop';
 import ShopCategory from './Pages/ShopCategory';
 import Product from './Pages/Product';
 import Cart from './Pages/Cart';
@@ -29,6 +29,8 @@ import ScrollToTop from './Components/ScrollToTop/ScrollToTop';
 import ScrollToTopBtn from './Components/ScrollToTopBtn/ScrollToTopBtn';
 import LiveSearch from './Components/LiveSearch/LiveSearch';
 import FloatingWhatsapp from './Components/FloatingWhatsapp/FloatingWhatsapp';
+import Home from './Pages/Home';
+import CheckOut from './Pages/Checkout/CheckOut';
 
 function App() {
   return (
@@ -76,11 +78,13 @@ function AppContent() {
       <NavbarNew isSticky={isSticky} />
       <ToastContainer />
       <Routes>
-        <Route path='/' element={<Shop />} />
+        <Route path='/' element={<Home />} />
+        <Route path='/shop' element={<Shop />} />
         <Route path='/:categoryId' element={<ShopCategory />} />
         <Route path='/product' element={<Product />} />
         <Route path='/product/:productId' element={<Product />} />
         <Route path='/cart' element={<Cart />} />
+        <Route path='/checkout' element={<PrivateRoute element={<CheckOut />} />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/contact' element={<Contact />} />

@@ -8,7 +8,7 @@ const FooterNew = () => {
     <>
       <footer className="footer-section text-start text-lg-start text-creame bg-black">
         <div className="w-100 footer-bg py-5">
-          <div className="container">
+          <div className="px-12 px-lg-5">
             <div className="row align-items-start footer-main-row">
               <div className="col-12 col-lg-3">
                 <h5 className="footer-head text-uppercase fw-normal footer-collection-head letter-216 mt-4 mt-lg-0">
@@ -62,13 +62,13 @@ const FooterNew = () => {
                   <div className="col-12 col-lg-4">
                     <div className="footer-wrapper w-100 w-fit-content mt-4 mt-lg-0">
                       <h5 className="footer-head text-uppercase fw-normal letter-216">
-                        Information
+                        Quick Links
                       </h5>
                       <div className="footer-quick-links mt-3">
                         <ul className="ps-0 mb-0">
                           <li className="list-unstyled underline-hover-effect">
                             <Link to={'/'} className="text-decoration-none mb-0 pb-0">
-                              Theme Features
+                              Home
                             </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
@@ -82,13 +82,13 @@ const FooterNew = () => {
                             </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
-                            <Link to={'/'} className="text-decoration-none mb-0 pb-0">
-                              FAQ
+                            <Link to={'/contact'} className="text-decoration-none mb-0 pb-0">
+                              Blog
                             </Link>
                           </li>
                           <li className="list-unstyled underline-hover-effect">
                             <Link to={'/'} className="text-decoration-none mb-0 pb-0">
-                              Maintenance Tips
+                              FAQ
                             </Link>
                           </li>
                         </ul>

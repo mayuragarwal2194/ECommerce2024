@@ -23,7 +23,7 @@ const ValueSection = () => {
 
   return (
     <section className="value-section bg-black">
-      <div className="container">
+      <div className="px-12 px-lg-5">
         <div id="value-sliderContainer">
           <Slider {...settings}>
             <div className="slide">

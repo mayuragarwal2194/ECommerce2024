@@ -29,10 +29,10 @@ const ItemNew = ({ image, itemName, newPrice, oldPrice, id, tag, isVariant = fal
           <h6 className="product-title xs-small-fonts large-fonts">{itemName}</h6>
           <div className="product-price">
             <div className="item-price-new fw-600 xs-large-fonts fw-bold">
-              ${newPrice}
+              ₹{newPrice}
             </div>
             <div className="item-price-old text-decoration-line-through xs-large-fonts fw-500">
-              ${oldPrice}
+              ₹{oldPrice}
             </div>
           </div>
         </div>

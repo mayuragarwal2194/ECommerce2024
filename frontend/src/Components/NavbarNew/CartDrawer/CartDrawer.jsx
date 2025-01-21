@@ -167,7 +167,7 @@ const CartDrawer = ({ isCartOpen, onClose, isSticky }) => {
                           +
                         </button>
                       </div>
-                      <strong className="mb-1">${item.newPrice}</strong>
+                      <strong className="mb-1">₹{item.newPrice}</strong>
                     </div>
                   </div>
                 </div>
@@ -182,7 +182,7 @@ const CartDrawer = ({ isCartOpen, onClose, isSticky }) => {
         <div className="cart-drawer-footer">
           <div className="total-section">
             <span>Subtotal</span>
-            <span>${cart.totalPrice ? cart.totalPrice.toFixed(2) : '0.00'}</span>
+            <span>₹{cart.totalPrice ? cart.totalPrice.toFixed(2) : '0.00'}</span>
           </div>
           <div className="total-section">
             <span>Shipping</span>
@@ -195,11 +195,11 @@ const CartDrawer = ({ isCartOpen, onClose, isSticky }) => {
 
             {/* Total with shipping */}
             {/* <span><strong>${getFinalPrice.toFixed(2)}</strong></span> */}
-            <span><strong>${getTotalPrice}</strong></span> {/* Total with shipping */}
+            <span><strong>₹{getTotalPrice}</strong></span> {/* Total with shipping */}
           </div>
-          <button className="checkout-btn" onClick={onClose}>
+          <Link to={'/checkout'} className="ff-btn ff-btn-fill-dark text-capitalize text-decoration-none d-inline-block w-100 text-center" onClick={onClose}>
             Proceed to Checkout
-          </button>
+          </Link>
         </div>
       </div>
       {isCartOpen && (

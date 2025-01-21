@@ -1,10 +1,22 @@
-import React from 'react'
-import { FloatingWhatsApp as FlWhatsApp } from 'react-floating-whatsapp'
-import './FloatingWhatsapp.css'
+import React, { useEffect, useRef } from 'react';
+import { FloatingWhatsApp as FlWhatsApp } from 'react-floating-whatsapp';
+import './FloatingWhatsapp.css';
 
 const FloatingWhatsapp = () => {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const inputElement = containerRef.current.querySelector('input[placeholder="Type your message here.."]');
+      if (inputElement) {
+        inputElement.setAttribute('id', 'messageInput');
+        inputElement.setAttribute('name', 'message');
+      }
+    }
+  }, []);
+
   return (
-    <div>
+    <div ref={containerRef}>
       <FlWhatsApp
         phoneNumber="+916377443324"
         accountName="Marwar Store"
@@ -24,7 +36,7 @@ const FloatingWhatsapp = () => {
         notificationDelay={5}
       />
     </div>
-  )
-}
+  );
+};
 
-export default FloatingWhatsapp
+export default FloatingWhatsapp;

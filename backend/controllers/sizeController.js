@@ -1,4 +1,4 @@
-const size = require('../models/size');
+const size = require('../models/size'); 
 
 // Helper function to clean up category name
 const cleanName = (name) => {

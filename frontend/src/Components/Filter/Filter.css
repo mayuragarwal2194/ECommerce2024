@@ -1,0 +1,8 @@
+.fitler-item label{
+  font-size: 19px;
+}
+
+.filter-component{
+  position: sticky;
+  top: 100px;
+}

@@ -20,6 +20,22 @@ export const getAllProducts = async () => {
   }
 };
 
+// Function to fetch all sizes from the backend
+export const getAllSizes = async () => {
+  try {
+    const response = await fetch(`${API_URL}/api/v1/size`);
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const sizes = await response.json();
+    return sizes;
+
+  } catch (error) {
+    console.error('Error fetching sizes:', error);
+    return []; // Return empty array if error occurs
+  }
+};
+
 // Get all parents categories
 export const fetchParentCategories = async () => {
   const response = await fetch(`${API_URL}/api/v1/parentcategories`);
@@ -755,4 +771,66 @@ const appendFilesToFormData = (formData, fieldName, files) => {
     files.forEach((file) => formData.append(fieldName, file));
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+// Function to apply the coupon
+export const applyCoupon = async (code) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/coupon/apply`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get('authToken')}`,
+      },
+      body: JSON.stringify({ code }),
+      signal: controller.signal,
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Failed to apply coupon');
+
+    return result.data;
+  } finally {
+    clearTimeout(timeout); // Clean up the timeout
+  }
+};
+
+// Function to remove the applied coupon
+export const removeCoupon = async () => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds
+
+  try {
+    const response = await fetch(`${API_URL}/api/v1/coupon/remove`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${Cookies.get('authToken')}`,
+      },
+      body: JSON.stringify({}), // Empty body
+      signal: controller.signal,
+    });
+
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.message || 'Failed to remove coupon');
+
+    return result.data;
+  } finally {
+    clearTimeout(timeout); // Clean up the timeout
+  }
+};
+
 
